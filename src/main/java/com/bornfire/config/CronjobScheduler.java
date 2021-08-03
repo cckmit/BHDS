@@ -151,7 +151,7 @@ System.out.println("messages"+messages);
 	   System.out.println(messages);
 		}
 
-   @Scheduled(cron = "0 * * ? * *")
+  // @Scheduled(cron = "0 * * ? * *")
 	public String execute() throws Exception {
 
 		logger.info("EMAIL STARTS");
@@ -244,7 +244,7 @@ System.out.println("messages"+messages);
 	}
    
    
-	@Scheduled(cron = "0 * * ? * *")
+	//@Scheduled(cron = "0 * * ? * *")
    public void OutlookEmail() throws Exception {
 	    Properties props = System.getProperties();
 	    props.setProperty("mail.store.protocol", "imap");

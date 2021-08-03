@@ -423,6 +423,7 @@ function logout(){
 
 <body>
 
+
 	<nav class="navbar fixed-top navbar-expand-md navbar-dark  mb-3"
 		style="box-shadow: 6px 6px 12px #888888; height: 70px; background: linear-gradient(to bottom, #1b6491 10%, #4ba2cf 50%);">
 
@@ -435,10 +436,11 @@ function logout(){
 
 				<!-- <img th:src=@{/images/bornfireheaderips.png} id="bfirelogo"
 					style="width: 153px; margin-left: 18px;" alt="Bornfire"> -->
-				<!-- <h1 id="ipsword">Instant Payment System</h1> -->
+				 <h1 id="ipsword" style="font-family: serif;
+    color: black;">BORNFIRE HELPDESK SOLUTIONS</h1> 
 			</div>
 			<button type="button" class="btn btn-default" id="userdtl"
-				style="margin-top: 5px;">
+				style="margin-top: 25px;">
 				<i class="fas fa-user-tie"><font Style="font-family: calibri;"
 					th:text="'&nbsp&nbsp'+${session.USERNAME}"> Ramprasath</font></i>
 			</button>
@@ -482,8 +484,8 @@ function logout(){
 						</a></li>
 						<li class="nav-item"><a class="nav-link" id="BHDSNotificationList"
 							href="#" onclick="contentLoad(this)">Notification Master </a></li>
-							<li class="nav-item"><a class="nav-link" id="ReferenceCodeMaster"
-							href="#" onclick="contentLoad(this)">ReferenceCode Master </a></li>
+							<!-- <li class="nav-item"><a class="nav-link" id="ReferenceCodeMaster"
+							href="#" onclick="contentLoad(this)">ReferenceCode Master </a></li> -->
 					</ul>
 				</div></li>
 			<!-- <li class="nav-item"><a class="nav-link" data-toggle="collapse"

@@ -60,19 +60,20 @@ public class BHDSIssueRegServices {
 		String msg = "";
 		/* try { */
 		if (formmode.equals("add")) {
+			BigDecimal EMAIL = (BigDecimal) hs.createNativeQuery("SELECT CLIENT.NEXTVAL AS SRL_NO FROM DUAL")
+					.getSingleResult();
 			BHDS_Client_Issue_Log up = bhds_Client_Issue_Log;
 			up.setReport_date(new Date());
-
+			up.setIssue_srl_no(EMAIL.toString());
 			hs.save(up);
 			System.out.println("Output---->saving-------");
 			msg = "Added Successfully";
-			BigDecimal EMAIL = (BigDecimal) hs.createNativeQuery("SELECT EMAILSEQUENCE.NEXTVAL AS SRL_NO FROM DUAL")
-					.getSingleResult();
+			
 			EmailAlert EA = new EmailAlert();
 			
 				EA.setEmail_id(up.getEmailid());
 				EA.setEmail_id_cc1("manivannan.b@bornfire.in");
-				EA.setEmail_id_cc2("vishnu.pa@bornfire.in");
+				EA.setEmail_id_cc2("");
 				EA.setEmail_sub("HELP DESK QURIES");
 				EA.setEmail_body(up.getDescription());
 				EA.setEmail_date(new Date());

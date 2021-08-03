@@ -399,6 +399,7 @@ public class NavigationController {
 		} else if (formmode.equals("add")) {
 			md.addAttribute("formmode", formmode);
 			md.addAttribute("AlertSrlNo", alertservices.getSrlNoValue());
+			md.addAttribute("menuname1", "Notification Master - Add");
 			md.addAttribute("formmode", "add"); // to set which form - valid values are "edit" , "add" & "list"
 			md.addAttribute("menu", "BHDSMenu");
 		}else if (formmode.equals("edit")) {
