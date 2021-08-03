@@ -764,11 +764,13 @@ public class NavigationController {
 			md.addAttribute("formmode", formmode);
 			// md.addAttribute("domains", userProfileDao.getDomainList());
 			md.addAttribute("Troubleshooting", userProfileDao.getUser(userid));
+			md.addAttribute("menuname", "Trouble Shooting Register Edit");
 
 		}
 		 else if (formmode.equals("add")) {
 
 				md.addAttribute("formmode", formmode);
+				md.addAttribute("menuname", "Trouble Shooting Register Add");
 				//md.addAttribute("AlertSrlNo", TroubleShootingServices.getSrlNoValue());
 
 				// md.addAttribute("domains", userProfileDao.getDomainList());
@@ -777,6 +779,7 @@ public class NavigationController {
 			}else {
 
 			md.addAttribute("formmode", formmode);
+			md.addAttribute("menuname", "Trouble Shooting Register");
 			// md.addAttribute("domains", reportServices.getDomainList());
 			// md.addAttribute("FinUserProfiles", userProfileDao.getFinUsersList());
 			md.addAttribute("Troubleshooting", userProfileDao.getUser(""));
