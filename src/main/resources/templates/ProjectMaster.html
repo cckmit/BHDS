@@ -1,0 +1,1331 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<!--
+PROJECT NAME: BHDS
+FILE NAME   : BHDSNotificationList
+CREATED BY	: RAMPRASATH
+CREATED ON	: 02-APRIL-2020
+MODIFY ON   :
+PURPOSE		: 
+ -->
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" type="text/css"
+	href="/webjars/bootstrap/4.3.1/css/bootstrap.min.css"
+	th:href="@{/webjars/bootstrap/4.3.1/css/bootstrap.min.css}">
+<link rel="stylesheet" type="text/css"
+	href="/webjars/font-awesome/5.9.0/css/all.min.css"
+	th:href="@{/webjars/font-awesome/5.9.0/css/all.min.css}">
+<link rel="stylesheet" type="text/css"
+	href="/webjars/jquery-ui/1.12.1/jquery-ui.min.css"
+	th:href="@{/webjars/jquery-ui/1.12.1/jquery-ui.min.css}">
+<link rel="stylesheet" type="text/css"
+	href="/webjars/datatables/1.10.19/css/jquery.dataTables.min.css"
+	th:href="@{/webjars/datatables/1.10.19/css/jquery.dataTables.min.css}">
+<link rel="shortcut icon" th:href="@{/favicon.ico}" type="image/x-icon">
+<link rel="icon" th:href="@{/favicon.ico}" type="image/x-icon">
+
+
+<script src="/webjars/popper.js/1.14.7/umd/popper.min.js"
+	th:src="@{/webjars/popper.js/1.14.7/umd/popper.min.js}"></script>
+<script src="/webjars/jquery/3.4.1/jquery.min.js"
+	th:src="@{/webjars/jquery/3.4.1/jquery.min.js}"></script>
+<script src="/webjars/jquery-ui/1.12.1/jquery-ui.min.js"
+	th:src="@{/webjars/jquery-ui/1.12.1/jquery-ui.min.js}"></script>
+
+<script src="/webjars/jquery-form/4.2.2/jquery.form.min.js"
+	th:src="@{/webjars/jquery-form/4.2.2/jquery.form.min.js}"></script>
+
+<script src="/webjars/jquery-validation/1.19.0/jquery.validate.min.js"
+	th:src="@{/webjars/jquery-validation/1.19.0/jquery.validate.min.js}"></script>
+
+<script src="js/bootstrap411.js"></script>
+
+<style type="text/css">
+.btn {
+	line-height: 0.5rem;
+}
+
+.underline {
+	text-decoration: underline;
+	color: #08a6f1;
+	cursor: pointer;
+}
+
+.container-manager {
+	width: 76.5%;
+	padding-right: 15px;
+	padding-left: 15px;
+	margin-right: auto;
+	margin-left: 19.3%;
+	margin-top: 80px;
+}
+
+.table-bordered td, .table-bordered th {
+	font-size: smaller;
+}
+
+.card-header {
+	background-color: #386276;
+}
+
+.card-footer {
+	background-color: rgb(56, 98, 118);
+}
+</style>
+<script th:inline="javascript">
+	/*<![CDATA[*/
+
+	$(function() {
+
+		var formmode = /*[[${formmode}]]*/null;
+		if (formmode != null) {
+			if (formmode == 'view') {
+				$('#AlertParameter').datetimepicker({
+					Readonly : true
+				});
+			}
+		}
+
+		$("#alert_date").datepicker({
+			changeMonth : true,
+			changeYear : true,
+			maxDate : new Date(),
+			dateFormat : "dd-mm-yy"
+		});
+
+		var today = new Date();
+		var dd = today.getDate();
+		var mm = today.getMonth() + 1; //January is 0!
+
+		var yyyy = today.getFullYear();
+		if (dd < 10) {
+			dd = '0' + dd;
+		}
+		if (mm < 10) {
+			mm = '0' + mm;
+		}
+		var today = dd + '-' + mm + '-' + yyyy;
+		document.getElementById('alert_date').value = today;
+
+		$("#suspend_date").datepicker({
+			changeMonth : true,
+			changeYear : true,
+			minDate : 0,
+			maxDate : 0,
+			dateFormat : "mm-dd-yy"
+		});
+		$("#activate_date").datepicker({
+			changeMonth : true,
+			changeYear : true,
+			minDate : 0,
+			dateFormat : "mm-dd-yy"
+		});
+		$("#start_date").datepicker({
+			maxDate : 0,
+			dateFormat : "dd-mm-yy",
+			onSelect : function(selected) {
+				var dt = $(this).datepicker('getDate');
+				dt.setDate(dt.getDate());
+				$("#end_date").datepicker("option", "minDate", dt);
+
+			}
+		});
+		$("#end_date").datepicker({
+			minDate : 0,
+			dateFormat : "dd-mm-yy",
+			onSelect : function(selected) {
+				var dt = new Date(selected);
+				dt.setDate(dt.getDate() - 1);
+				//$("#start_date").datepicker("option", "maxDate", dt);
+			}
+		});
+	});
+	var deleteval;
+
+	function home() {
+		location.href = 'Dashboard'
+	}
+
+	function back() {
+		window.history.back();
+	}
+	$(function(){
+		$("#start_date,#end_date,#proposal_date,#warranty_period,#amc_due_date,#amc_period_from,#amc_end_date").datepicker({
+			dateFormat : "dd-mm-yy"})
+		
+	});
+
+	function finuser(a) {
+
+		var refNo = a.getAttribute("data-mand_ref_no");
+		var fileType = a.getAttribute("data-filetype");
+
+		$
+				.ajax({
+
+					type : 'get',
+					url : "./getBlobImage/" + refNo + "/" + fileType,
+					success : function(response) {
+						$('#imageshow').modal('show');
+						document.getElementById("doc_image").src = "data:image/png;base64,"
+								+ response;
+
+					}
+
+				});
+
+	}
+
+	function alert_add(a) {
+
+		//var formmode = a.getAttribute("formmode");
+
+		location.href = "./Projectmaster?formmode=add";
+
+	}
+	function list() {
+		location.href = './Projectmaster?formmode=list';
+	}
+
+	function submitform(a) {
+
+		$('select option').prop('disabled', false)
+
+		$.validator.addMethod("regex", function(value, element, regexp) {
+			var re = new RegExp(regexp);
+			return this.optional(element) || re.test(value);
+		}, "Date required format dd-mm-yyyy");
+
+		$("#AlertParameter")
+				.validate(
+						{
+							rules : {
+								start_date : {
+									required : true,
+									regex : "^(1[0-2]|0[1-9])-(3[01]|[12][0-9]|0[1-9])-[0-9]{4}$"
+								},
+								end_date : {
+									required : true,
+									regex : "^(1[0-2]|0[1-9])-(3[01]|[12][0-9]|0[1-9])-[0-9]{4}$"
+								},
+								activate_date : {
+									required : true,
+									regex : "^(1[0-2]|0[1-9])-(3[01]|[12][0-9]|0[1-9])-[0-9]{4}$"
+								},
+								suspend_date : {
+									required : true,
+									regex : "^(1[0-2]|0[1-9])-(3[01]|[12][0-9]|0[1-9])-[0-9]{4}$"
+								},
+
+							},
+							messages : {
+
+							}
+
+						});
+		if ($("#AlertParameter").valid()) {
+			var formmode = a.getAttribute("data-formmode");
+			var url = "./createAlert?formmode=" + formmode;
+
+			$("#AlertParameter").attr('action', url);
+
+			var options = {
+				success : showResponse
+			// post-submit callback 
+			};
+
+			$("#AlertParameter").ajaxSubmit(options);
+
+			function showResponse(responseText, statusText, xhr, $form) {
+
+				$("#alertmsg").text(responseText);
+
+				$('#alert').modal("toggle");
+
+			}
+			;
+		}
+	};
+
+	function edit_btn_submit(a) {
+
+		var srlno = a.getAttribute("data-srl_no");
+		location.href = 'Projectmaster?formmode=edit&srlno=' + srlno;
+	}
+
+	function submitform1(a) {
+		if ($("#projectMaster").valid()) {
+			var formmode = a.getAttribute("data-formmode");
+			var url = "./createProjectMaster?formmode=" + formmode;
+
+			$("#projectMaster").attr('action', url);
+
+			var options = {
+				success : showResponse
+			// post-submit callback 
+			};
+
+			$("#projectMaster").ajaxSubmit(options);
+
+			function showResponse(responseText, statusText, xhr, $form) {
+
+				$("#alertmsg").text(responseText);
+
+				$('#alert').modal("toggle");
+
+			}
+			;
+		}
+	};
+
+	function modifyform1(a) {
+		if ($("#IssueMaster").valid()) {
+			var formmode = a.getAttribute("data-formmode");
+			var url = "./modifyClientIssue?formmode=" + formmode;
+
+			$("#IssueMaster").attr('action', url);
+
+			var options = {
+				success : showResponse
+			// post-submit callback 
+			};
+
+			$("#IssueMaster").ajaxSubmit(options);
+
+			function showResponse(responseText, statusText, xhr, $form) {
+
+				$("#alertmsg").text(responseText);
+
+				$('#alert').modal("toggle");
+
+			}
+			;
+		}
+	};
+
+	function delete_btn_submit(a) {
+		
+		var srlno = a.getAttribute("data-srl_no");
+		deleteval = srlno;
+		$("#datadelete").modal("toggle");
+
+	}
+	function submitformdelete(a) {
+		
+		var srlno = a.getAttribute("data-srl_no");
+
+		location.href = 'BHDSClientIssueLog?formmode=delete&srlno=' + srlno;
+		$("#datadelete").modal("toggle");
+
+	};
+	function view_btn_submit(a) {
+		var srlno = a.getAttribute("data-srl_no");
+
+		location.href = 'Projectmaster?formmode=view&srlno=' + srlno;
+
+	}
+	/*]]>*/
+</script>
+
+<script>
+	$(function() {
+
+		$('input[type=radio]').click(function() {
+			if ($(this).prop('id') == "emailno") {
+				$("#email_1").prop("readonly", true);
+				$("#email_user_1").prop("readonly", true);
+				$("#email_1").prop("required", false);
+				$("#email_user_1").prop("required", false);
+				$("#email_1-error").hide();
+				$("#email_user_1-error").hide();
+				$("#email_2").prop("readonly", true);
+				$("#email_user_2").prop("readonly", true);
+				$("#email_3").prop("readonly", true);
+				$("#email_user_3").prop("readonly", true);
+
+			} else if ($(this).prop('id') == "emailyes") {
+				$("#email_1").prop("readonly", false);
+				$("#email_user_1").prop("readonly", false);
+				$("#email_1").prop("required", true);
+				$("#email_user_1").prop("required", true);
+				$("#email_1-error").show();
+				$("#email_user_1-error").show();
+				$("#email_2").prop("readonly", false);
+				$("#email_user_2").prop("readonly", false);
+				$("#email_3").prop("readonly", false);
+				$("#email_user_3").prop("readonly", false);
+
+			} else if ($(this).prop('id') == "smsno") {
+				$("#mobile_1").prop("readonly", true);
+				$("#mobile_user_1").prop("readonly", true);
+				$("#mobile_1").prop("required", false);
+				$("#mobile_user_1").prop("required", false);
+				$("#mobile_1-error").hide();
+				$("#mobile_user_1-error").hide();
+				$("#mobile_2").prop("readonly", true);
+				$("#mobile_user_2").prop("readonly", true);
+				$("#mobile_3").prop("readonly", true);
+				$("#mobile_user_3").prop("readonly", true);
+			} else if ($(this).prop('id') == "smsyes") {
+				$("#mobile_1").prop("readonly", false);
+				$("#mobile_user_1").prop("readonly", false);
+				$("#mobile_1").prop("required", true);
+				$("#mobile_user_1").prop("required", true);
+				$("#mobile_1-error").show();
+				$("#mobile_user_1-error").show();
+				$("#mobile_2").prop("readonly", false);
+				$("#mobile_user_2").prop("readonly", false);
+				$("#mobile_3").prop("readonly", false);
+				$("#mobile_user_3").prop("readonly", false);
+			} else if ($(this).prop('id') == "alertno") {
+				$("#alert_userid_1").prop("readonly", true);
+				$("#alert_user_1").prop("readonly", true);
+				$("#alert_userid_1").prop("required", false);
+				$("#alert_user_1").prop("required", false);
+				$("#alert_user_1-error").hide();
+				$("#alert_userid_1-error").hide();
+				$("#alert_userid_2").prop("readonly", true);
+				$("#alert_user_2").prop("readonly", true);
+				$("#alert_userid_3").prop("readonly", true);
+				$("#alert_user_3").prop("readonly", true);
+			} else if ($(this).prop('id') == "alertyes") {
+				$("#alert_userid_1").prop("readonly", false);
+				$("#alert_user_1").prop("readonly", false);
+				$("#alert_userid_1").prop("required", true);
+				$("#alert_user_1").prop("required", true);
+				$("#alert_user_1-error").show();
+				$("#alert_userid_1-error").show();
+				$("#alert_userid_2").prop("readonly", false);
+				$("#alert_user_2").prop("readonly", false);
+				$("#alert_userid_3").prop("readonly", false);
+				$("#alert_user_3").prop("readonly", false);
+
+			}
+
+		});
+	});
+</script>
+</head>
+
+<body>
+	<div th:insert="BHDSMenu :: header"></div>
+
+
+	<!-- Start Content-->
+	<div class="container-manager">
+
+
+		<div th:if="${formmode}=='list'">
+
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="card">
+						<div class="card-header " id="modheadtitle" style="height: 57px;">
+							<!-- 						<b th:text="${menuname}"></b>
+ -->
+							<div class="float-left">
+								<h6 style="font-size: 1.5rem; color: white;">List of
+									Projects</h6>
+							</div>
+							<div class="btn-group nav-buttons float-right">
+								<button type="button" class="btn btn-xs btn-primary btns"
+									onclick='alert_add(this)'>Add Project</button>
+								<button type="button" class="btn btn-xs btn-primary btns active"
+									id="btnInq" onclick="list()" style="border-color: #66dbe0;">List</button>
+							</div>
+						</div>
+						<table class="table  table-bordered  table-hover table-sm"
+							style="margin-bottom: 0px" id="usertable">
+							<thead class="thead-light">
+
+								<tr>
+									<th>Srl No</th>
+									<th>Project id</th>
+									<th>Project Name</th>
+									<th>Client id</th>
+									<th>Client Name</th>
+									<th>Country</th>
+									<th>Start Date</th>
+									<th>End Date</th>
+									<th>Status</th>
+<!-- 									<th>Select</th>
+ -->								</tr>
+
+
+
+							</thead>
+							<tbody>
+
+								<tr th:each="alert: ${IssueMaster}">
+
+									<td th:text="${alert.srl_no}"></td>
+									<!-- <td
+										th:text="${#dates.format(alert.report_date, 'dd-MMM-yyyy')}"></td> -->
+									<td th:text="${alert.proj_id}"></td>
+									<td th:text="${alert.proj_name}"></td>
+									<td th:text="${alert.client_id}"></td>
+									<td th:text="${alert.client_name}"></td>
+									<td th:text="${alert.country}"></td>
+									<td th:text="${alert.start_date}"></td>
+									<td th:text="${alert.end_date}"></td>
+									<td th:text="${alert.amc_status}"></td>
+
+									<!-- <td>
+										<div class="dropdown">
+											<button class="btn btn-secondary dropdown-toggle"
+												type="button" id="dropdownMenuButton" title="Action"
+												style="line-height: 0.7; font-size: 11px; color: #3a4550; background: #e3e3e4;"
+												data-toggle="dropdown" aria-haspopup="true"
+												aria-expanded="false">Select</button>
+											<div class="dropdown-menu"
+												aria-labelledby="dropdownMenuButton"
+												style="background-color: #e3e3e4; color: #3a4550;">
+												<a th:attr="data-srl_no=${alert.srl_no}"
+													class="dropdown-item" title=" Modify"
+													style="cursor: pointer; height: 20px; color: #3a4550; background: #e3e3e4; height: 16px; border-radius: .20rem; padding: 2px 10px; top: 10px;"
+													id="edit_value" onclick="edit_btn_submit(this)">Modify</a>
+												<div class="dropdown-divider"></div>
+
+												<div class="dropdown-divider"></div>
+												<a th:attr="data-srl_no=${alert.srl_no}"
+													class="dropdown-item" title="View"
+													style="cursor: pointer; height: 20px; color: #3a4550; background: #e3e3e4; height: 16px; border-radius: .20rem; padding: 2px 10px; top: 10px;"
+													onclick="view_btn_submit(this)" id="view_btn">View </a>
+											</div>
+										</div>
+									</td> -->
+
+
+								</tr>
+							</tbody>
+						</table>
+						<div class="text-center"
+							style="background-color: #386276; padding: 5px; width: 100%;">
+
+							<div class="btn-group nav-buttons " style="align: center;">
+								<button type="button" class="btn btn-xs btn-primary"
+									id="btnHome" onclick="home();" style="margin-right: 10px;">Home</button>
+								<button type="button" class="btn btn-xs btn-primary"
+									id="btnBack" onclick="back();" style="margin-right: 10px;">Back</button>
+								<button type="button" class="btn btn-xs btn-primary"
+									id="btnBack" onclick="back();" style="margin-right: 10px;">Previous</button>
+								<button type="button" class="btn btn-xs btn-primary"
+									id="btnBack" onclick="back();">Next</button>
+
+							</div>
+						</div>
+
+					</div>
+				</div>
+			</div>
+		</div>
+		<!---------------------------- Report Details pagination - shown if paginated ------------------------------------------------
+										 			<div class="float-right" th:if="${RuleList.totalPages} gt 1">
+					<a href="#"><i class="fas fa-caret-left fa-2x"
+						th:onclick="|getUserlist('prevpage',${RuleList.number},${RuleList.totalPages});|"></i></a>
+					<input type="text" id="pageno" style="width: 30px"
+						th:value="${RuleList.number+1}"
+						th:onchange="|getUserlist('givenpage',${RuleList.number},${RuleList.totalPages});|"></input>
+					of <font th:text="${RuleList.totalPages}"></font> <a href="#"><i
+						class="fas fa-caret-right fa-2x"
+						th:onclick="|getUserlist('nextpage',${RuleList.number},${RuleList.totalPages});|"></i></a>
+				</div> 
+
+									</div>
+								</div>
+							</div>
+							 -->
+
+
+
+		<!-- -------------------ADD,EDIT,DELETE,INQUIRY -->
+		<div
+			th:if="${formmode}=='edit' OR ${formmode}=='add' OR ${formmode}=='view'">
+			<div class="row">
+				<div class="col-sm-12 ">
+					<form action="#" th:object="${projectMaster}" method="POST"
+						autocomplete="off" id="projectMaster">
+						<div class="card">
+							<div class="card-header">
+								<div class="float-left">
+									<b>General Details</b>
+								</div>
+								<div class="btn-group nav-buttons float-right">
+									<!-- <button type="button"
+										class="btn btn-xs btn-primary btns  active"
+										onclick='alert_add(this)' th:attr="frmode=add">Add
+										Notification</button> -->
+									<button type="button" class="btn btn-xs btn-primary btns"
+										id="btnInq" onclick="list()" style="border-color: #66dbe0;">List</button>
+								</div>
+
+							</div>
+
+
+
+							<div class="card-body">
+
+								<input autocomplete="false" name="hidden" type="text"
+									style="display: none;">
+								<div class="form-group">
+									<div class="row formline">
+										<input type="hidden" th:value="${AlertSrlNo}" id="srl_no"
+											name="srl_no" class="" autocomplete="false"
+											 /> <label class="col-sm-2">Group</label>
+										<div class="col-sm-3">
+
+
+											<input th:if="${formmode}=='add'" type="text"
+												 id="group1" name="group1"
+												class="form-control form-control-sm" autocomplete="false"
+												 /> <input
+												th:if="${formmode}=='edit' OR ${formmode}=='view'"
+												type="text" th:field="*{group1}" th:value="${group1}"
+												id="group1" class="form-control form-control-sm"
+												autocomplete="false"  />
+
+
+										</div>
+
+										<div class="col-sm-1"></div>
+
+
+										<label class="col-sm-2">Team</label>
+										<div class="col-sm-3">
+											<input th:if="${formmode}=='add'" type="text"
+												id="team" name="team" value=""
+												class="form-control form-control-sm txtalign"
+												autocomplete="false" th:readonly="${formmode}=='view'"
+												 /> <input
+												th:if="${formmode}=='edit' OR ${formmode}=='view'"
+												type="text" th:value="team" id="team" name="team"
+												value="" class="form-control form-control-sm txtalign"
+												autocomplete="false" th:readonly="${formmode}=='view'"
+												 />
+										</div>
+										<div class="col-sm-1"></div>
+									</div>
+									<div class="row formline">
+										<label style="height: 2px;"></label>
+
+									</div>
+									<div class="row formline">
+
+										<label class="col-sm-2">Project Id</label>
+										<div class="col-sm-3">
+
+											<input th:if="${formmode}=='add'" type="text"
+												id="proj_id" name="proj_id" value=""
+												class="form-control form-control-sm" autocomplete="false"
+												th:readonly="${formmode}=='view'"  /> <input
+												th:if="${formmode}=='edit' OR ${formmode}=='view'"
+												th:field="*{emailid}" th:value="${emailid}" id="proj_id"
+												name="proj_id" value="hgfhf"
+												class="form-control form-control-sm" autocomplete="false"
+												th:readonly="${formmode}=='view'"  />
+
+
+										</div>
+
+										<div class="col-sm-1"></div>
+
+
+										<label class="col-sm-2">Project Name</label>
+										<div class="col-sm-3">
+
+											<input type="text" th:if="${formmode}=='add'"
+												 id="proj_name" name="proj_name" value=""
+												class="form-control form-control-sm txtalign"
+												autocomplete="false" th:readonly="${formmode}=='view'"
+												 /> <input type="text"
+												th:if="${formmode}=='edit' OR ${formmode}=='view'"
+												th:field="*{application}" th:value="${proj_name}"
+												id="proj_name" name="proj_name" value=""
+												class="form-control form-control-sm txtalign"
+												autocomplete="false" th:readonly="${formmode}=='view'"
+												 />
+										</div>
+										<div class="col-sm-1"></div>
+									</div>
+									<div class="row formline">
+										<label style="height: 2px;"></label>
+
+									</div>
+									<div class="row formline">
+
+										<label class="col-sm-2">Project Type</label>
+										<div class="col-sm-3">
+												<input type="text" th:if="${formmode}=='add'"
+												 id="proj_type" name="proj_type" value=""
+												class="form-control form-control-sm txtalign"
+												autocomplete="false" th:readonly="${formmode}=='view'"
+												 /> <input type="text"
+												th:if="${formmode}=='edit' OR ${formmode}=='view'"
+												th:field="*{application}" th:value="${proj_name}"
+												id="proj_type" name="proj_type" value=""
+												class="form-control form-control-sm txtalign"
+												autocomplete="false" th:readonly="${formmode}=='view'"
+												 />
+
+										</div>
+
+										<div class="col-sm-1"></div>
+
+
+										<label class="col-sm-2">Period</label>
+										<div class="col-sm-3">
+
+											<input type="text" th:if="${formmode}=='add'"
+												id="period" name="period" value=""
+												class="form-control form-control-sm txtalign"
+												autocomplete="false" th:readonly="${formmode}=='view'"
+												 /> <input type="text"
+												th:if="${formmode}=='edit' OR ${formmode}=='view'"
+												th:field="*{period}" th:value="${period}" id="period"
+												name="period" value=""
+												class="form-control form-control-sm txtalign"
+												autocomplete="false" th:readonly="${formmode}=='view'"
+												 />
+
+										</div>
+										<div class="col-sm-1"></div>
+									</div>
+
+
+									<div class="row formline">
+										<label style="height: 2px;"></label>
+
+									</div>
+									<div class="row formline">
+
+										<label class="col-sm-2">Start Date</label>
+										<div class="col-sm-3">
+
+											<input type="text" th:if="${formmode}=='add' "
+												 id="start_date" name="start_date"
+												value="" class="form-control form-control-sm"
+												autocomplete="off" th:readonly="${formmode}=='view'"
+												 /> <input type="text"
+												th:if="${formmode}=='edit' OR ${formmode}=='view'"
+												th:field="*{start_date}" th:value="${start_date}"
+												id="start_date" name="start_date" value=""
+												class="form-control form-control-sm" autocomplete="off"
+												th:readonly="${formmode}=='view'"  />
+										</div>
+										<div class="col-sm-1"></div>
+
+
+										<label class="col-sm-2">End Date</label>
+										<div class="col-sm-3">
+
+											 <input type="text"
+												th:value="${AlertParameter?.end_date}"
+												th:if="${formmode}=='add'" id="end_date" name="end_date"
+												value="" class="form-control form-control-sm"
+												autocomplete="false" th:readonly="${formmode}=='view'"
+												 /> <input type="text"
+												th:if="${formmode}=='edit' OR ${formmode}=='view'"
+												th:value="${AlertParameter?.end_date}" id="end_date"
+												name="end_date" value=""
+												class="form-control form-control-sm" autocomplete="false"
+												th:readonly="${formmode}=='view'"  />
+
+										</div>
+										<div class="col-sm-1"></div>
+									</div>
+									<div class="row formline">
+										<label style="height: 2px;"></label>
+
+									</div>
+									<div class="row formline">
+
+										<label class="col-sm-2">Project Ref</label>
+										<div class="col-sm-3">
+
+											<input type="text" th:if="${formmode}=='add'"
+												 id="proj_ref" name="proj_ref" value=""
+												class="form-control form-control-sm" autocomplete="off"
+												 /> <input type="text"
+												th:if="${formmode}=='edit' OR ${formmode}=='view'"
+												th:field="*{proj_ref}" th:value="${proj_ref}" id="proj_ref"
+												name="proj_ref" value="" class="form-control form-control-sm"
+												autocomplete="off" th:readonly="${formmode}=='view'"
+												 />
+
+										</div>
+										<div class="col-sm-1"></div>
+
+
+										<label class="col-sm-2">Proposal Date</label>
+										<div class="col-sm-3">
+
+											<input type="text" th:if="${formmode}=='add'"
+												 id="proposal_date" name="proposal_date" value=""
+												class="form-control form-control-sm" autocomplete="off"
+												 /> <input type="date"
+												th:if="${formmode}=='edit' OR ${formmode}=='view'"
+												th:field="*{proposal_date}" th:value="${proposal_date}" id="proposal_date"
+												name="proposal_date" value="" class="form-control form-control-sm"
+												autocomplete="off" th:readonly="${formmode}=='view'"
+												 />
+
+										</div>
+										<div class="col-sm-1"></div>
+									</div>
+									<div class="row formline">
+										<label style="height: 2px;"></label>
+
+									</div>
+									<div class="row formline">
+
+
+										<label class="col-sm-2">Proposal Ref</label>
+										<div class="col-sm-3">
+
+											<input type="text" th:if="${formmode}=='add'"
+												 id="proposal_ref" name="proposal_ref" value=""
+												class="form-control form-control-sm" autocomplete="off"
+												 /> <input type="text"
+												th:if="${formmode}=='edit' OR ${formmode}=='view'"
+												th:field="*{proposal_ref}" th:value="${proposal_ref}" id="proposal_ref"
+												name="proposal_ref" value="" class="form-control form-control-sm"
+												autocomplete="off" th:readonly="${formmode}=='view'"
+												 />
+
+										</div>
+										<div class="col-sm-1"></div>
+									</div>
+
+
+
+									<label></label>
+
+									<div class="row formline">
+
+
+										<label class="col-sm-2">Remarks</label>
+										<div class="col-sm-9">
+
+											<textarea th:if="${formmode}=='add'" th:name="remarks"
+												class="form-control" id="remarks" name="remarks"
+												placeholder="Please enter your remarks here..." rows="5"></textarea>
+
+											<textarea th:if="${formmode}=='edit' OR ${formmode}=='view'"
+												th:field="*{remarks}" th:value="${remarks}"
+												class="form-control" id="remarks" name="remarks"
+												placeholder="Please enter your remarks here..." rows="5"
+												th:readonly="${formmode}=='view'"></textarea>
+										</div>
+										<div class="col-sm-1"></div>
+										<div class="row formline">
+											<label style="height: 2px;"></label>
+
+										</div>
+									</div>
+									<div class="row formline">
+										<label style="height: 2px;"></label>
+
+									</div>
+									<div class="row formline">
+
+										<label class="col-sm-2">Warranty Period</label>
+										<div class="col-sm-3">
+
+											<input type="text" th:if="${formmode}=='add'"
+												 id="warranty_period" name="warranty_period" value=""
+												class="form-control form-control-sm" autocomplete="off"
+												 /> <input type="date"
+												th:if="${formmode}=='edit' OR ${formmode}=='view'"
+												th:field="*{warranty}" th:value="${warranty}" id="warranty_period"
+												name="warranty_period" value="" class="form-control form-control-sm"
+												autocomplete="off" th:readonly="${formmode}=='view'"
+												 />
+
+										</div>
+										<div class="col-sm-1"></div>
+
+
+										<label class="col-sm-2">AMC Due Date</label>
+										<div class="col-sm-3">
+
+											<input type="text" th:if="${formmode}=='add'"
+												 id="amc_due_date" name="amc_due_date" value=""
+												class="form-control form-control-sm" autocomplete="off"
+												 /> <input type="text"
+												th:if="${formmode}=='edit' OR ${formmode}=='view'"
+												th:field="*{amc_due_date}" th:value="${amc_due_date}" id="amc_due_date"
+												name="amc_due_date" value="" class="form-control form-control-sm"
+												autocomplete="off" th:readonly="${formmode}=='view'"
+												 />
+
+										</div>
+										<div class="col-sm-1"></div>
+									</div>
+									<div class="row formline">
+										<label style="height: 2px;"></label>
+
+									</div>
+
+
+
+								</div>
+							</div>
+						</div>
+						<div class="card">
+							<div class="card-header">
+								<div class="float-left">
+									<b>Client Details</b>
+								</div>
+								<div class="btn-group nav-buttons float-right">
+									<!-- <button type="button"
+										class="btn btn-xs btn-primary btns  active"
+										onclick='alert_add(this)' th:attr="frmode=add">Add
+										Notification</button> -->
+
+								</div>
+
+							</div>
+
+
+
+							<div class="card-body">
+
+								<input autocomplete="false" name="hidden" type="text"
+									style="display: none;">
+								<div class="form-group">
+									<div class="row formline">
+										<label class="col-sm-2">Client ID</label>
+										<div class="col-sm-3">
+
+
+											<input th:if="${formmode}=='add'" type="text"
+												 id="client_id" name="client_id"
+												class="form-control form-control-sm" autocomplete="false"
+												 /> <input
+												th:if="${formmode}=='edit' OR ${formmode}=='view'"
+												type="text" th:field="*{client}" th:value="${client}"
+												id="client_id" name ="client_id" class="form-control form-control-sm"
+												autocomplete="false"  />
+
+
+										</div>
+
+										<div class="col-sm-1"></div>
+
+
+										<label class="col-sm-2">Client Name</label>
+										<div class="col-sm-3">
+											<input th:if="${formmode}=='add'" type="text"
+												
+												id="client_name" name="client_name" value=""
+												class="form-control form-control-sm txtalign"
+												autocomplete="false" th:readonly="${formmode}=='view'"
+												 /> <input
+												th:if="${formmode}=='edit' OR ${formmode}=='view'"
+												type="text" th:value="'&nbsp&nbsp'+${session.USERNAME}"
+												id="client_name" name="client_name" value=""
+												class="form-control form-control-sm txtalign"
+												autocomplete="false" th:readonly="${formmode}=='view'"
+												 />
+										</div>
+										<div class="col-sm-1"></div>
+									</div>
+									<div class="row formline">
+										<label style="height: 2px;"></label>
+
+									</div>
+									<div class="row formline">
+
+										<label class="col-sm-2">Client Type</label>
+										<div class="col-sm-3">
+
+											<input type="text" th:if="${formmode}=='add'" 
+												id="client_type" name="client_type" value=""
+												class="form-control form-control-sm" autocomplete="false"
+												th:readonly="${formmode}=='view'"  /> <input type="text"
+												th:if="${formmode}=='edit' OR ${formmode}=='view'"
+												th:field="*{emailid}" th:value="${emailid}" id="client_type"
+												name="client_type" value="hgfhf"
+												class="form-control form-control-sm" autocomplete="false"
+												th:readonly="${formmode}=='view'"  />
+
+
+										</div>
+
+										<div class="col-sm-1"></div>
+
+
+										<label class="col-sm-2">Project Ref</label>
+										<div class="col-sm-3">
+
+											<input type="text" th:if="${formmode}=='add'"
+												id="project_ref" name="project_ref"
+												value="" class="form-control form-control-sm txtalign"
+												autocomplete="false" th:readonly="${formmode}=='view'"
+												 /> <input type="text"
+												th:if="${formmode}=='edit' OR ${formmode}=='view'"
+												th:field="*{application}" th:value="${application}"
+												id="project_ref" name="project_ref" value=""
+												class="form-control form-control-sm txtalign"
+												autocomplete="false" th:readonly="${formmode}=='view'"
+												 />
+										</div>
+
+										<div class="col-sm-1"></div>
+									</div>
+									<div class="row formline">
+										<label style="height: 2px;"></label>
+
+									</div>
+									<div class="row formline">
+
+										<label class="col-sm-2">SOW Details</label>
+										<div class="col-sm-3">
+
+											<input type="text" th:if="${formmode}=='add'" 
+												id="sow_det" name="sow_det" value=""
+												class="form-control form-control-sm" autocomplete="false"
+												th:readonly="${formmode}=='view'"  /> <input type="text"
+												th:if="${formmode}=='edit' OR ${formmode}=='view'"
+												th:field="*{emailid}" th:value="${emailid}" id="sow_det"
+												name="sow_det" value="hgfhf"
+												class="form-control form-control-sm" autocomplete="false"
+												th:readonly="${formmode}=='view'"  />
+
+
+										</div>
+
+										<div class="col-sm-1"></div>
+
+
+										<label class="col-sm-2"></label>
+										<div class="col-sm-3"></div>
+										<div class="col-sm-1"></div>
+									</div>
+
+
+									<div class="row formline">
+										<label style="height: 2px;"></label>
+
+									</div>
+
+
+									<div class="row formline">
+
+
+										<label class="col-sm-2">Remarks</label>
+										<div class="col-sm-9">
+
+											<textarea th:if="${formmode}=='add'" 
+												class="form-control" id="client_remarks" name="client_remarks"
+												placeholder="Please enter your remarks here..." rows="5"></textarea>
+
+											<textarea th:if="${formmode}=='edit' OR ${formmode}=='view'"
+												th:field="*{description}" th:value="${description}"
+												class="form-control" id="client_remarks" name="client_remarks"
+												placeholder="Please enter your remarks here..." rows="5"
+												th:readonly="${formmode}=='view'"></textarea>
+										</div>
+										<label class="col-sm-2"> </label>
+
+
+
+
+										<div class="col-sm-1"></div>
+									</div>
+									<div class="row formline">
+										<label style="height: 2px;"></label>
+
+									</div>
+									<div class="row formline">
+
+										<label class="col-sm-2">Address</label>
+										<div class="col-sm-3">
+
+											<input type="text" th:if="${formmode}=='add'"
+												 id="address" name="address" value=""
+												class="form-control form-control-sm" autocomplete="off"
+												 /> <input type="text"
+												th:if="${formmode}=='edit' OR ${formmode}=='view'"
+												th:field="*{subject}" th:value="${subject}" id="address"
+												name="address" value="" class="form-control form-control-sm"
+												autocomplete="off" th:readonly="${formmode}=='view'"
+												 />
+
+										</div>
+										<div class="col-sm-1"></div>
+
+
+										<label class="col-sm-2">Country</label>
+										<div class="col-sm-3">
+
+											<input type="text" th:if="${formmode}=='add'"
+												 id="country" name="country" value=""
+												class="form-control form-control-sm" autocomplete="off"
+												 /> <input type="text"
+												th:if="${formmode}=='edit' OR ${formmode}=='view'"
+												th:field="*{subject}" th:value="${subject}" id="country"
+												name="country" value="" class="form-control form-control-sm"
+												autocomplete="off" th:readonly="${formmode}=='view'"
+												 />
+
+										</div>
+										<div class="col-sm-1"></div>
+									</div>
+									<div class="row formline">
+										<label style="height: 2px;"></label>
+
+									</div>
+									<div class="row formline">
+
+										<label class="col-sm-2">Contact Person-1</label>
+										<div class="col-sm-3">
+
+											<input type="text" th:if="${formmode}=='add'"
+												id="spoc1_name" name="spoc1_name" value=""
+												class="form-control form-control-sm" autocomplete="off"
+												 /> <input type="text"
+												th:if="${formmode}=='edit' OR ${formmode}=='view'"
+												th:field="*{subject}" th:value="${subject}" id="spoc1_name"
+												name="spoc1_name" value="" class="form-control form-control-sm"
+												autocomplete="off" th:readonly="${formmode}=='view'"
+												 />
+
+										</div>
+										<div class="col-sm-1"></div>
+
+
+										<label class="col-sm-2">Designation</label>
+										<div class="col-sm-3">
+
+											<input type="text" th:if="${formmode}=='add'"
+												id="spoc1_design" name="spoc1_design" value=""
+												class="form-control form-control-sm" autocomplete="off"
+												 /> <input type="text"
+												th:if="${formmode}=='edit' OR ${formmode}=='view'"
+												th:field="*{subject}" th:value="${subject}" id="spoc1_design"
+												name="spoc1_design" value="" class="form-control form-control-sm"
+												autocomplete="off" th:readonly="${formmode}=='view'"
+												 />
+
+										</div>
+										<div class="col-sm-1"></div>
+									</div>
+									<div class="row formline">
+										<label style="height: 2px;"></label>
+
+									</div>
+									<div class="row formline">
+
+										<label class="col-sm-2">Contact Number</label>
+										<div class="col-sm-3">
+
+											<input type="text" th:if="${formmode}=='add'"
+												 id="spoc1_mobile" name="spoc1_mobile" value=""
+												class="form-control form-control-sm" autocomplete="off"
+												 /> <input type="text"
+												th:if="${formmode}=='edit' OR ${formmode}=='view'"
+												th:field="*{subject}" th:value="${subject}" id="spoc1_mobile"
+												name="spoc1_mobile" value="" class="form-control form-control-sm"
+												autocomplete="off" th:readonly="${formmode}=='view'"
+												 />
+
+										</div>
+										<div class="col-sm-1"></div>
+
+
+										<label class="col-sm-2">Email Id</label>
+										<div class="col-sm-3">
+
+											<input type="text" th:if="${formmode}=='add'"
+												id="spoc1_email" name="spoc1_email" value=""
+												class="form-control form-control-sm" autocomplete="off"
+												 /> <input type="text"
+												th:if="${formmode}=='edit' OR ${formmode}=='view'"
+												th:field="*{subject}" th:value="${subject}" id="spoc1_email"
+												name="spoc1_email" value="" class="form-control form-control-sm"
+												autocomplete="off" th:readonly="${formmode}=='view'"
+												 />
+
+										</div>
+										<div class="col-sm-1"></div>
+									</div>
+									<div class="row formline">
+										<label style="height: 2px;"></label>
+
+									</div>
+									<div class="row formline">
+
+										<label class="col-sm-2">Contact Person-2</label>
+										<div class="col-sm-3">
+
+											<input type="text" th:if="${formmode}=='add'"
+												 id="spoc2_name" name="spoc2_name" value=""
+												class="form-control form-control-sm" autocomplete="off"
+												 /> <input type="text"
+												th:if="${formmode}=='edit' OR ${formmode}=='view'"
+												th:field="*{subject}" th:value="${subject}" id="spoc2_name"
+												name="spoc2_name" value="" class="form-control form-control-sm"
+												autocomplete="off" th:readonly="${formmode}=='view'"
+												 />
+
+										</div>
+										<div class="col-sm-1"></div>
+
+
+										<label class="col-sm-2">Designation</label>
+										<div class="col-sm-3">
+
+											<input type="text" th:if="${formmode}=='add'"
+										 id="spoc2_design" name="spoc2_design" value=""
+												class="form-control form-control-sm" autocomplete="off"
+												 /> <input type="text"
+												th:if="${formmode}=='edit' OR ${formmode}=='view'"
+												th:field="*{subject}" th:value="${subject}" id="spoc2_design"
+												name="spoc2_design" value="" class="form-control form-control-sm"
+												autocomplete="off" th:readonly="${formmode}=='view'"
+												 />
+
+										</div>
+										<div class="col-sm-1"></div>
+									</div>
+									<div class="row formline">
+										<label style="height: 2px;"></label>
+
+									</div>
+									<div class="row formline">
+
+										<label class="col-sm-2">Contact Number</label>
+										<div class="col-sm-3">
+
+											<input type="text" th:if="${formmode}=='add'"
+												 id="spoc2_mobile" name="spoc2_mobile" value=""
+												class="form-control form-control-sm" autocomplete="off"
+												 /> <input type="text"
+												th:if="${formmode}=='edit' OR ${formmode}=='view'"
+												th:field="*{subject}" th:value="${subject}" id="spoc2_mobile"
+												name="spoc2_mobile" value="" class="form-control form-control-sm"
+												autocomplete="off" th:readonly="${formmode}=='view'"
+												 />
+
+										</div>
+										<div class="col-sm-1"></div>
+
+
+										<label class="col-sm-2">Email Id</label>
+										<div class="col-sm-3">
+
+											<input type="text" th:if="${formmode}=='add'"
+												 id="spoc2_email" name="spoc2_email" value=""
+												class="form-control form-control-sm" autocomplete="off"
+												 /> <input type="text"
+												th:if="${formmode}=='edit' OR ${formmode}=='view'"
+												th:field="*{subject}" th:value="${subject}" id="spoc2_email"
+												name="spoc2_email" value="" class="form-control form-control-sm"
+												autocomplete="off" th:readonly="${formmode}=='view'"
+												 />
+
+										</div>
+										<div class="col-sm-1"></div>
+									</div>
+									<div class="row formline">
+										<label style="height: 2px;"></label>
+
+									</div>
+									</div>
+
+
+							</div>
+						</div>
+						</form>
+				</div>
+
+			</div>
+
+			<div class="card-footer text-center" style="height: 38px;">
+
+
+				<button th:if=" ${formmode}=='add'" type="button"
+					class="btn btn-xs btn-primary" onclick="submitform1(this);"
+					style="margin-top: -12px;" form="projectMaster" id="btnSubmit"
+					th:attr="data-formmode='add'">Submit</button>
+
+				<button th:if="${formmode}=='edit'" type="button"
+					class="btn btn-xs btn-primary" onclick="modifyform1(this);"
+					style="margin-top: -12px;" form="IssueMaster" id="btnSubmit"
+					th:attr="data-formmode='edit'">Submit</button>
+
+
+				<button type="button" style="margin-top: -12px;"
+					class="btn btn-xs btn-primary" id="btnHome" onclick="home();">Home</button>
+				<button type="button" class="btn btn-xs btn-primary" id="btnBack"
+					style="margin-top: -12px;" onclick="back();">Back</button>
+
+			</div>
+			</form>
+		</div>
+
+	</div>
+
+	</div>
+	</div>
+
+	<!------------------------Pop window - Domain  list Ends--------------------------------->
+
+	<!-------------------------------------Details delete modal dialog----------------------------------------------------->
+	<div class="modal fade" id="datadelete">
+		<div
+			class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+			<div class="modal-content">
+				<div class="modal-body"
+					style="margin-top: 8px; text-align: center; color: aliceblue;">
+					<button type="button" class="close" data-dismiss="modal">×</button>
+					Are you Sure want to delete?
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-primary"
+						onclick="submitformdelete(this);" th:attr="data-formmode=delete">Submit</button>
+					<button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="modal fade" id="imageshow" data-backdrop="static"
+		data-keyboard="false">
+		<div
+			class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+			<div class="modal-content" style="width: 1042px;">
+				<div class="modal-body" style="text-align: center">
+
+					<br /> <br /> <img class="img-responsive" id="doc_image"
+						style="max-height: 500px;">
+				</div>
+				<button type="button" class="btn btn-xs btn-primary"
+					data-dismiss="modal">Close</button>
+			</div>
+		</div>
+	</div>
+
+	<!-------------------------------------Details delete modal dialog----------------------------------------------------->
+	<!--------------------------------------------------------------- Modal for alert messages-------------------------------->
+	<div class="modal fade" id="alert">
+		<div
+			class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+			<div class="modal-content">
+				<div class="modal-body" style="text-align: center">
+					<p id="alertmsg"></p>
+					<button type="button" class="btn btn-primary" data-dismiss="modal"
+						onclick="back();">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!--  -->
+	<!--------------------------------------------------------------- Modal for alert messages-------------------------------->
+</body>
+</html>

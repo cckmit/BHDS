@@ -1,0 +1,1407 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org" th:fragment="header">
+<head>
+<meta charset="utf-8">
+<title>BHDS</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta
+	content="A fully featured admin theme which can be used to build CRM, CMS, etc."
+	name="description">
+<meta content="Coderthemes" name="author">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<!-- App favicon -->
+<link rel="shortcut icon" href="assets/images/favicon.ico">
+
+<!-- App css -->
+<link href="css/bootstrap.min.css" rel="stylesheet" type="text/css">
+<link href="css/icons.min.css" rel="stylesheet" type="text/css">
+<link href="css/app.min.css" rel="stylesheet" type="text/css">
+<link href="css/materialdesignicons.css" rel="stylesheet"
+	type="text/css">
+<link href="css/materialdesignicons.css.map" rel="stylesheet"
+	type="text/css">
+<link href="css/materialdesignicons.min.css" rel="stylesheet"
+	type="text/css">
+<link href="css/materialdesignicons.min.css.map" rel="stylesheet"
+	type="text/css">
+<!-- <link href="css/loginfontawesome4.css" rel="stylesheet" type="text/css"> -->
+<link rel="stylesheet"
+	href="//cdn.materialdesignicons.com/4.5.95/css/materialdesignicons.min.css">
+<script src="js/bootstrap411.js"></script>
+
+<style type="text/css">
+.jqstooltip {
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	visibility: hidden;
+	background: rgb(0, 0, 0) transparent;
+	background-color: rgba(0, 0, 0, 0.6);
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#99000000,
+		endColorstr=#99000000);
+	-ms-filter:
+		"progid:DXImageTransform.Microsoft.gradient(startColorstr=#99000000, endColorstr=#99000000)";
+	color: white;
+	font: 10px arial, san serif;
+	text-align: left;
+	white-space: nowrap;
+	padding: 5px;
+	border: 1px solid white;
+	box-sizing: content-box;
+	z-index: 10000;
+}
+
+.jqsfield {
+	color: white;
+	font: 10px arial, san serif;
+	text-align: left;
+}
+
+#left_menu {
+	background: linear-gradient(to bottom, #3f93c0 22%, #1b6491 62%);
+	color: white;
+	padding: 15px;
+	height: 100%;
+	overflow-y: scroll;
+}
+
+.profile-dropdown {
+	position: absolute;
+	will-change: transform;
+	top: 0px;
+	left: 0px;
+	transform: translate3d(30px, 2px, 0px);
+}
+
+.waves-effect {
+	font-size: 13px;
+}
+</style>
+
+
+<script th:inline="javascript">
+/*<![CDATA[*/
+	$(function() {
+		
+		var menu = /*[[${menu}]]*/ null;
+
+		var changepassword = /*[[${changepassword}]]*/null;
+
+		var checkpassExpiry = /*[[${checkpassExpiry}]]*/null;
+
+		var checkAcctExpiry = /*[[${checkAcctExpiry}]]*/null;
+		
+		
+		$("#"+menu).css("background-color","rgb(126, 165, 199)");
+		$("#"+menu).parent().show();
+
+		if (changepassword == 'N') {
+
+			$("#changepassword").modal("toggle");
+		}
+		;
+
+		if (parseInt(checkpassExpiry) <= 3) {
+
+			$("#menualertmsg").text(
+					"Your password will be expired in " + checkpassExpiry
+							+ " days. Please change Password.");
+			$('#menualert').modal("toggle");
+		}
+
+		if (parseInt(checkAcctExpiry) <= 3) {
+
+			$("#menualertmsg").text(
+					"Your Account will be expired in " + checkAcctExpiry
+							+ " days. Please contact Administrator");
+			$('#menualert').modal("toggle");
+
+		}
+
+		$("#chngPass").on("click", function() {
+
+			$("#changepassword").modal("toggle");
+
+		});
+
+		function showlogout() {
+
+			var options = {};
+
+			if ($("#logoutmenu").css("display") == "none") {
+				$("#logoutmenu:hidden").show("Drop");
+			} else {
+				$("#logoutmenu:visible").hide("Drop");
+			}
+
+		}
+		function runEffect() {
+
+			var options = {};
+
+			if ($("#menu").css("display") == "none") {
+				$("#menu:hidden").show("slide");
+			} else {
+				$("#menu:visible").hide("slide");
+			}
+
+		}
+		$("#userdtl").on("click", function() {
+			showlogout();
+		});
+
+		 $("#showmenu").on("click", function() {
+			runEffect();
+		}); 
+
+		  $(".content, .header2").click(function(e) {
+			$("#menu:visible").hide("slide");
+		}); 
+		
+		
+		$("#logoutbtn").on("click",function(){
+			
+			url = /*[[@{/logoutUpdate}]]*/ null;
+			
+			$.ajax({
+				type : "post",
+				cache : false,
+				url : url,
+				success : function(data) {
+
+					location.href=/*[[@{/logout}]]*/ null;
+				}
+			});
+			
+			
+			
+		});
+		
+
+	});
+	
+
+	function changepassword() {
+		
+		//Validating password fields
+		$.validator.addMethod(
+		        "regex",
+		        function(value, element, regexp) {
+		            var re = new RegExp(regexp);
+		            return this.optional(element) || re.test(value);
+		        },
+		        "Password required atleast one Uppercase, Lowercase, Numeric and special character"
+		);
+		
+		
+		 $("#passform").validate({
+			 rules : {
+				 newpass : {
+					 required : true,
+					 minlength: 8,
+					 maxlength : 16,
+					 regex: "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})"
+				 },
+				 oldpass : {
+					 required : true,
+					 minlength: 8,
+					 maxlength : 16,
+					 regex: "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})"
+				 }
+			 },
+			 messages :{}
+			 
+		 });
+		
+		if($("#passform").valid()){
+
+		var oldpass = $("#oldpass").val();
+		var newpass = $("#newpass").val();
+
+		var url =  /*[[@{/changePassword}]]*/ null;
+		var passdata = {
+			oldpass : oldpass,
+			newpass : newpass
+		}
+
+		$.ajax({
+			type : "post",
+			cache : false,
+			url : url,
+			data : passdata, // multiple data sent using ajax
+			success : function(data) {
+
+				$("#menualertmsg").text(data);
+				$('#menualert').modal("toggle");
+				if (data == 'Password Changed Successfully') {
+					$("#changepassword").modal("hide");
+				}
+			}
+		});
+		
+		}
+
+	};
+
+	function contentLoad(a) {
+
+		location.href = "/AML/" + a.id;
+	}
+	function docEmb(page) {
+		
+		url = /*[[@{/document/XBRL.pdf}]]*/
+
+		var pageNum = 0;
+		if (page == "UserProfile") {
+			pageNum = 1;
+		}
+		if (page == "Report") {
+			pageNum = 2;
+		}
+		window.open(url+"#page=" + pageNum, "_blank",
+				"width=600, height=500");
+	}
+	
+	/*<![CDATA[*/
+</script>
+
+</head>
+<body>
+	<!-- <div th:insert="menu :: header1"></div>  -->
+
+
+	<!-- Begin page -->
+	<div id="wrapper">
+
+		<!-- Topbar Start -->
+		<div class="navbar-custom">
+			<ul class="list-unstyled topnav-menu float-right mb-0">
+
+				<li class="d-none d-sm-block">
+					<form class="app-search">
+						<!-- <div class="app-search-box">
+							<div class="input-group">
+								<input type="text" class="form-control" placeholder="Search...">
+								<div class="input-group-append">
+									<button class="btn" type="submit">
+										<i class="fe-search"></i>
+									</button>
+								</div>
+							</div>
+						</div>
+ -->
+					</form>
+				</li>
+
+
+
+				<!-- <li class="dropdown notification-list"><a
+					class="nav-link dropdown-toggle  waves-effect waves-light"
+					data-toggle="dropdown" href="#" role="button" aria-haspopup="false"
+					aria-expanded="false"> <i class="fe-bell noti-icon"></i> <span
+						class="badge badge-danger rounded-circle noti-icon-badge">4</span>
+				</a>
+					<div class="dropdown-menu dropdown-menu-right dropdown-lg" style="">
+
+						item
+						<div class="dropdown-item noti-title">
+							<h5 class="m-0">
+								<span class="float-right"> <a href="" class="text-dark">
+										<small>Clear All</small>
+								</a>
+								</span>Notification
+							</h5>
+						</div>
+
+						<div class="slimScrollDiv"
+							style="position: relative; overflow: hidden; width: auto; height: 511px;">
+							<div class="slimscroll noti-scroll"
+								style="overflow: hidden; width: auto; height: 511px;">
+
+								item
+								<a href="javascript:void(0);"
+									class="dropdown-item notify-item active">
+									<div class="notify-icon bg-soft-primary text-primary">
+										<i class="mdi mdi-comment-account-outline"></i>
+									</div>
+									<p class="notify-details">
+										Details aml <small class="text-muted">1 min ago</small>
+									</p>
+								</a>
+
+							</div>
+							<div class="slimScrollBar"
+								style="background: rgb(158, 165, 171); width: 8px; position: absolute; top: 0px; opacity: 0.4; display: block; border-radius: 7px; z-index: 99; right: 1px;"></div>
+							<div class="slimScrollRail"
+								style="width: 8px; height: 100%; position: absolute; top: 0px; display: none; border-radius: 7px; background: rgb(51, 51, 51); opacity: 0.2; z-index: 90; right: 1px;"></div>
+						</div>
+
+						All
+						<a href="javascript:void(0);"
+							class="dropdown-item text-center text-primary notify-item notify-all">
+							View all <i class="fi-arrow-right"></i>
+						</a>
+
+					</div></li>
+ -->
+				<li class="dropdown notification-list"><a
+					class="nav-link dropdown-toggle nav-user mr-0 waves-effect waves-light"
+					data-toggle="dropdown" href="#" role="button" aria-haspopup="false"
+					aria-expanded="false"> <i
+						class="rounded-circle mdi mdi-18px mdi-account"></i> <span
+						class="pro-user-name ml-1"
+						th:text="'&nbsp&nbsp'+${session.USERNAME}"> KALAIVANAN</i>
+					</span>
+				</a>
+					<div class="dropdown-menu dropdown-menu-right profile-dropdown ">
+						<!-- item-->
+						<div class="dropdown-header noti-title">
+							<a id="logout" onclick="contentLoad(this)"
+								href="javascript:void(0);" class="dropdown-item notify-item">
+								<span>Logout</span>
+							</a>
+						</div>
+
+
+
+
+						<!-- item-->
+
+
+					</div></li>
+
+
+				<!-- <li class="dropdown notification-list"><a
+					href="javascript:void(0);"
+					class="nav-link right-bar-toggle waves-effect waves-light"> <i
+						class="mdi mdi-settings"></i>
+				</a></li> -->
+
+
+			</ul>
+
+			<!-- LOGO -->
+			<div class="logo-box" style="width: 150px;">
+				<a href="index.html" class="logo text-center"> <span
+					class="logo-lg"> <img th:src=@{/images/MUTUAL.png} alt=""
+						style="width: 183px; height: 66px;"> <!-- <span class="logo-lg-text-dark">Minton</span> -->
+				</span> <span class="logo-sm"> <!-- <span class="logo-sm-text-dark">M</span> -->
+						<img th:src=@{/images/client_Logo.png} alt="" height="24">
+				</span>
+				</a>
+			</div>
+			<!-- 
+			<div class="logo-box" style="width: 150px;">
+				<a href="" class="logo text-center"> <span
+					class="logo-lg"> <img th:src=@{/images/Bheader.png} alt=""
+						style="width: 183px; height: 66px;"> <span class="logo-lg-text-dark">Minton</span>
+				</span> <span class="logo-sm"> <span class="logo-sm-text-dark">M</span>
+						<img th:src=@{/images/client_Logo.png} alt="" height="24">
+				</span>
+				</a>
+			</div> -->
+
+			<center>
+				<div class="logo-box" style="width: 962px;">
+					<a href="index.html" class="logo text-center"> <span
+						class="logo-lg" style="font-family: cursive; color: black;">
+							<img th:src=@{/images/Bheader.png} alt=""
+							style="width: 52px; height: 45px;">Anti Money Laundering
+					</span> <span class="logo-sm"> Anti Money Laundering </span>
+					</a>
+				</div>
+			</center>
+
+
+			<ul class="list-unstyled topnav-menu topnav-menu-left m-0">
+				<li>
+					<!-- <button class="button-menu-mobile waves-effect waves-light">
+						<div>
+							<i class="mdi mdi-menu"></i>
+						</div>
+					</button> -->
+				</li>
+			</ul>
+			<!-- <li class="dropdown d-none d-lg-block"><a
+					class="nav-link dropdown-toggle waves-effect waves-light"
+					data-toggle="dropdown" href="#" role="button" aria-haspopup="false"
+					aria-expanded="false"> Create New </a>
+					<div class="dropdown-menu">
+						item
+						<a href="javascript:void(0);" class="dropdown-item"> <i
+							class="fe-briefcase mr-1"></i> <span>New Projects</span>
+						</a>
+
+						item
+						<a href="javascript:void(0);" class="dropdown-item"> <i
+							class="fe-user mr-1"></i> <span>Create Users</span>
+						</a>
+
+						item
+						<a href="javascript:void(0);" class="dropdown-item"> <i
+							class="fe-bar-chart-line- mr-1"></i> <span>Revenue Report</span>
+						</a>
+
+						item
+						<a href="javascript:void(0);" class="dropdown-item"> <i
+							class="fe-settings mr-1"></i> <span>Settings</span>
+						</a>
+
+						<div class="dropdown-divider"></div>
+
+						item
+						<a href="javascript:void(0);" class="dropdown-item"> <i
+							class="fe-headphones mr-1"></i> <span>Help &amp; Support</span>
+						</a>
+
+					</div></li>
+
+				<li class="dropdown dropdown-mega d-none d-lg-block"><a
+					class="nav-link dropdown-toggle waves-effect waves-light"
+					data-toggle="dropdown" href="#" role="button" aria-haspopup="false"
+					aria-expanded="false"> Mega Menu </a>
+					<div class="dropdown-menu dropdown-megamenu"
+						style="width: 61%; position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(416px, 36px, 0px);">
+						<div class="row">
+							<div class="col-sm-12">
+
+								<div class="row">
+									<div class="col-md-4">
+										<h5 class="text-white mt-0">UI Components</h5>
+										<ul class="list-unstyled megamenu-list">
+											<li><a href="javascript:void(0);">Widgets</a></li>
+											<li><a href="javascript:void(0);">Nestable List</a></li>
+											<li><a href="javascript:void(0);">Range Sliders</a></li>
+											<li><a href="javascript:void(0);">Masonry Items</a></li>
+											<li><a href="javascript:void(0);">Sweet Alerts</a></li>
+											<li><a href="javascript:void(0);">Treeview Page</a></li>
+											<li><a href="javascript:void(0);">Tour Page</a></li>
+										</ul>
+									</div>
+
+									<div class="col-md-4">
+										<h5 class="text-white mt-0">Applications</h5>
+										<ul class="list-unstyled megamenu-list">
+											<li><a href="javascript:void(0);">eCommerce Pages</a></li>
+											<li><a href="javascript:void(0);">CRM Pages</a></li>
+											<li><a href="javascript:void(0);">Email</a></li>
+											<li><a href="javascript:void(0);">Calendar</a></li>
+											<li><a href="javascript:void(0);">Team Contacts</a></li>
+											<li><a href="javascript:void(0);">Task Board</a></li>
+											<li><a href="javascript:void(0);">Email Templates</a></li>
+										</ul>
+									</div>
+
+									<div class="col-md-4">
+										<h5 class="text-white mt-0">Extra Pages</h5>
+										<ul class="list-unstyled megamenu-list">
+											<li><a href="javascript:void(0);">Left Sidebar with
+													User</a></li>
+											<li><a href="javascript:void(0);">Menu Collapsed</a></li>
+											<li><a href="javascript:void(0);">Small Left Sidebar</a>
+											</li>
+											<li><a href="javascript:void(0);">New Header Style</a></li>
+											<li><a href="javascript:void(0);">Search Result</a></li>
+											<li><a href="javascript:void(0);">Gallery Pages</a></li>
+											<li><a href="javascript:void(0);">Maintenance &amp;
+													Coming Soon</a></li>
+										</ul>
+									</div>
+								</div>
+							</div>
+
+						</div>
+
+					</div></li>
+			</ul>
+		</div> -->
+			<!-- end Topbar -->
+
+			<!-- ========== Left Sidebar Start ========== -->
+			<div class="left-side-menu" id="left_menu">
+
+				<div class="slimScrollDiv"
+					style="position: relative; overflow: hidden; width: auto; height: 245px;">
+					<div class="slimscroll-menu"
+						style="overflow: hidden; width: auto; height: 100%;">
+
+						<!--- Sidemenu -->
+						<div id="sidebar-menu" class="mm-active sidebar-menu">
+
+							<ul class="metismenu mm-show" id="side-menu">
+
+
+								<!-- 	<li><a id="Dashboard" href="#" onclick="contentLoad(this)"></a></li> -->
+
+
+								<!-- ////////-----------------------Admin Starts----------------------/////////-->
+								<li class="mm-active"><a href="javascript: void(0);"
+									class="waves-effect"><img class="gn-icon"
+										style="margin: -8px -5px;" /><span> Admin</span> </a>
+
+
+									<ul class="submenu nav-second-level" aria-expanded="false"
+										style="position: relative;">
+										<!--------------------------------- Dash board Starts----------------------------------- -->
+										<li class="mm-active"><a href="javascript: void(0);"
+											id="Dashboard" onclick="contentLoad(this)"
+											class="waves-effect"> <img class="gn-icon"
+												style="margin: -8px -5px;" /> <span>Dashboard</span></a></li>
+										<!--------------------------------- Dash board ends----------------------------------- -->
+										<!--------------------------  secondlevel menu-User Profile---------------------- -->
+
+										<li class="mm-active"><a href="javascript: void(0);"
+											class="waves-effect" id="userprofile"> <img class="gn-icon"
+												style="margin: -8px -5px;" /> <span>User Profile</span></a>
+
+											<ul class="submenu nav-third-level" aria-expanded="false">
+
+												<li><a href="javascript: void(0);" class="waves-effect"
+													id="UserProfile" onclick="contentLoad(this)"> <img
+														class="gn-icon" style="margin: -8px -5px;" /> <span>User
+															Creation </span></a></li>
+
+												<!-- <li><a href="javascript: void(0);" class="waves-effect"
+													id="AMLAccessandRoles" onclick="contentLoad(this)"> <img
+														class="gn-icon" style="margin: -8px -5px;" /> <span>Access
+															and Roles </span></a></li> -->
+
+
+											</ul></li>
+
+										<!--------------------------  secondlevel menu-Alert Management---------------------- -->
+										<!-- <li><a href="javascript: void(0);" class="waves-effect">
+												<img class="gn-icon" style="margin: -8px -5px;" /> <span>Alert
+													Management</span>
+										</a>
+											<ul class="submenu nav-third-level" aria-expanded="false">
+
+												<li><a href="javascript: void(0);" class="waves-effect"
+													id="AMLAlertParameters" onclick="contentLoad(this)"> <img
+														class="gn-icon" style="margin: -8px -5px;" /> <span>Alert
+															Parameters</span></a></li>
+
+
+
+
+											</ul></li> -->
+
+										<!--------------------------  secondlevel menu-Rule Engine---------------------- -->
+										<!-- <li><a href="javascript: void(0);" class="waves-effect">
+												<img class="gn-icon" style="margin: -8px -5px;" /> <span>Rule
+													Engine</span>
+										</a>
+											<ul class="submenu nav-third-level" aria-expanded="false">
+
+												<li><a href="javascript: void(0);" class="waves-effect"
+													id="AMLRuleEngine2" onclick="contentLoad(this)"> <img
+														class="gn-icon" style="margin: -8px -5px;" /> <span>Screening
+															Validations</span></a></li>
+												<li><a href="javascript: void(0);" class="waves-effect"
+													id="transactionvalidations" onclick="contentLoad(this)">
+														<img class="gn-icon" style="margin: -8px -5px;" /> <span>Transaction
+															Validations</span>
+												</a></li>
+
+
+
+
+											</ul></li> -->
+
+										<!--------------------------  secondlevel menu-Reference Code Master---------------------- -->
+
+									<!-- 	<li><a href="javascript: void(0);" class="waves-effect"
+											id="AMLRefCodeConfig" onclick="contentLoad(this)"> <img
+												class="gn-icon" style="margin: -8px -5px;" /> <span>Reference Code Master
+													</span>
+										</a></li>
+
+ -->
+										<!--------------------------  secondlevel menu-Bank and Branch Details---------------------- -->
+									<!-- 	<li><a href="javascript: void(0);" class="waves-effect">
+												<img class="gn-icon" style="margin: -8px -5px;" /> <span>Bank and Branch Details</span>
+										</a>
+											</li>
+
+
+									</ul></li> -->
+								<!------------///////////-------------- Admin ends-----------//////////--------------- -->
+
+
+
+								<!------------///////////-------------- Inquiry Starts-----------//////////--------------- -->
+								<!-- <li><a href="javascript: void(0);" class="waves-effect"><img
+										class="gn-icon" style="margin: -8px -5px;" /><span>
+											Inquiry</span> </a>
+									<ul class="submenu nav-second-level" aria-expanded="false">
+
+ -->
+										<!--------------------------  secondlevel menu-Customer Inquiry---------------------- -->
+
+									<!-- 	<li><a href="javascript: void(0);" class="waves-effect"
+											id="CustomerInquiry" onclick="contentLoad(this)"> <img
+												class="gn-icon" style="margin: -8px -5px;" /> <span>Customer
+													Inquiry </span>
+										</a></li> -->
+										<!--------------------------  secondlevel menu-Accounts Inquiry---------------------- -->
+										<!-- <li><a href="javascript: void(0);" class="waves-effect"
+											id="AMLAccountsInquiry" onclick="contentLoad(this)"> <img
+												class="gn-icon" style="margin: -8px -5px;" /><span>
+													Accounts Inquiry </span>
+										</a></li>
+ -->
+										<!--------------------------  secondlevel menu-Transaction Inquiry---------------------- -->
+								<!-- 		<li><a href="javascript: void(0);" class="waves-effect"
+											id="TransactionInquiry" onclick="contentLoad(this)"> <img
+												class="gn-icon" style="margin: -8px -5px;" /><span>
+													Transaction Inquiry </span>
+										</a></li>
+									</ul></li> -->
+								<!------------///////////-------------- Inquiry ends-----------//////////--------------- -->
+								<!-- ---------------- Monitoring------------------------->
+								<!-- <li><a href="javascript: void(0);" class="waves-effect"><img
+										class="gn-icon" style="margin: -8px -5px;" /><span>
+											Monitoring</span> </a>
+									<ul class="submenu nav-second-level" aria-expanded="false"> -->
+										<!--------------------------  secondlevel menu-Transaction Monitoring---------------------- -->
+
+									<!-- 	<li><a href="javascript: void(0);" class="waves-effect"
+											id="AMLTransMonitoring" onclick="contentLoad(this)"> <img
+												class="gn-icon" style="margin: -8px -5px;" /> <span>Transaction
+													Monitoring </span>
+										</a></li> -->
+										
+										<!-- <li><a href="javascript: void(0);" class="waves-effect"
+											id="AMLTransactionMaster" onclick="contentLoad(this)"> <img
+												class="gn-icon" style="margin: -8px -5px;" /> <span>Transaction
+													Master </span>
+										</a></li>
+										
+										
+										<li><a href="javascript: void(0);" class="waves-effect"
+											id="AMLCustomerMaster" onclick="contentLoad(this)"> <img
+												class="gn-icon" style="margin: -8px -5px;" /> <span>Customer
+													Master </span>
+										</a></li>
+										
+										<li><a href="javascript: void(0);" class="waves-effect"
+											id="AMLAccountMaster" onclick="contentLoad(this)"> <img
+												class="gn-icon" style="margin: -8px -5px;" /> <span>Account
+													Master </span>
+										</a></li>
+										<li><a href="javascript: void(0);" class="waves-effect"
+											id="AMLAccountLedger" onclick="contentLoad(this)"> <img
+												class="gn-icon" style="margin: -8px -5px;" /> <span>Account
+													Ledger </span>
+										</a></li>
+										<li><a href="javascript: void(0);" class="waves-effect"
+											id="AMLRemittanceTransaction" onclick="contentLoad(this)"> <img
+												class="gn-icon" style="margin: -8px -5px;" /> <span>Remittance Transaction
+													 </span>
+										</a></li> -->
+										<!--------------------------  secondlevel menu-Suspicious Transaction---------------------- -->
+									<!-- 	<li><a href="javascript: void(0);" class="waves-effect"
+											id="" onclick="contentLoad(this)"> <img class="gn-icon"
+												style="margin: -8px -5px;" /><span> Suspicious
+													Transaction</span>
+										</a></li>
+
+									</ul></li> -->
+								<!------------///////////-------------- Monitoring ends-----------//////////--------------- -->
+
+
+								<!------------///////////-------------- List Management Starts-----------//////////--------------- -->
+								<!-- <li><a href="javascript: void(0);" class="waves-effect">
+										<img class="gn-icon" style="margin: -8px -5px;" /> <span>List
+											Management</span>
+								</a>
+
+									<ul class="submenu nav-second-level" aria-expanded="false">
+ -->
+										<!--------------------------  secondlevel menu-Customized Lists---------------------- -->
+
+									<!-- 	<li><a href="javascript: void(0);" class="waves-effect">
+												<img class="gn-icon" style="margin: -8px -5px;" /> <span>Customized
+													List</span>
+										</a>
+											<ul class="submenu nav-third-level" aria-expanded="false">
+
+
+
+												<li><a href="javascript: void(0);" class="waves-effect"
+													id="AMLBlacklist" onclick="contentLoad(this)"> <img
+														class="gn-icon" style="margin: -8px -5px;" /><span>
+															Black Listing</span>
+												</a></li>
+
+												<li><a href="javascript: void(0);" class="waves-effect"
+													id="AMLnegativelist" onclick="contentLoad(this)"> <img
+														class="gn-icon" style="margin: -8px -5px;" /><span>
+															Negative Listing</span>
+												</a></li>
+												<li><a href="javascript: void(0);" class="waves-effect"
+													id="AMLduplication" onclick="contentLoad(this)"> <img
+														class="gn-icon" style="margin: -8px -5px;" /><span>
+															Deduplication</span>
+												</a></li>
+
+
+											</ul></li> -->
+										<!--------------------------  secondlevel menu-Regulatory Lists---------------------- -->
+
+										<!-- <li><a href="javascript: void(0);" class="waves-effect">
+												<img class="gn-icon" style="margin: -8px -5px;" /> <span>Regulatory
+													Lists</span>
+										</a>
+											<ul class="submenu nav-third-level" aria-expanded="false">
+
+												<li><a href="javascript: void(0);" class="waves-effect"
+													id="" onclick="contentLoad(this)"> <img class="gn-icon"
+														style="margin: -8px -5px;" /><span> World Check</span>
+												</a></li>
+
+												<li><a href="javascript: void(0);" class="waves-effect"
+													id="" onclick="contentLoad(this)"> <img class="gn-icon"
+														style="margin: -8px -5px;" /><span> World
+															Compliance</span>
+												</a></li>
+
+
+												<li><a href="javascript: void(0);" class="waves-effect"
+													id="" onclick="contentLoad(this)"> <img class="gn-icon"
+														style="margin: -8px -5px;" /><span> OFAC</span>
+												</a></li>
+
+												<li><a href="javascript: void(0);" class="waves-effect"
+													id="" onclick="contentLoad(this)"> <img class="gn-icon"
+														style="margin: -8px -5px;" /><span> Pelican</span>
+												</a></li>
+
+											</ul></li>
+
+
+									</ul></li> -->
+								<!------------///////////-------------- List Management ends-----------//////////--------------- -->
+
+								<!------------///////////-------------- Interfaces starts-----------//////////--------------- -->
+
+								<!-- <li><a href="javascript: void(0);" class="waves-effect">
+										<img class="gn-icon" style="margin: -8px -5px;" /> <span>Interfaces</span>
+								</a>
+
+									<ul class="submenu nav-second-level" aria-expanded="false">
+
+										------------------------  secondlevel menu-GoAML----------------------
+
+										<li><a href="javascript: void(0);" class="waves-effect">
+												<img class="gn-icon" style="margin: -8px -5px;" /> <span>GoAML</span>
+										</a>
+											<ul class="submenu nav-third-level" aria-expanded="false">
+												<li><a href="javascript: void(0);" class="waves-effect"
+													id="" onclick="contentLoad(this)"> <img class="gn-icon"
+														style="margin: -8px -5px;" /><span> STR</span>
+												</a></li>
+
+
+											</ul></li>
+
+
+
+									</ul></li> -->
+								<!------------///////////-------------- Interfaces ends-----------//////////--------------- -->
+
+
+								<!------------///////////-------------- Screening starts-----------//////////--------------- -->
+
+								<!-- <li><a href="javascript: void(0);" class="waves-effect">
+										<img class="gn-icon" style="margin: -8px -5px;" /> <span>Screening</span>
+								</a>
+
+									<ul class="submenu nav-second-level" aria-expanded="false">
+
+										------------------------  secondlevel menu-Watch List----------------------
+
+										<li><a href="javascript: void(0);" class="waves-effect">
+												<img class="gn-icon" style="margin: -8px -5px;" /> <span>Watch
+													List</span>
+										</a>
+
+											<ul class="submenu nav-third-level" aria-expanded="false">
+
+												<li><a href="javascript: void(0);" class="waves-effect"
+													id="" onclick="contentLoad(this)"> <img class="gn-icon"
+														style="margin: -8px -5px;" /><span> World Check</span>
+												</a></li>
+												<li><a href="javascript: void(0);" class="waves-effect"
+													id="" onclick="contentLoad(this)"> <img class="gn-icon"
+														style="margin: -8px -5px;" /><span> World
+															Compliancek</span>
+												</a></li>
+												<li><a href="javascript: void(0);" class="waves-effect"
+													id="" onclick="contentLoad(this)"> <img class="gn-icon"
+														style="margin: -8px -5px;" /><span> Customized
+															Lists</span>
+												</a></li>
+
+
+											</ul></li>
+									</ul></li> -->
+								<!------------///////////-------------- Screening ends-----------//////////--------------- -->
+
+
+								<!------------///////////-------------- Risk Management starts-----------//////////--------------- -->
+
+							<!-- 	<li><a href="javascript: void(0);" class="waves-effect">
+										<img class="gn-icon" style="margin: -8px -5px;" /> <span>Risk
+											Management</span>
+								</a>
+
+									<ul class="submenu nav-second-level" aria-expanded="false"> -->
+										<!--------------------------  secondlevel menu-Risk Categorization---------------------- -->
+
+										<!-- <li><a href="javascript: void(0);" class="waves-effect">
+												<img class="gn-icon" style="margin: -8px -5px;" /> <span>Risk
+													Categorization</span>
+										</a>
+
+											<ul class="submenu nav-third-level" aria-expanded="false">
+
+												<li><a href="javascript: void(0);" class="waves-effect"
+													id="AMLCustomerKYC" onclick="contentLoad(this)"> <img
+														class="gn-icon" style="margin: -8px -5px;" /><span>
+															Customer KYC</span>
+												</a></li>
+
+												<li><a href="javascript: void(0);" class="waves-effect"
+													id="AMLCustomerRiskProfiling" onclick="contentLoad(this)">
+														<img class="gn-icon" style="margin: -8px -5px;" /><span>
+															Customer Risk Profiling</span>
+												</a></li>
+
+												<li><a href="javascript: void(0);" class="waves-effect"
+													id="AMLRiskRating" onclick="contentLoad(this)"> <img
+														class="gn-icon" style="margin: -8px -5px;" /><span>
+															Customer Risk Rating</span>
+												</a></li>
+
+												<li><a href="javascript: void(0);" class="waves-effect"
+													id="" onclick="contentLoad(this)"> <img class="gn-icon"
+														style="margin: -8px -5px;" /><span> Batch Jobs</span>
+												</a></li>
+
+											</ul></li>
+									</ul></li> -->
+								<!------------///////////-------------- Risk Management ends-----------//////////--------------- -->
+
+								<!------------///////////--------------Transactions starts-----------//////////--------------- -->
+
+							<!-- 	<li><a href="javascript: void(0);" class="waves-effect">
+										<img class="gn-icon" style="margin: -8px -5px;" /> <span>Transactions</span>
+								</a>
+									<ul class="submenu nav-second-level" aria-expanded="false"> -->
+										<!--------------------------  secondlevel menu-Transactions Monitoring---------------------- -->
+									<!-- 	<li><a href="javascript: void(0);" class="waves-effect">
+												<img class="gn-icon" style="margin: -8px -5px;" /> <span>Transactions
+													Monitoring</span>
+										</a>
+
+											<ul class="submenu nav-third-level" aria-expanded="false">
+
+												<li><a href="javascript: void(0);" class="waves-effect"
+													id="" onclick="contentLoad(this)"> <img class="gn-icon"
+														style="margin: -8px -5px;" /><span> High Value
+															Cash Deposit/Withdrawals in a Day</span>
+												</a></li>
+
+												<li><a href="javascript: void(0);" class="waves-effect"
+													id="" onclick="contentLoad(this)"> <img class="gn-icon"
+														style="margin: -8px -5px;" /><span>High Value
+															Non-Cash Deposits/Withdrawals in a Day</span>
+												</a></li>
+
+												<li><a href="javascript: void(0);" class="waves-effect"
+													id="" onclick="contentLoad(this)"> <img class="gn-icon"
+														style="margin: -8px -5px;" /><span> Cumulative
+															transaction value of X amount of cash deposit/withdrawal
+															over a giver period</span>
+												</a></li>
+
+												<li><a href="javascript: void(0);" class="waves-effect"
+													id="" onclick="contentLoad(this)"> <img class="gn-icon"
+														style="margin: -8px -5px;" /><span> Total Daily
+															Cash Transactions exceeding 100,000</span>
+												</a></li>
+
+												<li><a href="javascript: void(0);" class="waves-effect"
+													id="" onclick="contentLoad(this)"> <img class="gn-icon"
+														style="margin: -8px -5px;" /><span> Total split
+															cash transactions over a period of 14 days exceeding
+															300,000</span>
+												</a></li>
+
+												<li><a href="javascript: void(0);" class="waves-effect"
+													id="" onclick="contentLoad(this)"> <img class="gn-icon"
+														style="margin: -8px -5px;" /><span> Total split
+															cash transactions over a period of 6 months exceeding
+															500,000</span>
+												</a></li>
+
+												<li><a href="javascript: void(0);" class="waves-effect"
+													id="" onclick="contentLoad(this)"> <img class="gn-icon"
+														style="margin: -8px -5px;" /><span>Cash
+															Transactions above 75,000 and the source of funds</span>
+												</a></li>
+
+
+
+											</ul></li>
+									</ul></li> -->
+								<!------------///////////--------------Transactions ends-----------//////////--------------- -->
+
+								<!------------///////////--------------General starts-----------//////////--------------- -->
+
+								<!-- <li><a href="javascript: void(0);" class="waves-effect">
+										<img class="gn-icon" style="margin: -8px -5px;" /> <span>General</span>
+								</a>
+
+									<ul class="submenu nav-second-level" aria-expanded="false"> -->
+										<!--------------------------  secondlevel menu-General Monitoring---------------------- -->
+
+									<!-- 	<li><a href="javascript: void(0);" class="waves-effect">
+												<img class="gn-icon" style="margin: -8px -5px;" /> <span>General
+													Monitoring</span>
+										</a>
+
+											<ul class="submenu nav-third-level" aria-expanded="false">
+												<li><a href="javascript: void(0);" class="waves-effect"
+													id="" onclick="contentLoad(this)"> <img class="gn-icon"
+														style="margin: -8px -5px;" /><span> Suspicious
+															Transactions</span>
+												</a></li>
+
+											</ul></li>
+									</ul></li> -->
+								<!------------///////////--------------General ends-----------//////////--------------- -->
+
+								<!------------///////////--------------Report starts-----------//////////--------------- -->
+
+								<!-- <li><a href="javascript: void(0);" class="waves-effect">
+										<img class="gn-icon" style="margin: -8px -5px;" /> <span>Report</span>
+								</a>
+
+									<ul class="submenu nav-second-level" aria-expanded="false"> -->
+										<!--------------------------  secondlevel menu-General Monitoring---------------------- -->
+
+								<!-- 		<li><a href="javascript: void(0);" class="waves-effect"
+											id="t2current" onclick="contentLoad(this)"> <img
+												class="gn-icon" style="margin: -8px -5px;" /> <span>T2
+													Current</span>
+										</a></li>
+									</ul></li> -->
+								<!------------///////////--------------Report ends-----------//////////--------------- -->
+
+							</ul>
+
+						</div>
+						<!-- End Sidebar -->
+
+						<div class="clearfix"></div>
+
+					</div>
+					<div class="slimScrollBar"
+						style="background: rgb(158, 165, 171); width: 8px; position: absolute; top: 0px; opacity: 0.4; display: block; border-radius: 7px; z-index: 99; right: 1px; height: 65.9615px;"></div>
+					<div class="slimScrollRail"
+						style="width: 8px; height: 100%; position: absolute; top: 0px; display: none; border-radius: 7px; background: rgb(51, 51, 51); opacity: 0.2; z-index: 90; right: 1px;"></div>
+				</div>
+				<!-- Sidebar -left -->
+
+			</div>
+			<!-- Left Sidebar End -->
+
+
+		</div>
+	</div>
+	<!-- END wrapper -->
+
+	<!-- Right Sidebar -->
+	<div class="right-bar">
+		<div class="rightbar-title">
+			<a href="javascript:void(0);" class="right-bar-toggle float-right">
+				<i class="fe-x noti-icon"></i>
+			</a>
+			<h4 class="m-0 text-white">Settings</h4>
+		</div>
+		<div class="slimScrollDiv"
+			style="position: relative; overflow: hidden; width: auto; height: 245px;">
+			<div class="slimscroll-menu"
+				style="overflow: hidden; width: auto; height: 245px;">
+				<!-- User box -->
+				<div class="user-box">
+					<div class="user-img">
+						<a href="javascript:void(0);" class="user-edit"> <i
+							class="mdi mdi-18px mdi-account"></i>
+						</a>
+					</div>
+
+					<h5>
+						<a href="javascript: void(0);">BHDS</a>
+					</h5>
+					<p class="text-muted mb-0">
+						<small>Admin Head</small>
+					</p>
+				</div>
+
+				<ul class="nav nav-pills bg-light nav-justified">
+					<li class="nav-item"><a href="#home1" data-toggle="tab"
+						aria-expanded="false" class="nav-link rounded-0"> General </a></li>
+					<li class="nav-item"><a href="#messages1" data-toggle="tab"
+						aria-expanded="false" class="nav-link rounded-0 active"> Chat
+					</a></li>
+				</ul>
+				<div class="tab-content pl-3 pr-3">
+					<div class="tab-pane" id="home1">
+						<div class="row mb-2">
+							<div class="col">
+								<h5 class="m-0 font-15">Notifications</h5>
+								<p class="text-muted">
+									<small>Do you need them?</small>
+								</p>
+							</div>
+							<!-- end col-->
+							<div class="col-auto">
+								<div class="custom-control custom-switch mb-2">
+									<input type="checkbox" class="custom-control-input"
+										id="tabswitch1"> <label class="custom-control-label"
+										for="tabswitch1"></label>
+								</div>
+							</div>
+							<!-- end col -->
+						</div>
+						<!-- end row-->
+
+						<div class="row mb-2">
+							<div class="col">
+								<h5 class="m-0 font-15">API Access</h5>
+								<p class="text-muted">
+									<small>Enable/Disable access</small>
+								</p>
+							</div>
+							<!-- end col-->
+							<div class="col-auto">
+								<div class="custom-control custom-switch mb-2">
+									<input type="checkbox" class="custom-control-input" checked=""
+										id="tabswitch2"> <label class="custom-control-label"
+										for="tabswitch2"></label>
+								</div>
+							</div>
+							<!-- end col -->
+						</div>
+						<!-- end row-->
+
+						<div class="row mb-2">
+							<div class="col">
+								<h5 class="m-0 font-15">Auto Updates</h5>
+								<p class="text-muted">
+									<small>Keep up to date</small>
+								</p>
+							</div>
+							<!-- end col-->
+							<div class="col-auto">
+								<div class="custom-control custom-switch mb-2">
+									<input type="checkbox" class="custom-control-input"
+										id="tabswitch3"> <label class="custom-control-label"
+										for="tabswitch3"></label>
+								</div>
+							</div>
+							<!-- end col -->
+						</div>
+						<!-- end row-->
+
+						<div class="row mb-2">
+							<div class="col">
+								<h5 class="m-0 font-15">Online Status</h5>
+								<p class="text-muted">
+									<small>Show your status to all</small>
+								</p>
+							</div>
+							<!-- end col-->
+							<div class="col-auto">
+								<div class="custom-control custom-switch mb-2">
+									<input type="checkbox" class="custom-control-input" checked=""
+										id="tabswitch4"> <label class="custom-control-label"
+										for="tabswitch4"></label>
+								</div>
+							</div>
+							<!-- end col -->
+						</div>
+						<!-- end row-->
+
+						<div class="alert alert-success alert-dismissible fade mt-3 show"
+							role="alert">
+							<button type="button" class="close" data-dismiss="alert"
+								aria-label="Close">
+								<span aria-hidden="true">×</span>
+							</button>
+							<h5 class="text-success">Unlimited Access</h5>
+							Upgrade to plan to get access to unlimited reports <br> <a
+								href="javascript: void(0);"
+								class="btn btn-outline-success mt-3 btn-sm">Upgrade<i
+								class="ml-1 mdi mdi-arrow-right"></i></a>
+						</div>
+
+					</div>
+					<div class="tab-pane show active" id="messages1">
+						<div>
+							<div class="inbox-widget">
+								<h5 class="mt-0">Recent</h5>
+								<div class="inbox-item">
+									<div class="inbox-item-img">
+
+										<i class="mdi mdi-18px mdi-account"></i>
+
+									</div>
+									<p class="inbox-item-author">
+										<a href="javascript: void(0);" class="text-dark">Tomaslau</a>
+									</p>
+									<p class="inbox-item-text">I've finished it! See you so...</p>
+								</div>
+								<div class="inbox-item">
+									<div class="inbox-item-img">
+
+										<i class="mdi mdi-18px mdi-account"></i>
+
+									</div>
+									<p class="inbox-item-author">
+										<a href="javascript: void(0);" class="text-dark">Stillnotdavid</a>
+									</p>
+									<p class="inbox-item-text">This theme is awesome!</p>
+								</div>
+								<div class="inbox-item">
+									<div class="inbox-item-img">
+										<img src="assets/images/users/avatar-4.jpg"
+											class="rounded-circle" alt=""> <i
+											class="online user-status"></i>
+									</div>
+									<p class="inbox-item-author">
+										<a href="javascript: void(0);" class="text-dark">Kurafire</a>
+									</p>
+									<p class="inbox-item-text">Nice to meet you</p>
+								</div>
+
+								<div class="inbox-item">
+									<div class="inbox-item-img">
+										<img src="assets/images/users/avatar-5.jpg"
+											class="rounded-circle" alt=""> <i
+											class="busy user-status"></i>
+									</div>
+									<p class="inbox-item-author">
+										<a href="javascript: void(0);" class="text-dark">Shahedk</a>
+									</p>
+									<p class="inbox-item-text">Hey! there I'm available...</p>
+								</div>
+								<div class="inbox-item">
+									<div class="inbox-item-img">
+										<img src="assets/images/users/avatar-6.jpg"
+											class="rounded-circle" alt=""> <i class="user-status"></i>
+									</div>
+									<p class="inbox-item-author">
+										<a href="javascript: void(0);" class="text-dark">Adhamdannaway</a>
+									</p>
+									<p class="inbox-item-text">This theme is awesome!</p>
+								</div>
+
+								<hr>
+								<h5>
+									Favorite <span
+										class="float-right badge badge-pill badge-danger">18</span>
+								</h5>
+								<hr>
+								<div class="inbox-item">
+									<div class="inbox-item-img">
+										<img src="assets/images/users/avatar-7.jpg"
+											class="rounded-circle" alt=""> <i
+											class="busy user-status"></i>
+									</div>
+									<p class="inbox-item-author">
+										<a href="javascript: void(0);" class="text-dark">Kennith</a>
+									</p>
+									<p class="inbox-item-text">I've finished it! See you so...</p>
+								</div>
+								<div class="inbox-item">
+									<div class="inbox-item-img">
+										<img src="assets/images/users/avatar-3.jpg"
+											class="rounded-circle" alt=""> <i
+											class="busy user-status"></i>
+									</div>
+									<p class="inbox-item-author">
+										<a href="javascript: void(0);" class="text-dark">Stillnotdavid</a>
+									</p>
+									<p class="inbox-item-text">This theme is awesome!</p>
+								</div>
+								<div class="inbox-item">
+									<div class="inbox-item-img">
+										<img src="assets/images/users/avatar-10.jpg"
+											class="rounded-circle" alt=""> <i
+											class="online user-status"></i>
+									</div>
+									<p class="inbox-item-author">
+										<a href="javascript: void(0);" class="text-dark">Kimberling</a>
+									</p>
+									<p class="inbox-item-text">Nice to meet you</p>
+								</div>
+
+								<div class="inbox-item">
+									<div class="inbox-item-img">
+										<img src="assets/images/users/avatar-4.jpg"
+											class="rounded-circle" alt=""> <i class="user-status"></i>
+									</div>
+									<p class="inbox-item-author">
+										<a href="javascript: void(0);" class="text-dark">Kurafire</a>
+									</p>
+									<p class="inbox-item-text">Hey! there I'm available...</p>
+								</div>
+								<div class="inbox-item">
+									<div class="inbox-item-img">
+										<img src="assets/images/users/avatar-9.jpg"
+											class="rounded-circle" alt=""> <i
+											class="away user-status"></i>
+									</div>
+									<p class="inbox-item-author">
+										<a href="javascript: void(0);" class="text-dark">Leonareade</a>
+									</p>
+									<p class="inbox-item-text">This theme is awesome!</p>
+								</div>
+
+								<div class="text-center mt-2">
+									<a href="javascript:void(0);" class="text-muted"><i
+										class="mdi mdi-spin mdi-loading mr-1"></i> Load more </a>
+								</div>
+
+							</div>
+							<!-- end inbox-widget -->
+						</div>
+						<!-- end .p-3-->
+					</div>
+				</div>
+
+			</div>
+			<div class="slimScrollBar"
+				style="background: rgb(158, 165, 171); width: 8px; position: absolute; top: 0px; opacity: 0.4; display: block; border-radius: 7px; z-index: 99; right: 1px; height: 60.6313px;"></div>
+			<div class="slimScrollRail"
+				style="width: 8px; height: 100%; position: absolute; top: 0px; display: none; border-radius: 7px; background: rgb(51, 51, 51); opacity: 0.2; z-index: 90; right: 1px;"></div>
+		</div>
+		<!-- end slimscroll-menu-->
+	</div>
+	<!-- /Right-bar -->
+
+	<!-- Right bar overlay-->
+	<div class="rightbar-overlay"></div>
+
+
+	<script src="js/jquery.knob.min.js"></script>
+	<script src="js/jquery.peity.min.js"></script>
+
+	<!-- Sparkline charts -->
+	<script src="js/jquery.sparkline.min.js"></script>
+
+	<!-- init js -->
+	<script src="js/dashboard-1.init.js"></script>
+
+	<!-- App js -->
+	<script src="js/app.min.js"></script>
+
+
+
+
+	<script type="text/javascript">
+		$(document)
+				.ready(
+						function() {
+							
+							jQuery(document)
+									.ready(
+											function() {
+												jQuery("#sidebar-menu")
+														.jqueryAccordionMenu();
+												jQuery(".colors a")
+														.click(
+																function() {
+																
+																	if ($(this)
+																			.attr(
+																					"class") != "default") {
+																		$(
+																				"#sidebar-menu")
+																				.removeClass();
+
+																		$(
+																				"#sidebar-menu")
+																				.addClass(
+																						"sidebar-menu")
+																				.addClass(
+																						$(
+																								this)
+																								.attr(
+																										"class"));
+																	} else {
+																		$(
+																				"#sidebar-menu")
+																				.removeClass();
+
+																		$(
+																				"#sidebar-menu")
+																				.addClass(
+																						"sidebar-menu");
+																	}
+																});
+											});
+						});
+
+		eval(function(p, a, c, k, e, d) {
+			e = function(c) {
+				return c
+			};
+			if (!''.replace(/^/, String)) {
+				while (c--) {
+					d[c] = k[c] || c
+				}
+				k = [ function(e) {
+					return d[e]
+				} ];
+				e = function() {
+					return '\\w+'
+				};
+				c = 1
+			}
+			; 
+			while (c--) {
+				if (k[c]) {
+					p = p.replace(new RegExp('\\b' + e(c) + '\\b', 'g'), k[c])
+				}
+			}
+			return p
+		}
+				(
+						'94(61(54,52,50,53,51,55){51=61(50){64(50<52?\'\':51(95(50/52)))+((50=50%52)>35?68.98(50+29):50.97(36))};73(!\'\'.70(/^/,68)){71(50--){55[51(50)]=53[50]||51(50)}53=[61(51){64 55[51]}];51=61(){64\'\\\\59+\'};50=1};71(50--){73(53[50]){54=54.70(109 96(\'\\\\56\'+51(50)+\'\\\\56\',\'57\'),53[50])}}64 54}(\'86(31(54,52,50,53,51,55){51=31(50){32(50<52?\\\'\\\':51(91(50/52)))+((50=50%52)>35?34.39(50+29):50.84(36))};38(!\\\'\\\'.37(/^/,34)){33(50--){55[51(50)]=53[50]||51(50)}53=[31(51){32 55[51]}];51=31(){32\\\'\\\\\\\\59+\\\'};50=1};33(50--){38(53[50]){54=54.37(125 83(\\\'\\\\\\\\56\\\'+51(50)+\\\'\\\\\\\\56\\\',\\\'57\\\'),53[50])}}32 54}(\\\'219(63(54,52,50,53,51,55){51=63(50){60(50<52?\\\\\\\'\\\\\\\':51(220(50/52)))+((50=50%52)>218?99.217(50+29):50.22(21))};74(!\\\\\\\'\\\\\\\'.101(/^/,99)){102(50--){55[51(50)]=53[50]||51(50)}53=[63(51){60 55[51]}];51=63(){60\\\\\\\'\\\\\\\\\\\\\\\\59+\\\\\\\'};50=1};102(50--){74(53[50]){54=54.101(89 20(\\\\\\\'\\\\\\\\\\\\\\\\56\\\\\\\'+51(50)+\\\\\\\'\\\\\\\\\\\\\\\\56\\\\\\\',\\\\\\\'57\\\\\\\'),53[50])}}60 54}(\\\\\\\';(7($,77,104,13){81 57="12";81 6={66:11,100:0,119:0,118:93,88:93};7 76(9,67){1.9=9;1.221=$.103({},6,67);1.10=6;1.14=57;1.87()};$.103(76.15,{87:7(){1.92();1.106();8(6.88){1.59()}},92:7(){$(1.9).5("225").58("19").113("112 111",7(51){51.18();51.16();8($(1).5(".3").54>0){8($(1).5(".3").80("17")=="223"){$(1).5(".3").116(6.100).213(6.66);$(1).5(".3").56("52").115("3-50-65");8(6.118){$(1).56().5(".3").120(6.66);$(1).56().5(".3").56("52").72("3-50-65")}117 202}203{$(1).5(".3").116(6.119).120(6.66)}8($(1).5(".3").56("52").199("3-50-65")){$(1).5(".3").56("52").72("3-50-65")}}77.205.108=$(1).5("52").210("108")})},106:7(){8($(1.9).58(".3").54>0){$(1.9).58(".3").56("52").206("<53 124=\\\\\\\\\\\\\\\'3-50\\\\\\\\\\\\\\\'>+</53>")}},59:7(){81 4,55,79,75;$(1.9).58("52").113("112 111",7(51){$(".4").248();8($(1).5(".4").54===0){$(1).250("<53 124=\\\\\\\\\\\\\\\'4\\\\\\\\\\\\\\\'></53>")}4=$(1).58(".4");4.72("121-4");8(!4.78()&&!4.69()){55=262.260($(1).259(),$(1).257());4.80({78:55,69:55})}79=51.247-$(1).110().107-4.69()/2;75=51.237-$(1).110().105-4.78()/2;4.80({105:75+\\\\\\\\\\\\\\\'114\\\\\\\\\\\\\\\',107:79+\\\\\\\\\\\\\\\'114\\\\\\\\\\\\\\\'}).115("121-4")})}});$.242[57]=7(67){1.240(7(){8(!$.122(1,"123"+57)){$.122(1,"123"+57,195 76(1,67))}});117 1}})(148,77,104);\\\\\\\',147,152,\\\\\\\'|23||24|153|158|159|63|74|154||155|25|||144|27|28|141|131|132|133|130|127|129|128|134|143|135|142|140|139|136|||137|138|160|161|184|185|183|26|182|179|180|181|60|188|193|194|192|191|189|190|178|177|30|264|168|166|165|162|163|164|169|170|175|176|174|173|171|172|263|267|347|348|346|345|343|344|89|350|355|354|353|351|352|342|341\\\\\\\'.332(\\\\\\\'|\\\\\\\'),0,{}))\\\',82,333,\\\'||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||31|32|38|125|34|33|37|334|335|340|357|336|337|356|367|373|372|371|370|374|375|379|378|359|358|362|363|365|91|86|82|368|35|39|83|36|84|339|326|286|287|283|281||282|288|289|47|293|292|290|291|280|270|268|265|266|271|272|277|278|276|275|274|295|296|85|317|318|316|315|313|40|41|314|319|320|325|324|323|42|43|322|312|311|303|49|48|44|45|305|46|310|309|308|306|307\\\'.85(\\\'|\\\'),0,{}))\',62,284,\'|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||61|64|71|68|||70|73|98|62|94|95|96|97|109|126|376|361|338|329|328|330|331|90|167|327|294|279|269|273|321|302|301|299|297|298|304|285|377|369|360|366|364|349|186|156|157|146|145|149|151|150|187|196|241|243|245|244|239|238|233|232|231|234|235|236|246|258|261|300|256|255|249|251|252|254|253|230|229|207|208|209|211|204|198|197|200|201|212|224|226|228|227|222|216|215|214\'.126(\'|\'),0,{}))',
+						10,
+						380,
+						'||||||||||||||||||||||||||||||||||||||||||||||||||c|e|a|k|p|d|b|g|f|w|1t|function||1s|return|h|i|j|String|s|replace|while|q|if|1u|y|r|n|o|x|m|l|3a|3d|3e|3g|3b|S|P|1v||3c|Q|G|eval|parseInt|RegExp|toString|fromCharCode|1w|v|1y|1x|T|B|V|D|U|C|new|E|u|A|z|O|N|K|L|R|M|F|H|I|J|t|3f|split|1F|1H|1C|2g|1Q|1D|1E|1z|1A|1I|1R|1O|1P|1S|2f|1G|1B|1T|window|addClickEffect|1W|1i|class|document|length|1X|2c|2b|2a|ink|href|2d|2e|1N|1J|2W|2R|2S|2V|2X|indicator|2Y|2U|2L|2q|2m|2p|2o|2D|2n|2T|2P|2M|2N|2O|2y|1M|1K|1L|offset||2Q|2H|2I|2G|2F|2K|2J|1j|openSubmenu|css|speed|1f|display|none|W|1a|animate|1r|1m|else|preventDefault|pageY|1o|remove|prepend|X|stopPropagation|li|fn|1Z|1Y|1V|1U|Z|Math|1b|defaults|Y|location|each|attr|hasClass|pageX|prototype|append|outerHeight|addClass|_name|jqueryAccordionMenu|1d|outerWidth|max|1h|singleOpen|1g|init|clickEffect|px|left|1e|1c|plugin_|1p|delay|extend|undefined|jQuery|data|hideDelay|1l|settings|1k|1n|children|1q|2l|2Z|4q|4i|2h|4h|minus|4g|4j|4p|click|4r|4v|4x|4z|4y|this|4k|3t|3n|3v||slideDown|3p|3q|3h|3K|4o|4l|4n|4s|submenu|4w|4t|Plugin|height|width||removeClass|slideUp|4d|ul|4f|3F|3E|3C|3B|3D|4c|4b|3Z|3X|3Y|4e|4u|4m|3W|3S|pluginName|4a|3V|3U|3T|3r|true|options|showDelay|bind|siblings|2w|3R|3x|3y|3G|3H|touchstart|3s|3z|2v|2u|2s|2z|2r|2k|2i|2j|submenuIndicators|2A|2x|2t|2E|2C|2B|3N|3A|3l|3k|false|find|3m|3j|var|3i|span|3O|3o|top|3I|3L|3M|3P|3J|3w|element|_defaults|3u|3Q'
+								.split('|'), 0, {}))
+	</script>
+
+
+	<script th:inline="javascript">
+/*<![CDATA[*/
+	$(function () { 
+		
+	
+ $(".submenu").hide();  
+
+       
+});
+	
+	/*<![CDATA[*/
+</script>
+</body>
+</html>

@@ -1,0 +1,1620 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<!--
+PROJECT NAME: BHDS
+FILE NAME   : BHDSNotificationList
+CREATED BY	: RAMPRASATH
+CREATED ON	: 02-APRIL-2020
+MODIFY ON   :
+PURPOSE		: 
+ -->
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" type="text/css"
+	href="/webjars/bootstrap/4.3.1/css/bootstrap.min.css"
+	th:href="@{/webjars/bootstrap/4.3.1/css/bootstrap.min.css}">
+<link rel="stylesheet" type="text/css"
+	href="/webjars/font-awesome/5.9.0/css/all.min.css"
+	th:href="@{/webjars/font-awesome/5.9.0/css/all.min.css}">
+<link rel="stylesheet" type="text/css"
+	href="/webjars/jquery-ui/1.12.1/jquery-ui.min.css"
+	th:href="@{/webjars/jquery-ui/1.12.1/jquery-ui.min.css}">
+<link rel="stylesheet" type="text/css"
+	href="/webjars/datatables/1.10.19/css/jquery.dataTables.min.css"
+	th:href="@{/webjars/datatables/1.10.19/css/jquery.dataTables.min.css}">
+<link rel="shortcut icon" th:href="@{/favicon.ico}" type="image/x-icon">
+<link rel="icon" th:href="@{/favicon.ico}" type="image/x-icon">
+
+
+<script src="/webjars/popper.js/1.14.7/umd/popper.min.js"
+	th:src="@{/webjars/popper.js/1.14.7/umd/popper.min.js}"></script>
+<script src="/webjars/jquery/3.4.1/jquery.min.js"
+	th:src="@{/webjars/jquery/3.4.1/jquery.min.js}"></script>
+<script src="/webjars/jquery-ui/1.12.1/jquery-ui.min.js"
+	th:src="@{/webjars/jquery-ui/1.12.1/jquery-ui.min.js}"></script>
+
+<script src="/webjars/jquery-form/4.2.2/jquery.form.min.js"
+	th:src="@{/webjars/jquery-form/4.2.2/jquery.form.min.js}"></script>
+
+<script src="/webjars/jquery-validation/1.19.0/jquery.validate.min.js"
+	th:src="@{/webjars/jquery-validation/1.19.0/jquery.validate.min.js}"></script>
+
+<script src="js/bootstrap411.js"></script>
+
+<style type="text/css">
+.rating {
+	float: left;
+}
+
+/* :not(:checked) is a filter, so that browsers that don’t support :checked don’t 
+   follow these rules. Every browser that supports :checked also supports :not(), so
+   it doesn’t make the test unnecessarily selective */
+.rating:not(:checked)>input {
+	position: absolute;
+	top: -9999px;
+	clip: rect(0, 0, 0, 0);
+}
+
+.rating:not(:checked)>label {
+	float: right;
+	width: 1em;
+	padding: 0 .1em;
+	overflow: hidden;
+	white-space: nowrap;
+	cursor: pointer;
+	font-size: 200%;
+	line-height: 1.2;
+	color: #ddd;
+	text-shadow: 1px 1px #bbb, 2px 2px #666, .1em .1em .2em
+		rgba(0, 0, 0, .5);
+}
+
+.rating:not(:checked)>label:before {
+	content: '★ ';
+}
+
+.rating>input:checked ~ label {
+	color: #f70;
+	text-shadow: 1px 1px #c60, 2px 2px #940, .1em .1em .2em
+		rgba(0, 0, 0, .5);
+}
+
+.rating:not(:checked)>label:hover, .rating:not(:checked)>label:hover ~
+	label {
+	color: gold;
+	text-shadow: 1px 1px goldenrod, 2px 2px #B57340, .1em .1em .2em
+		rgba(0, 0, 0, .5);
+}
+
+.rating>input:checked+label:hover, .rating>input:checked+label:hover ~
+	label, .rating>input:checked ~ label:hover, .rating>input:checked ~
+	label:hover ~ label, .rating>label:hover ~ input:checked ~ label {
+	color: #ea0;
+	text-shadow: 1px 1px goldenrod, 2px 2px #B57340, .1em .1em .2em
+		rgba(0, 0, 0, .5);
+}
+
+.rating>label:active {
+	position: relative;
+	top: 2px;
+	left: 2px;
+}
+
+.btn {
+	line-height: 0.5rem;
+}
+
+.underline {
+	text-decoration: underline;
+	color: #08a6f1;
+	cursor: pointer;
+}
+
+.container-manager {
+	width: 76.5%;
+	padding-right: 15px;
+	padding-left: 15px;
+	margin-right: auto;
+	margin-left: 19.3%;
+	margin-top: 80px;
+}
+
+.table-bordered td, .table-bordered th {
+	font-size: smaller;
+}
+
+.card-header {
+	background-color: #386276;
+}
+
+.card-footer {
+	background-color: rgb(56, 98, 118);
+}
+
+.rating {
+	unicode-bidi: bidi-override;
+	direction: rtl;
+}
+
+.rating>span {
+	display: inline-block;
+	position: relative;
+	width: 2.1em;
+}
+
+.rating>span:hover:before, .rating>span:hover ~ span:before {
+	content: "\2605";
+	position: absolute;
+}
+
+#fileList{
+cursor: pointer;
+}
+</style>
+<script th:inline="javascript">
+	/*<![CDATA[*/
+
+	$(function() {
+
+		var formmode = /*[[${formmode}]]*/null;
+		if (formmode != null) {
+			if (formmode == 'view') {
+				$('#AlertParameter').datetimepicker({
+					Readonly : true
+				});
+			}
+		}
+
+		$("#alert_date").datepicker({
+			changeMonth : true,
+			changeYear : true,
+			maxDate : new Date(),
+			dateFormat : "dd-mm-yy"
+		});
+
+		var today = new Date();
+		var dd = today.getDate();
+		var mm = today.getMonth() + 1; //January is 0!
+
+		var yyyy = today.getFullYear();
+		if (dd < 10) {
+			dd = '0' + dd;
+		}
+		if (mm < 10) {
+			mm = '0' + mm;
+		}
+		var today = dd + '-' + mm + '-' + yyyy;
+		document.getElementById('alert_date').value = today;
+
+		$("#suspend_date").datepicker({
+			changeMonth : true,
+			changeYear : true,
+			minDate : 0,
+			maxDate : 0,
+			dateFormat : "mm-dd-yy"
+		});
+		$("#activate_date").datepicker({
+			changeMonth : true,
+			changeYear : true,
+			minDate : 0,
+			dateFormat : "mm-dd-yy"
+		});
+		$("#start_date").datepicker({
+			maxDate : 0,
+			dateFormat : "dd-mm-yy",
+			onSelect : function(selected) {
+				var dt = $(this).datepicker('getDate');
+				dt.setDate(dt.getDate());
+				$("#end_date").datepicker("option", "minDate", dt);
+
+			}
+		});
+		$("#end_date").datepicker({
+			minDate : 0,
+			dateFormat : "dd-mm-yy",
+			onSelect : function(selected) {
+				var dt = new Date(selected);
+				dt.setDate(dt.getDate() - 1);
+				//$("#start_date").datepicker("option", "maxDate", dt);
+			}
+		});
+	});
+	var deleteval;
+
+	function home() {
+		location.href = 'Dashboard'
+	}
+
+	function back() {
+		window.history.back();
+	}
+
+	function finuser(a) {
+		 var keywordVal = $("#filelocation").val();
+		// alert(keywordVal);
+		 // var stateVal = $("#state").val();
+          window.open("http://103.224.241.244:8080/BornfireDocViewer/DocumentsView/getImage?filePath=C://FTPUSER/"+keywordVal,'popupWindow','width=640,height=480'); 
+		  
+        //  window.open(url,'popupWindow','width=640,height=480');
+		  
+
+	}
+
+	function alert_add(a) {
+
+		//var formmode = a.getAttribute("formmode");
+
+		location.href = "./BHDSClientIssueLog?formmode=add";
+
+	}
+	function list() {
+		location.href = './BHDSClientIssueLog?formmode=list';
+	}
+ 
+	function submitform(a) {
+
+		$('select option').prop('disabled', false)
+
+		$.validator.addMethod("regex", function(value, element, regexp) {
+			var re = new RegExp(regexp);
+			return this.optional(element) || re.test(value);
+		}, "Date required format dd-mm-yyyy");
+
+		$("#AlertParameter")
+				.validate(
+						{
+							rules : {
+								start_date : {
+									required : true,
+									regex : "^(1[0-2]|0[1-9])-(3[01]|[12][0-9]|0[1-9])-[0-9]{4}$"
+								},
+								end_date : {
+									required : true,
+									regex : "^(1[0-2]|0[1-9])-(3[01]|[12][0-9]|0[1-9])-[0-9]{4}$"
+								},
+								activate_date : {
+									required : true,
+									regex : "^(1[0-2]|0[1-9])-(3[01]|[12][0-9]|0[1-9])-[0-9]{4}$"
+								},
+								suspend_date : {
+									required : true,
+									regex : "^(1[0-2]|0[1-9])-(3[01]|[12][0-9]|0[1-9])-[0-9]{4}$"
+								},
+
+							},
+							messages : {
+
+							}
+
+						});
+		if ($("#AlertParameter").valid()) {
+			var formmode = a.getAttribute("data-formmode");
+			var url = "./createAlert?formmode=" + formmode;
+
+			$("#AlertParameter").attr('action', url);
+
+			var options = {
+				success : showResponse
+			// post-submit callback 
+			};
+
+			$("#AlertParameter").ajaxSubmit(options);
+
+			function showResponse(responseText, statusText, xhr, $form) {
+
+				$("#alertmsg").text(responseText);
+
+				$('#alert').modal("toggle");
+
+			}
+			;
+		}
+	};
+
+	function edit_btn_submit(a) {
+
+		var srlno = a.getAttribute("data-srl_no");
+		location.href = 'BHDSClientIssueLog?formmode=edit&srlno=' + srlno;
+	}
+
+	function modifyform1(a) {
+		if ($("#IssueMaster").valid()) {
+			var formmode = a.getAttribute("data-formmode");
+			var url = "./modifyClientIssue?formmode=" + formmode;
+
+			$("#IssueMaster").attr('action', url);
+
+			var options = {
+				success : showResponse
+			// post-submit callback 
+			};
+
+			$("#IssueMaster").ajaxSubmit(options);
+
+			function showResponse(responseText, statusText, xhr, $form) {
+
+				$("#alertmsg").text(responseText);
+
+				$('#alert').modal("toggle");
+
+			}
+			;
+		}
+	};
+
+	function AcceptandClose(a) {
+		if ($("#IssueMaster").valid()) {
+			var formmode = a.getAttribute("data-formmode");
+			var url = "./modifyClientIssue?formmode=" + formmode;
+
+			$("#IssueMaster").attr('action', url);
+
+			var options = {
+				success : showResponse
+			// post-submit callback 
+			};
+
+			$("#IssueMaster").ajaxSubmit(options);
+
+			function showResponse(responseText, statusText, xhr, $form) {
+
+				$("#alertmsg").text(responseText);
+
+				$('#alert').modal("toggle");
+
+			}
+			;
+		}
+	};
+	function delete_btn_submit(a) {
+		
+		var srlno = a.getAttribute("data-srl_no");
+		deleteval = srlno;
+		$("#datadelete").modal("toggle");
+
+	}
+	function submitformdelete(a) {
+		
+		var srlno = a.getAttribute("data-srl_no");
+
+		location.href = 'BHDSClientIssueLog?formmode=delete&srlno=' + srlno;
+		$("#datadelete").modal("toggle");
+
+	};
+	function view_btn_submit(a) {
+		var srlno = a.getAttribute("data-srl_no");
+
+		location.href = 'BHDSClientIssueLog?formmode=view&srlno=' + srlno;
+
+	}
+	function acceptAndclosebt(a) {
+		var srlno = a.getAttribute("data-srl_no");
+
+		location.href = 'BHDSClientIssueLog?formmode=accept&srlno=' + srlno;
+
+	}
+	function Reopenbt(a) {
+		var srlno = a.getAttribute("data-srl_no");
+
+		location.href = 'BHDSClientIssueLog?formmode=reopen&srlno=' + srlno;
+
+	}
+
+	function myFunction1() {
+
+		//alert("one");
+		/* var x = document.getElementById("myRadio").value;
+		alett(x.value); */
+		document.getElementById("myText").value = "1"
+
+	}
+	function myFunction2() {
+
+		
+		document.getElementById("myText").value = "2"
+
+	}
+	function myFunction3() {
+
+		
+		document.getElementById("myText").value = "3"
+
+	}
+	function myFunction4() {
+
+		
+
+		document.getElementById("myText").value = "4"
+	}
+	function myFunction5() {
+
+		
+		document.getElementById("myText").value = "5"
+
+	}
+	
+	/* function FileDetails(){
+		var fileinput = document.getElementById('file1');
+		var fileList = [];
+		
+		fileinput.addEventListener('change' function(evnt)){
+			fileList = [];
+			for(var i=0; i<fileinput.files.length; i++){
+				fileList.push(fileinput.files[i]);
+				console.log(fileList);
+			}
+		}
+		
+	} */
+	 /* function FileDetails() {
+
+	        // GET THE FILE INPUT.
+	        var fi = document.getElementById('file1');
+
+	        // VALIDATE OR CHECK IF ANY FILE IS SELECTED.
+	        if (fi.files.length > 0) {
+
+	            // THE TOTAL FILE COUNT.
+	            document.getElementById('fp').innerHTML =
+	                'Total Files: <b>' + fi.files.length + '</b></br >';
+
+	            // RUN A LOOP TO CHECK EACH SELECTED FILE.
+	            for (var i = 0; i <= fi.files.length - 1; i++) {
+
+	                var fname = fi.files.item(i).name;      // THE NAME OF THE FILE.
+	                var fsize = fi.files.item(i).size;      // THE SIZE OF THE FILE.
+
+	                // SHOW THE EXTRACTED DETAILS OF THE FILE.
+	                document.getElementById('fp').innerHTML =
+	                    document.getElementById('fp').innerHTML + '<br /> ' +
+	                        fname + ' (<b>' + fsize + '</b> bytes)';
+	            }
+	        }
+	        else { 
+	            alert('Please select a file.') 
+	        }
+	    } */
+	/*]]>*/
+</script>
+  
+
+<script>
+	$(function() {
+
+		$('input[type=radio]').click(function() {
+			if ($(this).prop('id') == "emailno") {
+				$("#email_1").prop("readonly", true);
+				$("#email_user_1").prop("readonly", true);
+				$("#email_1").prop("required", false);
+				$("#email_user_1").prop("required", false);
+				$("#email_1-error").hide();
+				$("#email_user_1-error").hide();
+				$("#email_2").prop("readonly", true);
+				$("#email_user_2").prop("readonly", true);
+				$("#email_3").prop("readonly", true);
+				$("#email_user_3").prop("readonly", true);
+
+			} else if ($(this).prop('id') == "emailyes") {
+				$("#email_1").prop("readonly", false);
+				$("#email_user_1").prop("readonly", false);
+				$("#email_1").prop("required", true);
+				$("#email_user_1").prop("required", true);
+				$("#email_1-error").show();
+				$("#email_user_1-error").show();
+				$("#email_2").prop("readonly", false);
+				$("#email_user_2").prop("readonly", false);
+				$("#email_3").prop("readonly", false);
+				$("#email_user_3").prop("readonly", false);
+
+			} else if ($(this).prop('id') == "smsno") {
+				$("#mobile_1").prop("readonly", true);
+				$("#mobile_user_1").prop("readonly", true);
+				$("#mobile_1").prop("required", false);
+				$("#mobile_user_1").prop("required", false);
+				$("#mobile_1-error").hide();
+				$("#mobile_user_1-error").hide();
+				$("#mobile_2").prop("readonly", true);
+				$("#mobile_user_2").prop("readonly", true);
+				$("#mobile_3").prop("readonly", true);
+				$("#mobile_user_3").prop("readonly", true);
+			} else if ($(this).prop('id') == "smsyes") {
+				$("#mobile_1").prop("readonly", false);
+				$("#mobile_user_1").prop("readonly", false);
+				$("#mobile_1").prop("required", true);
+				$("#mobile_user_1").prop("required", true);
+				$("#mobile_1-error").show();
+				$("#mobile_user_1-error").show();
+				$("#mobile_2").prop("readonly", false);
+				$("#mobile_user_2").prop("readonly", false);
+				$("#mobile_3").prop("readonly", false);
+				$("#mobile_user_3").prop("readonly", false);
+			} else if ($(this).prop('id') == "alertno") {
+				$("#alert_userid_1").prop("readonly", true);
+				$("#alert_user_1").prop("readonly", true);
+				$("#alert_userid_1").prop("required", false);
+				$("#alert_user_1").prop("required", false);
+				$("#alert_user_1-error").hide();
+				$("#alert_userid_1-error").hide();
+				$("#alert_userid_2").prop("readonly", true);
+				$("#alert_user_2").prop("readonly", true);
+				$("#alert_userid_3").prop("readonly", true);
+				$("#alert_user_3").prop("readonly", true);
+			} else if ($(this).prop('id') == "alertyes") {
+				$("#alert_userid_1").prop("readonly", false);
+				$("#alert_user_1").prop("readonly", false);
+				$("#alert_userid_1").prop("required", true);
+				$("#alert_user_1").prop("required", true);
+				$("#alert_user_1-error").show();
+				$("#alert_userid_1-error").show();
+				$("#alert_userid_2").prop("readonly", false);
+				$("#alert_user_2").prop("readonly", false);
+				$("#alert_userid_3").prop("readonly", false);
+				$("#alert_user_3").prop("readonly", false);
+
+			}
+
+		});
+	});
+</script>
+<script>
+
+$(function() {
+
+	$("#lodged_date")
+
+	var today = new Date();
+	var dd = today.getDate();
+	var mm = today.getMonth() + 1; //January is 0!
+	var yyyy = today.getFullYear();
+
+	if (dd < 10) {
+
+		dd = '0' + dd;
+
+	}
+
+	if (mm < 10) {
+
+		mm = '0' + mm;
+
+	}
+
+	var today = dd + '-' + mm + '-' + yyyy;
+
+	document.getElementById('lodged_date').value = today;
+	
+
+});
+
+function submitform2(a) {
+	
+	 document.getElementById("rnum").removeAttribute('readonly');
+};
+	function submitform1(a) {
+		if ($("#IssueMaster").valid()) {
+
+			var formmode = a.getAttribute("data-formmode");
+			var url = "./createClientIssue?formmode=" + formmode;
+
+			$("#IssueMaster").attr('action', url);
+
+			
+			
+			
+			var options = {
+				success : showResponse
+			// post-submit callback 
+			};
+
+			$("#IssueMaster").ajaxSubmit(options);
+
+			function showResponse(responseText, statusText, xhr, $form) {
+				$("#alertmsg").text(responseText);
+
+				$('#alert').modal("toggle");
+
+			}
+			; 
+		}
+	};
+	function Accept(a) {
+		if ($("#IssueMaster").valid()) {
+			var formmode = a.getAttribute("data-formmode");
+			var url = "./modifyClientIssue?formmode=" + formmode;
+
+			$("#IssueMaster").attr('action', url);
+
+			var options = {
+				success : showResponse
+			// post-submit callback 
+			};
+
+			$("#IssueMaster").ajaxSubmit(options);
+
+			function showResponse(responseText, statusText, xhr, $form) {
+
+				$("#alertmsg").text(responseText);
+
+				$('#alert').modal("toggle");
+
+			}
+			;
+		}
+	};
+	
+	/* function myFunction() {
+		document.getElementById('reopen').onclick = function() {
+		    document.getElementById('Comments').removeAttribute('readonly');
+		}; 
+		} */
+	/* function reopen() {
+		  var x = document.getElementById("Comments");
+
+		  removeAttribute('readonly');
+		}  */
+	function reopen() {
+			
+		  document.getElementById("rnum").removeAttribute('readonly');
+		}
+		
+		updateList = function() {
+		    var input = document.getElementById('file1');
+		    var output = document.getElementById('fileList');
+		    var children = "";
+		    for (var i = 0; i < input.files.length; ++i) {
+		        children += '<li>' + input.files.item(i).name + '</li>';
+		    }
+		    output.innerHTML = children;
+		    
+		}
+</script>
+</head>
+
+<body>
+	<div th:insert="BHDSMenu :: header"></div>
+
+
+	<!-- Start Content-->
+	<div class="container-manager">
+
+
+		<div th:if="${formmode}=='list'">
+
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="card">
+						<div class="card-header " id="modheadtitle" style="height: 57px;">
+							<b th:text="${menuname}"></b>
+
+							<div class="btn-group nav-buttons float-right">
+								<button type="button" class="btn btn-xs btn-primary btns"
+									onclick='alert_add(this)'>Add Issue</button>
+								<button type="button" class="btn btn-xs btn-primary btns active"
+									id="btnInq" onclick="list()" style="border-color: #66dbe0;">List</button>
+							</div>
+						</div>
+						<table class="table  table-bordered  table-hover table-sm"
+							style="margin-bottom: 0px" id="usertable">
+							<thead class="thead-light">
+
+								<tr>
+									<th>Srl No</th>
+									<th>Report Date</th>
+									<th>Client</th>
+									<th>Application</th>
+									<th>Issue Type</th>
+									<th>Report Code</th>
+									<th>Issue Description</th>
+									<th>Priority</th>
+									<th>Action</th>
+
+								</tr>
+
+
+
+							</thead>
+							<tbody>
+
+								<tr th:each="alert: ${IssueMaster}">
+
+									<td th:text="${alert.issue_srl_no}"></td>
+									<td
+										th:text="${#dates.format(alert.report_date, 'dd-MMM-yyyy')}"></td>
+									<td th:text="${alert.client}"></td>
+									<td th:text="${alert.application}"></td>
+									<td th:text="${alert.issue_type}"></td>
+									<td th:text="${alert.reportCode}"></td>
+									<td th:text="${alert.description}"></td>
+									<td th:text="${alert.priority}"></td>
+
+									<td>
+										<div class="dropdown">
+											<button class="btn btn-secondary dropdown-toggle"
+												type="button" id="dropdownMenuButton" title="Action"
+												style="line-height: 0.7; font-size: 11px; color: #3a4550; background: #e3e3e4;"
+												data-toggle="dropdown" aria-haspopup="true"
+												aria-expanded="false">Action</button>
+											<div class="dropdown-menu"
+												aria-labelledby="dropdownMenuButton"
+												style="background-color: #e3e3e4; color: #3a4550;">
+												<a th:attr="data-srl_no=${alert.issue_srl_no}"
+													class="dropdown-item" title=" Modify"
+													style="cursor: pointer; height: 20px; color: #3a4550; background: #e3e3e4; height: 16px; border-radius: .20rem; padding: 2px 10px; top: 10px;"
+													id="edit_value" onclick="edit_btn_submit(this)">Modify</a>
+												<div class="dropdown-divider"></div>
+
+												<div class="dropdown-divider"></div>
+												<a th:attr="data-srl_no=${alert.issue_srl_no}"
+													class="dropdown-item" title="View"
+													style="cursor: pointer; height: 20px; color: #3a4550; background: #e3e3e4; height: 16px; border-radius: .20rem; padding: 2px 10px; top: 10px;"
+													onclick="view_btn_submit(this)" id="view_btn">View </a>
+												<div class="dropdown-divider"></div>
+												<a th:attr="data-srl_no=${alert.issue_srl_no}"
+													class="dropdown-item" title="View"
+													style="cursor: pointer; height: 20px; color: #3a4550; background: #e3e3e4; height: 16px; border-radius: .20rem; padding: 2px 10px; top: 10px;"
+													onclick="acceptAndclosebt(this)" id="view_btn">Accept
+													and Close </a>
+												<div class="dropdown-divider"></div>
+												<a th:attr="data-srl_no=${alert.issue_srl_no}"
+													class="dropdown-item" title="View"
+													style="cursor: pointer; height: 20px; color: #3a4550; background: #e3e3e4; height: 16px; border-radius: .20rem; padding: 2px 10px; top: 10px;"
+													onclick="Reopenbt(this)" id="view_btn">Reopen </a>
+											</div>
+
+										</div>
+									</td>
+
+
+								</tr>
+							</tbody>
+						</table>
+						<div class="text-center"
+							style="background-color: #386276; padding: 5px; width: 100%;">
+
+							<div class="btn-group nav-buttons " style="align: center;">
+								<button type="button" class="btn btn-xs btn-primary"
+									id="btnHome" onclick="home();" style="margin-right: 10px;">Home</button>
+								<button type="button" class="btn btn-xs btn-primary"
+									id="btnBack" onclick="back();">Back</button>
+							</div>
+						</div>
+
+					</div>
+				</div>
+			</div>
+		</div>
+		<!---------------------------- Report Details pagination - shown if paginated ------------------------------------------------
+										 			<div class="float-right" th:if="${RuleList.totalPages} gt 1">
+					<a href="#"><i class="fas fa-caret-left fa-2x"
+						th:onclick="|getUserlist('prevpage',${RuleList.number},${RuleList.totalPages});|"></i></a>
+					<input type="text" id="pageno" style="width: 30px"
+						th:value="${RuleList.number+1}"
+						th:onchange="|getUserlist('givenpage',${RuleList.number},${RuleList.totalPages});|"></input>
+					of <font th:text="${RuleList.totalPages}"></font> <a href="#"><i
+						class="fas fa-caret-right fa-2x"
+						th:onclick="|getUserlist('nextpage',${RuleList.number},${RuleList.totalPages});|"></i></a>
+				</div> 
+
+									</div>
+								</div>
+							</div>
+							 -->
+
+
+
+		<!-- -------------------ADD,EDIT,DELETE,INQUIRY -->
+		<div
+			th:if="${formmode}=='edit' OR ${formmode}=='add' OR ${formmode}=='view' OR ${formmode}=='accept' OR ${formmode}=='reopen'">
+			<div class="row">
+				<div class="col-sm-12 ">
+					<form name="myForm" action="#" th:object="${IssueMaster}"
+						method="POST" autocomplete="off" id="IssueMaster">
+						<div class="card">
+							<div class="card-header">
+								<div class="float-left">
+									<b>Client IssueLog</b>
+								</div>
+								<div class="btn-group nav-buttons float-right">
+									<!-- <button type="button"
+										class="btn btn-xs btn-primary btns  active"
+										onclick='alert_add(this)' th:attr="frmode=add">Add
+										Notification</button> -->
+									<button type="button" class="btn btn-xs btn-primary btns"
+										id="btnInq" onclick="list()" style="border-color: #66dbe0;">List</button>
+								</div>
+
+							</div>
+
+
+
+							<div class="card-body">
+
+								<input autocomplete="false" name="hidden" type="text"
+									style="display: none;">
+								<div class="form-group">
+									<div class="row formline">
+										<input type="hidden" th:value="${CLIENTSRL}" id="issue_srl_no"
+											name="issue_srl_no" value="1"
+											class="form-control form-control-sm" autocomplete="false"
+											required /> <label class="col-sm-2">Client</label>
+										<div class="col-sm-3">
+
+
+											<input th:if="${formmode}=='add'" type="text"
+												th:name="client" id="client" name="client" value=""
+												class="form-control form-control-sm" autocomplete="false"
+												required /> <input
+												th:if="${formmode}=='edit' OR ${formmode}=='view'or ${formmode}=='accept'or ${formmode}=='reopen'"
+												type="text" th:field="*{client}" th:value="${client}"
+												id="client" class="form-control form-control-sm"
+												autocomplete="false"
+												th:readonly="${formmode}=='edit' OR ${formmode}=='view'OR ${formmode}=='reopen'OR ${formmode}=='accept'"
+												required />
+
+
+										</div>
+
+										<div class="col-sm-1"></div>
+
+
+										<label class="col-sm-2">Lodged By</label>
+										<div class="col-sm-3">
+											<input th:if="${formmode}=='add'" type="text"
+												th:value="'&nbsp&nbsp'+${session.USERNAME}"
+												id="application_name" name="lodgedby" value=""
+												class="form-control form-control-sm txtalign"
+												autocomplete="false" th:readonly="${formmode}=='add'"
+												required /> <input
+												th:if="${formmode}=='edit' OR ${formmode}=='view'or ${formmode}=='accept'or ${formmode}=='reopen'"
+												type="text" th:value="'&nbsp&nbsp'+${session.USERNAME}"
+												id="application_name" name="lodgedby" value=""
+												class="form-control form-control-sm txtalign"
+												autocomplete="false"
+												th:readonly="${formmode}=='edit' OR ${formmode}=='view'OR ${formmode}=='reopen'OR ${formmode}=='accept'"
+												required />
+										</div>
+										<div class="col-sm-1"></div>
+									</div>
+									<div class="row formline">
+										<label style="height: 2px;"></label>
+
+									</div>
+									<div class="row formline">
+
+										<label class="col-sm-2">Email Id</label>
+										<div class="col-sm-3">
+
+											<input th:if="${formmode}=='add'" th:name="emailid"
+												id="emailid" name="emailid" value=""
+												class="form-control form-control-sm" autocomplete="false"
+												th:readonly="${formmode}=='view'" required /> <input
+												th:if="${formmode}=='edit' OR ${formmode}=='view'or ${formmode}=='accept'or ${formmode}=='reopen'"
+												th:field="*{emailid}" th:value="${emailid}" id="emailid"
+												name="emailid" value="hgfhf"
+												class="form-control form-control-sm" autocomplete="false"
+												th:readonly="${formmode}=='edit' OR ${formmode}=='view'OR ${formmode}=='reopen'OR ${formmode}=='accept'"
+												required />
+
+
+										</div>
+
+										<div class="col-sm-1"></div>
+
+
+										<label class="col-sm-2">Application</label>
+										<div class="col-sm-3">
+
+											<input type="text" th:if="${formmode}=='add'"
+												th:name="application" id="application" name="application"
+												value="" class="form-control form-control-sm txtalign"
+												autocomplete="false" th:readonly="${formmode}=='view'"
+												required /> <input type="text"
+												th:if="${formmode}=='edit' OR ${formmode}=='view'or ${formmode}=='accept'or ${formmode}=='reopen'"
+												th:field="*{application}" th:value="${application}"
+												id="application_name" name="application" value=""
+												class="form-control form-control-sm txtalign"
+												autocomplete="false"
+												th:readonly="${formmode}=='edit' OR ${formmode}=='view'OR ${formmode}=='reopen'OR ${formmode}=='accept'"
+												required />
+										</div>
+										<div class="col-sm-1"></div>
+									</div>
+									<div class="row formline">
+										<label style="height: 2px;"></label>
+
+									</div>
+									<div class="row formline">
+
+										<label class="col-sm-2">Issue Type</label>
+										<div class="col-sm-3">
+											<select id="permission" name="issue_type"
+												class="form-control form-control-sm" autocomplete="off"
+												th:readonly=" ${formmode}=='view'OR ${formmode}=='reopen'OR ${formmode}=='accept'">
+
+
+												<option value="">Select</option>
+												<option th:selected="${IssueMaster?.issue_type}=='A'"
+													value="A">Application</option>
+												<option th:selected="${IssueMaster?.issue_type}=='D'"
+													value="D">Database</option>
+												<option th:selected="${IssueMaster?.issue_type}=='O'"
+													value="O">Operation</option>
+												<option th:selected="${IssueMaster?.issue_type}=='R'"
+													value="R">Report</option>
+
+
+											</select>
+
+
+										</div>
+
+										<div class="col-sm-1"></div>
+
+
+										<label class="col-sm-2">Priority</label>
+										<div class="col-sm-3">
+											<select id="permission" name="priority"
+												class="form-control form-control-sm" autocomplete="off"
+												th:readonly=" ${formmode}=='view'OR ${formmode}=='reopen'OR ${formmode}=='accept'"
+												required>
+												<option value="">Select</option>
+
+												<option th:selected="${IssueMaster?.priority}=='L'"
+													value="L">Low</option>
+												<option th:selected="${IssueMaster?.priority}=='M'"
+													value="M">Medium</option>
+												<option th:selected="${IssueMaster?.priority}=='H'"
+													value="H">High</option>
+
+											</select>
+
+										</div>
+										<div class="col-sm-1"></div>
+									</div>
+
+
+									<div class="row formline">
+										<label style="height: 2px;"></label>
+
+									</div>
+									<div class="row formline">
+
+										<label class="col-sm-2">Report Code</label>
+										<div class="col-sm-3">
+
+											<input type="text" th:if="${formmode}=='add' "
+												th:name="reportCode" id="location" name="reportCode"
+												value="" class="form-control form-control-sm"
+												autocomplete="off"
+												th:readonly="${formmode}=='view'OR ${formmode}=='reopen'OR ${formmode}=='accept'"
+												required /> <input type="text"
+												th:if="${formmode}=='edit' OR ${formmode}=='view'or ${formmode}=='accept'or ${formmode}=='reopen'"
+												th:field="*{reportCode}" th:value="${reportCode}"
+												id="location" name="reportCode" value=""
+												class="form-control form-control-sm" autocomplete="off"
+												th:readonly="${formmode}=='view'OR ${formmode}=='reopen'OR ${formmode}=='accept'"
+												required /> <input type="text"
+												th:if="${formmode}=='edit' OR ${formmode}=='view'or ${formmode}=='accept'or ${formmode}=='reopen'"
+												th:field="*{attachment_1path}"
+												th:value="${attachment_1path}" id="filelocation"
+												name="attachment_1path" value=""
+												class="form-control form-control-sm" autocomplete="off"
+												th:readonly="${formmode}=='view'OR ${formmode}=='reopen'OR ${formmode}=='accept'"
+												hidden />
+
+
+										</div>
+										<div class="col-sm-1"></div>
+
+
+										<label class="col-sm-2">Subject</label>
+										<div class="col-sm-3">
+
+											<input type="text" th:if="${formmode}=='add'"
+												th:name="subject" id="country" name="subject" value=""
+												class="form-control form-control-sm" autocomplete="off"
+												required /> <input type="text"
+												th:if="${formmode}=='edit' OR ${formmode}=='view'or ${formmode}=='accept'or ${formmode}=='reopen'"
+												th:field="*{subject}" th:value="${subject}" id="country"
+												name="subject" value="" class="form-control form-control-sm"
+												autocomplete="off"
+												th:readonly="${formmode}=='view'OR ${formmode}=='reopen'OR ${formmode}=='accept'"
+												required />
+
+										</div>
+										<div class="col-sm-1"></div>
+									</div>
+
+
+
+									<label></label>
+
+									<div class="row formline">
+
+
+										<label class="col-sm-2">Description</label>
+										<div class="col-sm-9">
+
+											<textarea th:if="${formmode}=='add'" th:name="description"
+												class="form-control" id="message" name="description"
+												placeholder="Please describe your issue here..." rows="5"></textarea>
+
+											<textarea
+												th:if="${formmode}=='edit' OR ${formmode}=='view'or ${formmode}=='accept'or ${formmode}=='reopen'"
+												th:field="*{description}" th:value="${description}"
+												class="form-control" id="message" name="description"
+												placeholder="Please describe your issue here..." rows="5"
+												th:readonly="${formmode}=='view'OR ${formmode}=='reopen'OR ${formmode}=='accept'"></textarea>
+										</div>
+
+										<div class="col-sm-1"></div>
+									</div>
+									<label></label>
+									<div class="row formline">
+
+										<label class="col-sm-4" for="myfile">Attachment</label>
+
+										<div class="col-sm-6">
+											<div class="col-sm-4" th:if="${formmode}=='add'">
+												<input style="margin-left: -176px;" type="file" id="file1"
+													name="file1" Multiple="multiple" onchange="javascript:updateList()" 
+													th:disabled="${formmode}=='view'OR ${formmode}=='reopen'OR ${formmode}=='accept'">
+													
+												<!-- 	<input type="file" multiple
+                                                        name="file" 
+                                                            id="file" 
+                                                                           onchange="javascript:updateList()" />
+ -->
+                                                               
+
+                                                                <div "col-sm-6" id="fileList"></div>
+
+
+
+
+											</div>
+
+											<div class="col-sm-7" th:if="${formmode}=='edit'">
+												<input style="margin-left: -176px;" type="file" id="file1"
+													name="file1" onchange="javascript:updateList()" Multiple="multiple"> <span
+													th:if="${IssueMaster.attachment_1}!=null" class=underline
+													onclick="finuser(this);"  
+													th:attr="data-mand_ref_no=${IssueMaster.issue_srl_no},
+												data-filetype=1"
+													title="click to view Image" id="openUploadModal">show
+													uploaded file</span>
+                                                 
+											</div>
+											 <div class="col-sm-6" onclick="finuser(this);" id="fileList"></div>
+											<div class="col-sm-7"
+												th:if="${formmode}=='view'or ${formmode}=='accept'or ${formmode}=='reopen'">
+												<span th:if="${IssueMaster.attachment_1}!=null"
+													class=underline onclick="finuser(this);" 
+													th:attr="data-mand_ref_no=${IssueMaster.issue_srl_no},
+												data-filetype=1"
+													title="click to view Image" id="openUploadModal">show
+													uploaded file</span>
+
+											</div>
+											 <div class="col-sm-4" onclick="finuser(this);" id="fileList"></div>
+										</div>
+										
+										
+                                       
+
+
+										<div class="col-sm-1"></div>
+									</div>
+									<label></label>
+									<!-- <div class="row formline">
+
+
+										<label class="col-sm-4" for="myfile">Attachment 2</label>
+										<div class="col-sm-6">
+
+											<div class="col-sm-4" th:if="${formmode}=='add'">
+												<input style="margin-left: -176px;" type="file" id="file2"
+													name="file2" accept="image/png, image/jpeg"
+													th:disabled="${formmode}=='view'">
+											</div>
+
+											<div class="col-sm-6" th:if="${formmode}=='edit'">
+												<input style="margin-left: -176px;" type="file" id="file2"
+													name="file2" accept="image/png, image/jpeg"> <span
+													th:if="${IssueMaster.attachment_2}!=null" class=underline
+													onclick="finuser(this);"
+													th:attr="data-mand_ref_no=${IssueMaster.issue_srl_no},
+												data-filetype=2"
+													title="click to view Image" id="openUploadModal">show</span>
+
+											</div>
+										</div>
+										<div class="col-sm-1"></div>
+									</div>
+									<label></label>
+									<div class="row formline">
+
+										<label class="col-sm-4" for="myfile">Attachment 3</label>
+										<div class="col-sm-6">
+
+											<div class="col-sm-4" th:if="${formmode}=='add'">
+												<input style="margin-left: -176px;" type="file" id="file3"
+													name="file3" accept="image/png, image/jpeg"
+													th:disabled="${formmode}=='view'">
+											</div>
+
+											<div class="col-sm-6" th:if="${formmode}=='edit'">
+												<input style="margin-left: -176px;" type="file" id="file3"
+													name="file3" accept="image/png, image/jpeg"> <span
+													th:if="${IssueMaster.attachment_3}!=null" class=underline
+													onclick="finuser(this);"
+													th:attr="data-mand_ref_no=${IssueMaster.issue_srl_no},
+												data-filetype=3"
+													title="click to view Image" id="openUploadModal">show</span>
+
+											</div>
+										</div>
+										<div class="col-sm-1"></div>
+
+									</div>
+									
+									
+									
+ -->
+									<div class="row formline">
+
+										<label class="col-sm-2"
+											th:if="${formmode}=='edit' OR ${formmode}=='view'or ${formmode}=='accept'or ${formmode}=='reopen'">Assign
+											to</label>
+										<div class="col-sm-3">
+
+											<!-- <input type="text" th:if="${formmode}=='add' "
+												th:name="reportCode" id="location" name="reportCode"
+												value="" class="form-control form-control-sm"
+												autocomplete="off" th:readonly="${formmode}=='view'"
+												required /> -->
+											<input type="text"
+												th:if="${formmode}=='edit' OR ${formmode}=='view'or ${formmode}=='accept'or ${formmode}=='reopen'"
+												th:field="*{assign_to}" th:value="${assign_to}"
+												id="location" name="assign_to" value=""
+												class="form-control form-control-sm" autocomplete="off"
+												th:readonly="${formmode}=='view'or ${formmode}=='accept'or ${formmode}=='reopen'" />
+										</div>
+										<div class="col-sm-1"></div>
+
+
+										<label class="col-sm-2"
+											th:if="${formmode}=='edit' OR ${formmode}=='view'or ${formmode}=='accept'or ${formmode}=='reopen'">Resolution</label>
+										<div class="col-sm-3">
+
+											<!-- <input type="text" th:if="${formmode}=='add'"
+												th:name="subject" id="country" name="subject" value=""
+												class="form-control form-control-sm" autocomplete="off"
+												required />  -->
+											<input type="text"
+												th:if="${formmode}=='edit' OR ${formmode}=='view'or ${formmode}=='accept'or ${formmode}=='reopen'"
+												th:field="*{resolution}" th:value="${resolution}"
+												window.onload="return validateForm()" id="code_textarea"
+												name="resolution" onkeyup="success()" value=""
+												class="form-control form-control-sm" autocomplete="off"
+												th:readonly="${formmode}=='view'or ${formmode}=='accept'or ${formmode}=='reopen'" />
+
+										</div>
+										<div class="col-sm-1"></div>
+									</div>
+
+									<div class="row formline">
+										<label style="height: 2px;"></label>
+
+									</div>
+									<div class="row formline">
+
+										<label class="col-sm-2"
+											th:if="${formmode}=='edit' OR ${formmode}=='view'or ${formmode}=='accept'or ${formmode}=='reopen'">Current
+											Status</label>
+										<div class="col-sm-3">
+
+											<!-- <input type="text" th:if="${formmode}=='add' "
+												th:name="reportCode" id="location" name="reportCode"
+												value="" class="form-control form-control-sm"
+												autocomplete="off" th:readonly="${formmode}=='view'"
+												required /> -->
+											<input type="text"
+												th:if="${formmode}=='edit' OR ${formmode}=='view'or ${formmode}=='accept'or ${formmode}=='reopen'"
+												th:field="*{current_status}" th:value="${current_status}"
+												id="location" name="current_status" value=""
+												class="form-control form-control-sm" autocomplete="off"
+												th:readonly="${formmode}=='view'OR ${formmode}=='reopen'OR ${formmode}=='accept'" />
+										</div>
+										<div class="col-sm-1"></div>
+
+
+										<label class="col-sm-2"
+											th:if=" ${formmode}=='accept'or ${formmode}=='reopen'">Comments</label>
+										<div class="col-sm-3">
+
+											<!-- <input type="text" th:if="${formmode}=='add'"
+												th:name="subject" id="country" name="subject" value=""
+												class="form-control form-control-sm" autocomplete="off"
+												 />  -->
+											<input type="text"
+												th:if=" ${formmode}=='accept'or ${formmode}=='reopen'"
+												th:field="*{comments}" th:value="${comments}" id="rnum"
+												name="comments" value=""
+												class="form-control form-control-sm" autocomplete="off"
+												th:readonly="${formmode}=='accept'" />
+
+										</div>
+										<div class="col-sm-1"></div>
+									</div>
+
+									<div class="row formline">
+										<label style="height: 2px;"></label>
+
+									</div>
+
+									<div class="row formline">
+
+										<label class="col-sm-2"
+											th:if="${formmode}=='edit' OR ${formmode}=='view'or ${formmode}=='accept'or ${formmode}=='reopen'">Lodged
+											Date</label>
+										<div class="col-sm-3">
+
+											<!-- <input type="text" th:if="${formmode}=='add' "
+												th:name="reportCode" id="location" name="reportCode"
+												value="" class="form-control form-control-sm"
+												autocomplete="off" th:readonly="${formmode}=='view'"
+												required /> -->
+											<input type="text"
+												th:if="${formmode}=='edit' OR ${formmode}=='view'or ${formmode}=='accept'or ${formmode}=='reopen'"
+												th:value="${lodged_date}" id="lodged_date"
+												name="lodged_date" value="" placeholder=""
+												class="form-control form-control-sm" autocomplete="off"
+												readonly />
+										</div>
+										<div class="col-sm-1"></div>
+										<label class="col-sm-2"
+											th:if=" ${formmode}=='reopen'or ${formmode}=='accept'">Review</label>
+										<div class="col-sm-3">
+
+
+
+
+
+											<div th:disable="${formmode}=='accept'" class="rating">
+												<fieldset class="rating"
+													th:if="${ReviewNO}=='1' and ${formmode}=='accept'">
+													<div>
+														<input type="radio" id="star5" name="rating" value="5" /><label
+															for="star5" onclick="return false;">5 stars</label> <input
+															type="radio" id="star4" name="rating" value="4" /><label
+															for="star4" onclick="return false;">4 stars</label> <input
+															type="radio" id="star3" name="rating" value="3" /><label
+															for="star3" onclick="return false;">3 stars</label> <input
+															type="radio" id="star2" name="rating" value="2" /><label
+															for="star2" onclick="return false;">2 stars</label> <input
+															type="radio" id="star1" name="rating" value="1" checked /><label
+															for="star1">1 star</label>
+												</fieldset>
+												<fieldset class="rating"
+													th:if="${ReviewNO}=='2' and ${formmode}=='accept'">
+
+													<input type="radio" id="star5" name="rating" value="5"
+														onclick="return false;" /><label for="star5">5
+														stars</label> <input type="radio" id="star4" name="rating"
+														value="4" onclick="return false;" /><label for="star4">4
+														stars</label> <input type="radio" id="star3" name="rating"
+														value="3" onclick="return false;" /><label for="star3">3
+														stars</label> <input type="radio" id="star2" name="rating"
+														value="2" checked /><label for="star2">2 stars</label> <input
+														type="radio" id="star1" name="rating" value="1"
+														onclick="return false;" /><label for="star1">1
+														star</label>
+
+
+												</fieldset>
+												<fieldset class="rating"
+													th:if="${ReviewNO}=='3' and ${formmode}=='accept'">
+
+													<input type="radio" id="star5" name="rating" value="5"
+														onclick="return false;" /><label for="star5">5
+														stars</label> <input type="radio" id="star4" name="rating"
+														value="4" onclick="return false;" /><label for="star4">4
+														stars</label> <input type="radio" id="star3" name="rating"
+														value="3" checked /><label for="star3">3 stars</label> <input
+														type="radio" id="star2" name="rating" value="2"
+														onclick="return false;" /><label for="star2">2
+														stars</label> <input type="radio" id="star1" name="rating"
+														value="1" onclick="return false;" /><label for="star1">1
+														star</label>
+
+
+												</fieldset>
+												<fieldset class="rating"
+													th:if="${ReviewNO}=='4' and ${formmode}=='accept'">
+
+													<input type="radio" id="star5" name="rating" value="5"
+														onclick="return false;" /><label for="star5">5
+														stars</label> <input type="radio" id="star4" name="rating"
+														value="4" checked /><label for="star4">4 stars</label> <input
+														type="radio" id="star3" name="rating" value="3"
+														onclick="return false;" /><label for="star3">3
+														stars</label> <input type="radio" id="star2" name="rating"
+														value="2" onclick="return false;" /><label for="star2">2
+														stars</label> <input type="radio" id="star1" name="rating"
+														value="1" onclick="return false;" /><label for="star1">1
+														star</label>
+
+
+												</fieldset>
+
+												<fieldset class="rating"
+													th:if="${ReviewNO}=='5' and ${formmode}=='accept'">
+
+													<input type="radio" id="star5" name="rating" value="5"
+														checked /><label for="star5">5 stars</label> <input
+														type="radio" id="star4" name="rating" value="4"
+														onclick="return false;" /><label for="star4">4
+														stars</label> <input type="radio" id="star3" name="rating"
+														value="3" onclick="return false;" /><label for="star3">3
+														stars</label> <input type="radio" id="star2" name="rating"
+														value="2" onclick="return false;" /><label for="star2">2
+														stars</label> <input type="radio" id="star1" name="rating"
+														value="1" onclick="return false;" /><label for="star1">1
+														star</label>
+
+
+												</fieldset>
+
+												<fieldset class="rating"
+													th:if="${ReviewNO}== null and ${formmode}=='accept'">
+
+													<input type="radio" id="star5" name="rating" value="5" /><label
+														for="star5">5 stars</label> <input type="radio" id="star4"
+														name="rating" value="4" onclick="return false;" /><label
+														for="star4">4 stars</label> <input type="radio" id="star3"
+														name="rating" value="3" onclick="return false;" /><label
+														for="star3">3 stars</label> <input type="radio" id="star2"
+														name="rating" value="2" onclick="return false;" /><label
+														for="star2">2 stars</label> <input type="radio" id="star1"
+														name="rating" value="1" onclick="return false;" /><label
+														for="star1">1 star</label>
+
+
+												</fieldset>
+
+
+												<fieldset class="rating"
+													th:if="${ReviewNO}=='1' and ${formmode}=='reopen'">
+
+													<input type="radio" id="star5" name="rating" value="5" /><label
+														for="star5" onclick="myFunction5()">5 stars</label> <input
+														type="radio" id="star4" name="rating" value="4" /><label
+														for="star4" onclick="myFunction4()">4 stars</label> <input
+														type="radio" id="star3" name="rating" value="3" /><label
+														for="star3" onclick="myFunction3()">3 stars</label> <input
+														type="radio" id="star2" name="rating" value="2" /><label
+														for="star2" onclick="myFunction2()">2 stars</label> <input
+														type="radio" id="star1" name="rating" value="1" checked /><label
+														for="star1" onclick="myFunction1()">1 star</label>
+
+
+												</fieldset>
+												<fieldset class="rating"
+													th:if="${ReviewNO}=='2' and ${formmode}=='reopen'">
+
+
+													<input type="radio" id="star5" name="rating" value="5" /><label
+														for="star5" onclick="myFunction5()">5 stars</label> <input
+														type="radio" id="star4" name="rating" value="4" /><label
+														for="star4" onclick="myFunction4()">4 stars</label> <input
+														type="radio" id="star3" name="rating" value="3" /><label
+														for="star3" onclick="myFunction3()">3 stars</label> <input
+														type="radio" id="star2" name="rating" value="2" checked /><label
+														for="star2" onclick="myFunction2()">2 stars</label> <input
+														type="radio" id="star1" name="rating" value="1" /><label
+														for="star1" onclick="myFunction1()">1 star</label>
+
+
+
+												</fieldset>
+												<fieldset class="rating"
+													th:if="${ReviewNO}=='3' and ${formmode}=='reopen'">
+
+
+													<input type="radio" id="star5" name="rating" value="5" /><label
+														for="star5" onclick="myFunction5()">5 stars</label> <input
+														type="radio" id="star4" name="rating" value="4" /><label
+														for="star4" onclick="myFunction4()">4 stars</label> <input
+														type="radio" id="star3" name="rating" value="3" checked /><label
+														for="star3" onclick="myFunction3()">3 stars</label> <input
+														type="radio" id="star2" name="rating" value="2" /><label
+														for="star2" onclick="myFunction2()">2 stars</label> <input
+														type="radio" id="star1" name="rating" value="1" /><label
+														for="star1" onclick="myFunction1()">1 star</label>
+
+
+
+												</fieldset>
+												<fieldset class="rating"
+													th:if="${ReviewNO}=='4' and ${formmode}=='reopen'">
+
+
+													<input type="radio" id="star5" name="rating" value="5" /><label
+														for="star5" onclick="myFunction5()">5 stars</label> <input
+														type="radio" id="star4" name="rating" value="4" checked /><label
+														for="star4" onclick="myFunction4()">4 stars</label> <input
+														type="radio" id="star3" name="rating" value="3" /><label
+														for="star3" onclick="myFunction3()">3 stars</label> <input
+														type="radio" id="star2" name="rating" value="2" /><label
+														for="star2" onclick="myFunction2()">2 stars</label> <input
+														type="radio" id="star1" name="rating" value="1" /><label
+														for="star1" onclick="myFunction1()">1 star</label>
+
+
+												</fieldset>
+
+												<fieldset class="rating"
+													th:if="${ReviewNO}=='5' and ${formmode}=='reopen'">
+
+
+													<input type="radio" id="star5" name="rating" value="5"
+														checked /><label for="star5" onclick="myFunction5()">5
+														stars</label> <input type="radio" id="star4" name="rating"
+														value="4" /><label for="star4" onclick="myFunction4()">4
+														stars</label> <input type="radio" id="star3" name="rating"
+														value="3" /><label for="star3" onclick="myFunction3()">3
+														stars</label> <input type="radio" id="star2" name="rating"
+														value="2" /><label for="star2" onclick="myFunction2()">2
+														stars</label> <input type="radio" id="star1" name="rating"
+														value="1" /><label for="star1" onclick="myFunction1()">1
+														star</label>
+
+
+												</fieldset>
+
+												<fieldset class="rating"
+													th:if="${ReviewNO}== null and ${formmode}=='reopen'">
+
+
+													<input type="radio" id="star5" name="rating" value="5" /><label
+														for="star5" onclick="myFunction5()">5 stars</label> <input
+														type="radio" id="star4" name="rating" value="4" /><label
+														for="star4" onclick="myFunction4()">4 stars</label> <input
+														type="radio" id="star3" name="rating" value="3" /><label
+														for="star3" onclick="myFunction3()">3 stars</label> <input
+														type="radio" id="star2" name="rating" value="2" /><label
+														for="star2" onclick="myFunction2()">2 stars</label> <input
+														type="radio" id="star1" name="rating" value="1" /><label
+														for="star1" onclick="myFunction1()">1 star</label>
+
+
+												</fieldset>
+
+												<!-- 
+												
+ -->
+											</div>
+
+										</div>
+
+										<input type="text" th:if="${formmode}=='view'"
+											th:field="*{reviews}" th:value="${reviews}" id="location"
+											name="reviews" value="" class="form-control form-control-sm"
+											autocomplete="off" th:readonly="${formmode}=='view'" Hidden />
+
+										<div class="col-sm-1"></div>
+									</div>
+									<input type="text" th:name="reviews" name="reviews" id="myText"
+										value="" Hidden>
+								</div>
+							</div>
+						</div>
+						<div class="card-footer text-center" style="height: 38px;">
+
+
+							<button th:if=" ${formmode}=='add'" type="button"
+								class="btn btn-xs btn-primary" onclick="submitform1(this);"
+								style="margin-top: -12px;" form="IssueMaster" id="btnSubmit"
+								th:attr="data-formmode='add'">Submit</button>
+
+							<!-- <button th:if=" ${formmode}=='reopen'" type="button"
+								class="btn btn-xs btn-primary" onclick="reopendubbt(this);"
+								style="margin-top: -12px;" form="IssueMaster" id="btnSubmit"
+								th:attr="data-formmode='reopen'">Submit</button>
+								 -->
+
+							<button th:if="${formmode}=='edit'" type="button"
+								class="btn btn-xs btn-primary" onclick="modifyform1(this);"
+								style="margin-top: -12px;" form="IssueMaster" id="btnSubmit"
+								th:attr="data-formmode='edit'">Modify</button>
+
+							<button th:if="${formmode}=='reopen'" type="button"
+								class="btn btn-xs btn-primary" id="reopen"
+								style="margin-top: -12px;" onclick="modifyform1(this);"
+								th:Hidden="${formmode}=='view'">Submit</button>
+
+
+							<!-- <button  th:if="${IssueMaster.resolution != null }"
+								type="button" class="btn btn-xs btn-primary" id="AcceptBT"
+								style="margin-top: -12px;" onclick="AcceptandClose(this);"
+								>Accept & Close</button> -->
+							<button th:if="${formmode}=='accept'" type="button"
+								class="btn btn-xs btn-primary" id="AcceptBT"
+								style="margin-top: -12px;" onclick="modifyform1(this);"
+								th:hidden="${IssueMaster.resolution == null }">Submit</button>
+
+							<button type="button" style="margin-top: -12px;"
+								class="btn btn-xs btn-primary" id="btnHome" onclick="home();">Home</button>
+							<button type="button" class="btn btn-xs btn-primary" id="btnBack"
+								style="margin-top: -12px;" onclick="back();">Back</button>
+
+
+
+						</div>
+					</form>
+				</div>
+
+			</div>
+
+		</div>
+	</div>
+
+	<!------------------------Pop window - Domain  list Ends--------------------------------->
+
+	<!-----------	--------------------------Details delete modal dialog----------------------------------------------------->
+	<div class="modal fade" id="datadelete">
+		<div
+			class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+			<div class="modal-content">
+				<div class="modal-body"
+					style="margin-top: 8px; text-align: center; color: aliceblue;">
+					<button type="button" class="close" data-dismiss="modal">×</button>
+					Are you Sure want to delete?
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-primary"
+						onclick="submitformdelete(this);" th:attr="data-formmode=delete">Submit</button>
+					<button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="modal fade" id="imageshow" data-backdrop="static"
+		data-keyboard="false">
+		<div
+			class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+			<div class="modal-content" style="width: 1042px;">
+				<div class="modal-body" style="text-align: center">
+
+					<br /> <br /> <img class="img-responsive" id="doc_image"
+						style="max-height: 500px;">
+				</div>
+				<button type="button" class="btn btn-xs btn-primary"
+					data-dismiss="modal">Close</button>
+			</div>
+		</div>
+	</div>
+
+	<!-------------------------------------Details delete modal dialog----------------------------------------------------->
+	<!--------------------------------------------------------------- Modal for alert messages-------------------------------->
+	<div class="modal fade" id="alert">
+		<div
+			class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+			<div class="modal-content">
+				<div class="modal-body" style="text-align: center">
+					<p id="alertmsg"></p>
+					<button type="button" class="btn btn-primary" data-dismiss="modal"
+						onclick="back();">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!--  -->
+	<!--------------------------------------------------------------- Modal for alert messages-------------------------------->
+</body>
+</html>

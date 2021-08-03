@@ -1,0 +1,709 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.thymeleaf.org " th:fragment="header">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta
+	content="A fully featured admin theme which can be used to build CRM, CMS, etc."
+	name="description">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BHDS</title>
+<meta name="description"
+	content="A sidebar menu as seen on the Google Nexus 7 website">
+<meta name="keywords"
+	content="google nexus 7 menu, css transitions, sidebar, side menu, slide out menu">
+<meta name="author" content="Codrops">
+<link rel="shortcut icon" href="../favicon.ico">
+<link rel="stylesheet" type="text/css" href="css/menucss1.css">
+<link rel="stylesheet" type="text/css" href="css/menucss2.css">
+<link rel="stylesheet" type="text/css" href="css/menucss3.css">
+
+<!-- App css -->
+
+
+<script src="/webjars/jquery-ui/1.12.1/jquery-ui.min.js"
+	th:src="@{/webjars/jquery-ui/1.12.1/jquery-ui.min.js}"></script>
+
+<script src="/webjars/jquery-form/4.2.2/jquery.form.min.js"
+	th:src="@{/webjars/jquery-form/4.2.2/jquery.form.min.js}"></script>
+
+<script src="/webjars/jquery-validation/1.19.0/jquery.validate.min.js"
+	th:src="@{/webjars/jquery-validation/1.19.0/jquery.validate.min.js}"></script>
+
+<script src="/webjars/datatables/1.10.19/js/jquery.dataTables.min.js"
+	th:src="@{/webjars/datatables/1.10.19/js/jquery.dataTables.min.js}"></script>
+<script
+	src="/webjars/datatables/1.10.19/js/dataTables.bootstrap4.min.js"
+	th:src="@{/webjars/datatables/1.10.19/js/dataTables.bootstrap4.min.js}"></script>
+
+
+
+<script type="text/javascript" async=""
+	src="https://ssl.google-analytics.com/ga.js"></script>
+<script src="js/modernizr.custom.js"></script>
+<script type="text/javascript">
+	var _gaq = _gaq || [];
+	_gaq.push([ '_setAccount', 'UA-7243260-2' ]);
+	_gaq.push([ '_trackPageview' ]);
+	(function() {
+		var ga = document.createElement('script');
+		ga.type = 'text/javascript';
+		ga.async = true;
+		ga.src = ('https:' == document.location.protocol ? 'https://ssl'
+				: 'http://www')
+				+ '.google-analytics.com/ga.js';
+		var s = document.getElementsByTagName('script')[0];
+		s.parentNode.insertBefore(ga, s);
+	})();
+</script>
+<link rel="stylesheet" type="text/css"
+	href="https://tympanus.net/codrops/adpacks/demoad.css?1569389142564">
+</head>
+<style>
+.header1 {
+	background-color: #83b5ec;
+}
+
+.dropdown-menu>li {
+	margin-left: 10px;
+}
+
+.error {
+	color: red;
+	padding-left: 10px;
+}
+
+#menu {
+	/* background-color: #2b506f; */
+	background-color: #1f6996;
+	/*  display: none;  */
+	position: absolute;
+	z-index: 1;
+	width: 300px;
+	top: 70px;
+	left: -1px;
+	position: fixed;
+	overflow-y: auto;
+	height: 100%;
+}
+
+#menu>ul>li>a {
+	display: block;
+	background-color: #2b506f;
+	color: #f1eaea;
+	font-size: 14px;
+	border-bottom-style: outset;
+}
+
+#menu>ul>li>a:hover, .submenu1>ul>li>a:hover {
+	background-color: #7593b3;
+	color: #f1eaea;
+}
+
+#userdtl, #dropico {
+	float: right;
+}
+
+.submenu1>ul>li>a {
+	display: block;
+	background-color: #1f6996;
+	color: #f1eaea;
+	font-size: 12px;
+}
+
+#headerdiv {
+	top: 50%;
+	left: 50%;
+	width: 62px;
+	height: 50px;
+	color: white;
+	position: absolute;
+	text-align: center;
+	margin: -30px 0 0 -31px;
+}
+
+#showmenu, #userdtl {
+	font-weight: 700;
+	font-size: larger;
+	/* color: white; */
+}
+
+nav {
+	/* background-color: #4d8cb9; */
+	background-color: #f3f4f473;
+}
+
+#pagetitle {
+	top: 114%;
+	left: 50%;
+	height: 50px;
+	color: #e80909;
+	position: absolute;
+	text-align: center;
+	margin: -25px 0 0 -31px;
+}
+
+#logoutmenu {
+	display: none;
+	position: absolute;
+	z-index: 1031;
+	width: 200px;
+	background-color: #dee2e6;
+	box-shadow: 3px 1px 11px 1px #888888;
+	border-radius: 5px;
+	background-color: #dee2e6;
+	right: 0px;
+	top: 70px;
+	border: 2px solid #4d8cb9;
+	position: fixed;
+}
+
+#ques {
+	margin-top: -54px;
+	float: right;
+	padding: 65px;
+}
+
+.logout {
+	color: #2e7bd0;
+}
+
+html {
+	zoom: 0.8;
+}
+
+label {
+	text-align: left;
+}
+
+.nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link.active {
+	color: #fff;
+	background-color: #0062cc;
+	border-color: #fff #fff #fff;
+}
+
+.nav-tabs .nav-link {
+	color: #fff;
+	/* background-color: #e77400; */
+	border-color: #fff #fff #fff;
+}
+
+.modal-backdrop {
+	width: 200vw;
+	height: 200vh;
+}
+/* #Monitoringsubmenu{
+display:none;}
+#Dashboardsubmenu{
+display:none;}
+#adminsubmenu{
+display:none;}
+#parametersubmenu{
+display:none;}
+#Auditsubmenu{
+display:none;} */
+</style>
+
+<style>
+#ipsword {
+	color: #ffffff;
+	top: 0%;
+	font-weight: 900;
+	position: absolute;
+	padding: 10px 0% 1px;
+	inline-size: max-content;
+	margin: 0 0;
+	margin-left: -345%;
+}
+
+body {
+	background-repeat: no-repeat;
+	background-size: cover;
+}
+
+.gn-submenu {
+	display: none;
+}
+
+.nav {
+	display: block;
+}
+
+.sub-menu {
+	display: none
+}
+
+ul li ul li:hover ul {
+	display: block;
+}
+</style>
+<script type="text/javascript">
+/*<![CDATA[*/
+
+
+
+
+function showlogout() {
+
+	var options = {};
+
+	if ($("#logoutmenu").css("display") == "none") {
+		$("#logoutmenu:hidden").show("Drop");
+	} else {
+		$("#logoutmenu:visible").hide("Drop");
+	}
+
+}
+
+function changepassword() {
+	
+	//Validating password fields
+	$.validator.addMethod(
+	        "regex",
+	        function(value, element, regexp) {
+	            var re = new RegExp(regexp);
+	            return this.optional(element) || re.test(value);
+	        },
+	        "Password required atleast one Uppercase, Lowercase, Numeric and special character"
+	);
+	
+	
+	 $("#passform").validate({
+		 rules : {
+			 newpass : {
+				 required : true,
+				 minlength: 8,
+				 maxlength : 16,
+				 regex: "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})"
+			 },
+			 oldpass : {
+				 required : true,
+				 minlength: 8,
+				 maxlength : 16,
+				 regex: "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})"
+			 }
+		 },
+		 messages :{}
+		 
+	 });
+	
+	if($("#passform").valid()){
+
+	var oldpass = $("#oldpass").val();
+	var newpass = $("#newpass").val();
+	var conpass = $("#Connewpass").val();
+if(newpass==conpass){
+	
+	var url =  /*[[@{/changePassword}]]*/ null;
+	var passdata = {
+		oldpass : oldpass,
+		newpass : newpass
+	}
+
+	$.ajax({
+		
+		type : "post",
+		cache : false,
+		url : url,
+		data : passdata, // multiple data sent using ajax
+		success : function(data) {
+			
+			alert("Ramprasaht");
+
+			$("#menualertmsgmenu").text(data);
+			$('#menualertmenu').modal("toggle");
+			if (data == 'Password Changed Successfully') {
+				$("#changepassword").modal("hide");
+			}
+		}
+	});
+	
+}
+else{
+	
+}
+}
+
+};
+
+$(function() {
+	
+	 $(".submenu").hide();
+	 
+		
+	 
+		var menu = /*[[${menu}]]*/ null;
+
+		var changepassword = /*[[${changepassword}]]*/null;
+
+		var checkpassExpiry = /*[[${checkpassExpiry}]]*/null;
+
+		var checkAcctExpiry = /*[[${checkAcctExpiry}]]*/null;
+		
+		$("#"+menu).css("background-color","rgb(79, 123, 162)");
+		
+		$("#adminflag").show("submenu");
+		$("#userprofileflag").show("submenu");
+		$("#alertflag").show("submenu");
+		$("#ruleflag").show("submenu");
+		
+		$("#inquiryflag").show("submenu");
+		$("#monitoringflag").show("submenu");
+		
+		$("#listmgntflag").show("submenu");
+		$("#custlistflag").show("submenu");
+		$("#reglistflag").show("submenu");
+
+		$("#riskmgntflag").show("submenu");
+		$("#riskcatflag").show("submenu");
+
+		$("#reportsflag").show("submenu");
+
+		
+
+		if (changepassword == 'Y') {
+
+			$("#changepassword").modal("toggle");
+			
+			 $('#changepassword').modal({
+					backdrop: 'static',
+					keyboard:'false'
+				})
+		};
+
+		if (parseInt(checkpassExpiry) <= 3) {
+
+			$("#menualertmsg").text(
+					"Your password will be expired in " + checkpassExpiry
+							+ " days. Please change Password.");
+			$('#menualert').modal("toggle");
+		}
+
+		if (parseInt(checkAcctExpiry) <= 3) {
+
+			$("#menualertmsg").text(
+					"Your Account will be expired in " + checkAcctExpiry
+							+ " days. Please contact Administrator");
+			$('#menualert').modal("toggle");
+
+		}
+
+		$("#chngPass").on("click", function() {
+
+			$("#changepassword").modal("toggle");
+
+		});
+
+$("#userdtl").on("click", function() {
+	
+	showlogout();
+});
+$("#chngPass").on("click", function() {
+	
+
+	$("#changepassword").modal("toggle");
+
+});
+
+});
+function contentLoad(a) {
+	
+	location.href = "/BHDS/" + a.id;
+}
+function logout(){
+	
+	$("#datalogout").modal("toggle");
+}
+
+
+/*<![CDATA[*/
+</script>
+
+<body>
+
+	<nav class="navbar fixed-top navbar-expand-md navbar-dark  mb-3"
+		style="box-shadow: 6px 6px 12px #888888; height: 70px; background: linear-gradient(to bottom, #1b6491 10%, #4ba2cf 50%);">
+
+		<div class="col-sm-12">
+			<img th:src=@{/images/born_fire_logo.png} style="width: 5%;"
+				id="showmenu" alt="Bornfire">
+			<div id="headerdiv">
+				<!-- 	<img th:src=@{/images/Bornfire_header.png} style="width: 120px"
+					alt="Bornfire"> -->
+
+				<!-- <img th:src=@{/images/bornfireheaderips.png} id="bfirelogo"
+					style="width: 153px; margin-left: 18px;" alt="Bornfire"> -->
+				<!-- <h1 id="ipsword">Instant Payment System</h1> -->
+			</div>
+			<button type="button" class="btn btn-default" id="userdtl"
+				style="margin-top: 5px;">
+				<i class="fas fa-user-tie"><font Style="font-family: calibri;"
+					th:text="'&nbsp&nbsp'+${session.USERNAME}"> Ramprasath</font></i>
+			</button>
+
+		</div>
+	</nav>
+
+	<div id="menu"
+		style="width: 18%; box-shadow: 6px 6px 12px #888888; z-index: 1031">
+		<ul class="nav flex-column">
+
+			<!-- <li th:if="${session.ROLEID=='ADM'}" class="nav-item"><a
+				class="nav-link" data-toggle="collapse" onclick="contentLoad(this)"
+				id="IPSDashboard"><i class="fa fa-home"
+					style="margin-right: 5%;"></i>Dashboard</a> 	<div id="Dashboardsubmenu" class="collapse submenu1 ">
+					<ul class="nav flex-column">
+						<li class="nav-item"><a class="nav-link" id="UserProfile"
+							href="#" onclick="contentLoad(this)">User Login Details </a></li>
+						<li class="nav-item"><a class="nav-link" id="BankMaster"
+							href="#" onclick="contentLoad(this)">Services</a></li>
+						<li class="nav-item"><a class="nav-link" id="TranInquiry"
+							href="#" onclick="contentLoad(this)">Transaction</a></li>
+						<li class="nav-item"><a class="nav-link" id="Userlog"
+							href="#" onclick="contentLoad(this)">Failed Transaction</a></li>
+
+					</ul>
+				</div></li> -->
+			<li th:if="${session.ROLEID=='ADM'}" class="nav-item"><a
+				class="nav-link" data-toggle="collapse" href="#adminsubmenu"
+				id="admin"><i class="fa fa-fw fa-university"
+					style="margin-right: 5%;"></i>Admin Operation<i id="dropico"
+					class="fa fa-caret-down" aria-hidden="true"></i> </a>
+
+				<div id="adminsubmenu" class="collapse submenu1 ">
+					<ul class="nav flex-column">
+						<li class="nav-item"><a class="nav-link" id="UserProfile"
+							href="#" onclick="contentLoad(this)">User Profile Maintenance
+						</a></li>
+						<li class="nav-item"><a class="nav-link" id="Projectmaster"
+							href="#" onclick="contentLoad(this)">Project Management
+						</a></li>
+						<li class="nav-item"><a class="nav-link" id="BHDSNotificationList"
+							href="#" onclick="contentLoad(this)">Notification Master </a></li>
+							<li class="nav-item"><a class="nav-link" id="ReferenceCodeMaster"
+							href="#" onclick="contentLoad(this)">ReferenceCode Master </a></li>
+					</ul>
+				</div></li>
+			<!-- <li class="nav-item"><a class="nav-link" data-toggle="collapse"
+				href="#parametersubmenu" id="parameter"><i
+					class="fa fa-fw fa-map" style="margin-right: 5%;"></i>Parameters<i
+					id="dropico" class="fa fa-caret-down" aria-hidden="true"></i> </a>
+				<div id="parametersubmenu" class="collapse submenu1 ">
+					<ul class="nav flex-column">
+						<li class="nav-item"><a class="nav-link" id="PARA" href="#"
+							onclick="contentLoad(this)">Login Security </a></li>
+						<li class="nav-item"><a class="nav-link" id="IpsBankandBranchMaster"
+							href="#" onclick="contentLoad(this)">Bank and Branch level
+								Parameter </a></li>
+						<li class="nav-item"><a class="nav-link" id="ServiceChargesAndFees"
+							href="#" onclick="contentLoad(this)">Service Charges and Fee
+								Structure </a></li>
+						<li class="nav-item"><a class="nav-link" id="SettlementAccount"
+							href="#" onclick="contentLoad(this)">Settlement Accounts </a></li>
+						
+						<li class="nav-item"><a class="nav-link" id="BusinessHours"
+							href="#" onclick="contentLoad(this)">Business Hours </a></li>
+
+					</ul>
+				</div></li> -->
+<div Hidden>
+			<li class="nav-item"><a class="nav-link" data-toggle="collapse"
+				href="#Auditsubmenu" id="auditmenu"><i class="fa fa-fw fa-edit"
+					style="margin-right: 5%;"></i>Maintenance <i id="dropico"
+					class="fa fa-caret-down" aria-hidden="true"></i> </a>
+
+				<div id="Auditsubmenu" class="collapse submenu1 ">
+					<ul class="nav flex-column">
+						<li class="nav-item"><a class="nav-link" id="BHDSIssueLogReg"
+							href="#" onclick="contentLoad(this)">Issue Log Register</a></li>
+						<li class="nav-item"><a class="nav-link" id="BHDSIssueMaster"
+							href="#" onclick="contentLoad(this)">Issue Master</a></li>
+
+					</ul>
+				</div></li></div>
+
+<div hidden>
+			<li class="nav-item"><a class="nav-link" data-toggle="collapse"
+				href="#IPSsubmenu" id="ipsMenu"><i class="fa fa-book"
+					 style="margin-right: 5%;"></i>Reports
+				<i id="dropico" class="fa fa-caret-down"
+					aria-hidden="true"></i> </a>
+
+				<div id="IPSsubmenu" class="collapse submenu1 ">
+					<ul class="nav flex-column">
+						<li class="nav-item"><a class="nav-link"
+							id="IPSBulkTransaction" href="#" onclick="contentLoad(this)">
+								Issue Log Register </a></li>
+								<li class="nav-item"><a class="nav-link"
+							id="Troubleshooting" href="#" onclick="contentLoad(this)">
+								Trouble Shooting Register </a></li>
+								
+
+					</ul>
+				</div></li>
+				</div>
+
+		 	<li class="nav-item"><a class="nav-link" data-toggle="collapse"
+				href="#Monitoringsubmenu" id="monitoring"><i
+					class="fa  fa-desktop" style="margin-right: 5%;"></i>Client<i
+					id="dropico" class="fa fa-caret-down" aria-hidden="true"></i> </a>
+
+			 <div id="Monitoringsubmenu" class="collapse submenu1 ">
+					<ul class="nav flex-column">
+						<li class="nav-item"><a class="nav-link" id="BHDSClientIssueLog"
+							href="#" onclick="contentLoad(this)">Issue Log Register</a></li>
+                       <li class="nav-item"><a class="nav-link"
+							id="Troubleshooting" href="#" onclick="contentLoad(this)">
+								Trouble Shooting Register </a></li>
+					</ul>
+					<!-- <ul class="nav flex-column">
+						<li class="nav-item"><a class="nav-link"
+							id="TransactionEntries" href="#" onclick="contentLoad(this)">Transaction
+								Summary </a></li>
+
+					</ul> -->
+				</div> </li>
+
+
+		</ul>
+	</div>
+
+	<!--------------------------------------------------------- Logout menu------------------------------------------------ -->
+	<div id="logoutmenu" style="width: 10%; margin-left: 16px;">
+		<ul class="nav flex-column">
+			<li class="nav-item"><input type="button" id="logout"
+				style="margin-left: 12px" class="btn btn-default logout"
+				value="LogOut" onclick="logout()" /></li>
+
+		</ul>
+		<ul class="nav flex-column">
+			<li class="nav-item"><a href="javascript:void(0);"
+				class="dropdown-item notify-item" style="color: #2e7bd0"
+				id="chngPass" value="Change Password"> <span>Change
+						Password</span>
+			</a></li>
+		</ul>
+
+	</div>
+	<
+	<!--------------------------------------------------------- Logout menu------------------------------------------------ -->
+	<!--------------------------------------------------------- Password change modal------------------------------------------------ -->
+	<div class="modal fade" id="changepassword" data-backdrop="static"
+		data-keyboard="false">
+		<div
+			class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+			<div class="modal-content" style="color: #318bbf;">
+				<!-- Modal Header -->
+				<div class="modal-header">
+					<h4 class="modal-title">Change Password</h4>
+					<button style="margin-right: -64px;" type="button" class="close"
+						data-dismiss="modal">×</button>
+				</div>
+				<div class="modal-body" style="text-align: center">
+					<form th:object=${singledetail} id="passform" method="post">
+						<div class="form-group">
+							<div class="row">
+								<label class="col-sm-5" for="acctNum">Old Password :</label> <input
+									class="form-control col-sm-5" type="password" id="oldpass"
+									name="oldpass" required />
+							</div>
+							<div class="row">
+								<label class="col-sm-5" for="acctName">New Password :</label> <input
+									class="form-control col-sm-5" type="password" id="newpass"
+									name="newpass" required />
+							</div>
+							<div class="row">
+								<label class="col-sm-5" for="acctName">Confirm New
+									Password :</label> <input class="form-control col-sm-5" type="password"
+									id="Connewpass" name="newpass" required />
+							</div>
+						</div>
+					</form>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-primary"
+						data-toggle="#menualertmenu" data-target="#changepassword"
+						onclick="changepassword();">Submit</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<!--------------------------------------------------------- Password change modal------------------------------------------------ -->
+	<!-- -------------------------------------------------Logout Modal -->
+	<div class="modal fade" id="datalogout">
+		<div
+			class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+			<div class="modal-content">
+				<div class="modal-body"
+					style="margin-top: 8px; text-align: center; color: #26465d;">
+					Are you sure you want to quit?
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-primary" id="logout"
+					
+						onclick="contentLoad(this)" th:attr="data-formmode=delete">Yes</button>
+					<button type="button" class="btn btn-primary" data-dismiss="modal">No</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!--------------------------------------------------------------- Modal for alert messages-------------------------------->
+	<div class="modal fade" id="menualert">
+		<div
+			class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+			<div class="modal-content">
+				<div class="modal-body" style="text-align: center">
+					<p id="menualertmsg"></p>
+					<button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="modal fade" id="menualertmenu">
+		<div
+			class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+			<div class="modal-content">
+				<div class="modal-body" style="text-align: center">
+					<p id="menualertmsgmenu"></p>
+					<button id="logout" onclick="contentLoad(this)" type="button"
+						class="btn btn-primary" data-dismiss="modal">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="modal fade" id="menualertmsg">
+		<div
+			class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+			<div class="modal-content">
+				<div class="modal-body" style="text-align: center">
+					<p id="password not same"></p>
+					<button id="logout" onclick="contentLoad(this)" type="button"
+						class="btn btn-primary" data-dismiss="modal">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div id="loader" style="display: none;">
+
+		<div class="loading">Loading&#8230;</div>
+	</div>
+
+	<script src="./js/jquery.knob.min.js"></script>
+	<script src="./js/jquery.peity.min.js"></script>
+
+	<!-- Sparkine charts -->
+	<script src="./js/jquery.sparkline.min.js"></script>
+	<!-- App js -->
+	<script src="./js/app.min.js"></script>
+
+
+
+</body>
+
+</html>

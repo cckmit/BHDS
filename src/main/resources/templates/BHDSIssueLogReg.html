@@ -1,0 +1,548 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<!--
+PROJECT NAME: BHDS
+FILE NAME   : BHDSNotificationList
+CREATED BY	: RAMPRASATH
+CREATED ON	: 02-APRIL-2020
+MODIFY ON   :
+PURPOSE		: 
+ -->
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" type="text/css"
+	href="/webjars/bootstrap/4.3.1/css/bootstrap.min.css"
+	th:href="@{/webjars/bootstrap/4.3.1/css/bootstrap.min.css}">
+<link rel="stylesheet" type="text/css"
+	href="/webjars/font-awesome/5.9.0/css/all.min.css"
+	th:href="@{/webjars/font-awesome/5.9.0/css/all.min.css}">
+<link rel="stylesheet" type="text/css"
+	href="/webjars/jquery-ui/1.12.1/jquery-ui.min.css"
+	th:href="@{/webjars/jquery-ui/1.12.1/jquery-ui.min.css}">
+<link rel="stylesheet" type="text/css"
+	href="/webjars/datatables/1.10.19/css/jquery.dataTables.min.css"
+	th:href="@{/webjars/datatables/1.10.19/css/jquery.dataTables.min.css}">
+<link rel="shortcut icon" th:href="@{/favicon.ico}" type="image/x-icon">
+<link rel="icon" th:href="@{/favicon.ico}" type="image/x-icon">
+
+
+<script src="/webjars/popper.js/1.14.7/umd/popper.min.js"
+	th:src="@{/webjars/popper.js/1.14.7/umd/popper.min.js}"></script>
+<script src="/webjars/jquery/3.4.1/jquery.min.js"
+	th:src="@{/webjars/jquery/3.4.1/jquery.min.js}"></script>
+<script src="/webjars/jquery-ui/1.12.1/jquery-ui.min.js"
+	th:src="@{/webjars/jquery-ui/1.12.1/jquery-ui.min.js}"></script>
+
+<script src="/webjars/jquery-form/4.2.2/jquery.form.min.js"
+	th:src="@{/webjars/jquery-form/4.2.2/jquery.form.min.js}"></script>
+
+<script src="/webjars/jquery-validation/1.19.0/jquery.validate.min.js"
+	th:src="@{/webjars/jquery-validation/1.19.0/jquery.validate.min.js}"></script>
+
+<script src="js/bootstrap411.js"></script>
+
+<style type="text/css">
+.btn {
+	line-height: 0.5rem;
+}
+
+.container-manager {
+	width: 76.5%;
+	padding-right: 15px;
+	padding-left: 15px;
+	margin-right: auto;
+	margin-left: 19.3%;
+	margin-top: 80px;
+}
+
+.table-bordered td, .table-bordered th {
+	font-size: smaller;
+}
+
+.card-header {
+	background-color: #386276;
+}
+
+.card-footer {
+	background-color: rgb(56, 98, 118);
+}
+</style>
+<script th:inline="javascript">
+	/*<![CDATA[*/
+
+$(function() {
+
+	$("#rpt_date").datepicker({
+				minDate : 0,
+				dateFormat : "dd-mm-yy",
+				onSelect : function(selected) {
+					var dt = new Date(selected);
+					dt.setDate(dt.getDate() + 1);
+				}
+			});
+	
+});
+	$(function(){
+		$("#assigned_date").datepicker({
+			dateFormat : "dd-mm-yy"})
+		
+	});
+	
+	function back() {
+		window.history.back();
+	}
+
+	function alert_add(a) {
+
+		//var formmode = a.getAttribute("formmode");
+
+		location.href = "./BHDSIssueLogReg?formmode=add";
+
+	}
+	function list() {
+		location.href = './BHDSIssueLogReg?formmode=list';
+	}
+
+	
+function submitform1(a) {
+
+		
+
+		if ($("#AlertParameter").valid()) {
+
+			var formmode = a.getAttribute("data-formmode");
+
+			//var type = a.getAttribute("data-type");
+
+			var url = "./addIssue?formmode=" + formmode;
+alert("CV"+$("#issue_srl_no").val());
+			$("#AlertParameter").attr('action', url);
+
+			var options = {
+
+				success : showResponse
+
+			// post-submit callback 
+
+			};
+
+			$("#AlertParameter").ajaxSubmit(options);
+
+			function showResponse(responseText, statusText, xhr, $form) {
+
+				$("#alertmsg").text(responseText);
+
+				$('#alert').modal("toggle");
+
+			}
+
+			;
+
+		}
+
+	};
+	
+	
+
+	/*]]>*/
+</script>
+
+</head>
+
+<body>
+	<div th:insert="BHDSMenu :: header"></div>
+
+
+	<!-- Start Content-->
+	<div class="container-manager">
+
+
+		<div th:if="${formmode}=='list'">
+
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="card">
+						<div class="card-header " id="modheadtitle" style="height: 57px;">
+							<b th:text="${menuname}"></b>
+
+							<div class="btn-group nav-buttons float-right">
+								<button id="issueentry" type="button"
+									class="btn btn-xs btn-primary btns" onclick="alert_add(this)">Add
+									Issue</button>
+								<button type="button" class="btn btn-xs btn-primary btns active"
+									id="btnInq" onclick="list()" style="border-color: #66dbe0;">List</button>
+							</div>
+						</div>
+						<table class="table  table-bordered  table-hover table-sm"
+							style="margin-bottom: 0px" id="tabupl">
+							<thead class="thead-light">
+								<tr>
+
+
+									<th>Report Date</th>
+									<th>Client</th>
+									<th>Lodged By</th>
+									<th>Application</th>
+									<th>Issue Type</th>
+									<th>Report Code</th>
+									<th>Issue Description</th>
+									<th>Priority</th>
+									<th>Age</th>
+									<th>Assigned To</th>
+									<th>Assigned Date</th>
+									<th>Current Status</th>
+
+
+
+								</tr>
+							</thead>
+							<tbody>
+								<tr th:each="businessHours : ${IssueMaster}" class="userlist">
+
+
+									<td th:text="${businessHours.rpt_date}"></td>
+									<td th:text="${businessHours.client}"></td>
+									<td th:text="${businessHours.lodged_by}"></td>
+									<td th:text="${businessHours.application}"></td>
+									<td th:text="${businessHours.issue_type}"></td>
+									<td th:text="${businessHours.report_code}"></td>
+									<td style="width: 20%;"
+										th:text="${businessHours.issue_description}"></td>
+									<td th:text="${businessHours.priority}"></td>
+									<td th:text="${businessHours.age}"></td>
+									<td th:text="${businessHours.assigned_to}"></td>
+									<td th:text="${businessHours.assigned_date}"></td>
+									<td th:text="${businessHours.current_status}"></td>
+
+
+								</tr>
+						</table>
+						<div class="text-center"
+							style="background-color: #386276; padding: 5px; width: 100%;">
+
+							<div class="btn-group nav-buttons " style="align: center;">
+								<button type="button" class="btn btn-xs btn-primary"
+									id="btnHome" onclick="home();" style="margin-right: 10px;">Home</button>
+								<button type="button" class="btn btn-xs btn-primary"
+									id="btnBack" onclick="back();">Back</button>
+							</div>
+						</div>
+
+					</div>
+				</div>
+			</div>
+		</div>
+		<!---------------------------- Report Details pagination - shown if paginated ------------------------------------------------
+										 			<div class="float-right" th:if="${RuleList.totalPages} gt 1">
+					<a href="#"><i class="fas fa-caret-left fa-2x"
+						th:onclick="|getUserlist('prevpage',${RuleList.number},${RuleList.totalPages});|"></i></a>
+					<input type="text" id="pageno" style="width: 30px"
+						th:value="${RuleList.number+1}"
+						th:onchange="|getUserlist('givenpage',${RuleList.number},${RuleList.totalPages});|"></input>
+					of <font th:text="${RuleList.totalPages}"></font> <a href="#"><i
+						class="fas fa-caret-right fa-2x"
+						th:onclick="|getUserlist('nextpage',${RuleList.number},${RuleList.totalPages});|"></i></a>
+				</div> 
+
+									</div>
+								</div>
+							</div>
+							 -->
+
+
+
+		<!-- -------------------ADD,EDIT,DELETE,INQUIRY -->
+		<div th:if="${formmode}=='add'">
+			<div class="row">
+				<div class="col-sm-12 ">
+					<form action="#" th:object="${AlertParameter}" method="POST"
+						autocomplete="off" id="AlertParameter">
+						<div class="card">
+							<div class="card-header">
+								<div class="float-left">
+									<b>IssueLog-Add</b>
+								</div>
+								<div class="btn-group nav-buttons float-right">
+									<!-- <button type="button"
+										class="btn btn-xs btn-primary btns  active"
+										onclick='alert_add(this)' th:attr="frmode=add">Add
+										Notification</button> -->
+									<button type="button" class="btn btn-xs btn-primary btns"
+										id="btnInq" onclick="list()" style="border-color: #66dbe0;">List</button>
+								</div>
+
+							</div>
+
+
+
+							<div class="card-body">
+
+								<input autocomplete="false" name="hidden" type="text"
+									style="display: none;">
+								<div class="form-group">
+									<div class="row formline">
+
+										<label class="col-sm-2">Report Date</label>
+										<div class="col-sm-3">
+											<input type="text" th:value="${AlertParameter?.rpt_date}"
+												id="rpt_date" name="rpt_date" value=""
+												class="form-control form-control-sm" autocomplete="false"
+												th:readonly="${formmode}=='view'" required />
+										</div>
+
+										<div class="col-sm-1"></div>
+
+
+										<label class="col-sm-2">Client</label>
+										<div class="col-sm-3">
+											<input type="text" th:value="BOB" id="client" name="client"
+												value="" class="form-control form-control-sm txtalign"
+												autocomplete="false" th:readonly="${formmode}=='view'"
+												required />
+										</div>
+										<div class="col-sm-1"></div>
+									</div>
+									<div class="row formline">
+										<label style="height: 2px;"></label>
+
+									</div>
+									<div class="row formline">
+
+										<label class="col-sm-2">Lodged By</label>
+										<div class="col-sm-3">
+											<input type="text"
+												th:value="'&nbsp&nbsp'+${session.USERNAME}" id="lodged_by"
+												name="lodged_by" value=""
+												class="form-control form-control-sm" autocomplete="false"
+												th:readonly="${formmode}=='view'" required />
+										</div>
+
+										<div class="col-sm-1"></div>
+
+
+										<label class="col-sm-2">Application</label>
+										<div class="col-sm-3">
+											<input type="text" th:value="${AlertParameter?.application}"
+												id="application" name="application" value=""
+												class="form-control form-control-sm txtalign"
+												autocomplete="false" th:readonly="${formmode}=='view'"
+												required />
+										</div>
+										<div class="col-sm-1"></div>
+									</div>
+
+
+									<div class="row formline">
+
+										<label class="col-sm-2">Issue Type</label>
+										<div class="col-sm-3">
+											<select  id="issue_type"
+												name="issue_type" class="form-control form-control-sm"
+												autocomplete="off" th:disabled=" ${formmode}=='view'" required>
+											
+												<option value="">Select</option>
+												<option value="A">Application</option>
+												<option value="D">Database</option>
+												<option value="O">Operation</option>
+												<option value="R">Report</option>
+											</select>
+										</div>
+
+										<div class="col-sm-1"></div>
+
+
+										<label class="col-sm-2">Report Code</label>
+										<div class="col-sm-3">
+											<input type="text" th:value="${AlertParameter?.report_code}"
+												id="report_code" name="report_code" value=""
+												class="form-control form-control-sm" autocomplete="off"
+												th:readonly="${formmode}=='view'" required />
+										</div>
+										<div class="col-sm-1"></div>
+									</div>
+
+
+									<div class="row formline">
+										<label style="height: 2px;"></label>
+
+									</div>
+									<div class="row formline">
+
+										<label class="col-sm-2">Priority</label>
+										<div class="col-sm-3">
+											<!-- <input type="text" th:value="${AlertParameter?.priority}"
+												id="priority" name="priority" value=""
+												class="form-control form-control-sm" autocomplete="off"
+												th:readonly="${formmode}=='view'" required /> -->
+												
+												<select  id="priority"
+												name="priority" class="form-control form-control-sm"
+												autocomplete="off" p required>
+												<option value="">Select</option>
+												<option value="L">Low</option>
+												<option value="M">Medium</option>
+												<option value="H">High</option>
+											 </select> 
+												
+										</div>
+										<div class="col-sm-1"></div>
+
+
+										<label class="col-sm-2">Srl No</label>
+										<div class="col-sm-3">
+											<input type="text" th:value="${srlno}" id="issue_srl_no" name=issue_srl_no
+												value="" class="form-control form-control-sm"
+												autocomplete="off" th:readonly="${formmode}=='view'"
+												required />
+										</div>
+										<div class="col-sm-1"></div>
+									</div>
+
+
+
+									<label></label>
+
+
+
+
+
+
+
+
+									<div class="row formline">
+
+
+										<label class="col-sm-2">Issue Description</label>
+										<div class="col-sm-9">
+											<textarea class="form-control" id="issue_description"
+												name="issue_description"
+												placeholder="Please describe your issue here..." rows="5"></textarea>
+										</div>
+
+										<div class="col-sm-1"></div>
+									</div>
+									<label></label>
+									<div class="row formline">
+
+										<label class="col-sm-2">Assigned To</label>
+										<div class="col-sm-3">
+											<input type="text" th:value="${AlertParameter?.assigned_to}"
+												id="assigned_to" name="assigned_to" value=""
+												class="form-control form-control-sm" autocomplete="off"
+												th:readonly="${formmode}=='view'" required />
+										</div>
+
+										<div class="col-sm-1"></div>
+
+
+										<label class="col-sm-2">Assigned Date</label>
+										<div class="col-sm-3">
+											<input type="text"
+												th:value="${AlertParameter?.assigned_date}"
+												id="assigned_date" name="assigned_date" value=""
+												class="form-control form-control-sm" autocomplete="off"
+												th:readonly="${formmode}=='view'" required />
+										</div>
+										<div class="col-sm-1"></div>
+									</div>
+
+
+									<div class="row formline">
+										<label style="height: 2px;"></label>
+
+									</div>
+									<div class="row formline">
+
+										<label class="col-sm-2">Current Status</label>
+										<div class="col-sm-3">
+											<input type="text"
+												th:value="${AlertParameter?.current_status}"
+												id="current_status" name="current_status" value=""
+												class="form-control form-control-sm" autocomplete="off"
+												th:readonly="${formmode}=='view'" required />
+										</div>
+										<div class="col-sm-1"></div>
+
+
+										<label class="col-sm-2">Age</label>
+										<div class="col-sm-3">
+											<input type="text" th:value="${AlertParameter?.age}" id="age"
+												name="age" value="" class="form-control form-control-sm"
+												autocomplete="off" th:readonly="${formmode}=='view'"
+												required />
+										</div>
+										<div class="col-sm-1"></div>
+									</div>
+
+
+
+									<label></label>
+
+
+								</div>
+							</div>
+
+							<div class="card-footer text-center" style="height: 38px;">
+
+
+								<button type="button" class="btn btn-xs btn-primary"
+									onclick="submitform1(this);" style="margin-top: -12px;"
+									form="AlertParameter" id="btnSubmit"
+									th:attr="data-formmode=${formmode}">Submit</button>
+								<button type="button" style="margin-top: -12px;"
+									class="btn btn-xs btn-primary" id="btnHome" onclick="home();">Home</button>
+								<button type="button" class="btn btn-xs btn-primary"
+									id="btnBack" style="margin-top: -12px;" onclick="back();">Back</button>
+
+							</div>
+					</form>
+				</DIV>
+			</div>
+
+		</div>
+
+	</div>
+	</div>
+
+	<!------------------------Pop window - Domain  list Ends--------------------------------->
+
+	<!-------------------------------------Details delete modal dialog----------------------------------------------------->
+	<div class="modal fade" id="datadelete">
+		<div
+			class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+			<div class="modal-content">
+				<div class="modal-body"
+					style="margin-top: 8px; text-align: center; color: aliceblue;">
+					<button type="button" class="close" data-dismiss="modal">×</button>
+					Are you Sure want to delete?
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-primary"
+						onclick="submitformdelete(this);" th:attr="data-formmode=delete">Submit</button>
+					<button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-------------------------------------Details delete modal dialog----------------------------------------------------->
+	<!--------------------------------------------------------------- Modal for alert messages-------------------------------->
+	<div class="modal fade" id="alert">
+		<div
+			class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+			<div class="modal-content">
+				<div class="modal-body" style="text-align: center">
+					<p id="alertmsg"></p>
+					<button type="button" class="btn btn-primary" data-dismiss="modal"
+						onclick="back();">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!--  -->
+	<!--------------------------------------------------------------- Modal for alert messages-------------------------------->
+</body>
+</html>

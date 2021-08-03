@@ -1,0 +1,255 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org" th:fragment="summary">
+<head>
+
+<link rel="stylesheet" type="text/css"
+	href="/webjars/bootstrap/4.3.1/css/bootstrap.min.css"
+	th:href="@{/webjars/bootstrap/4.3.1/css/bootstrap.min.css}">
+<link rel="stylesheet" type="text/css"
+	href="/webjars/font-awesome/5.9.0/css/all.min.css"
+	th:href="@{/webjars/font-awesome/5.9.0/css/all.min.css}">
+<link rel="stylesheet" type="text/css"
+	href="/webjars/jquery-ui/1.12.1/jquery-ui.min.css"
+	th:href="@{/webjars/jquery-ui/1.12.1/jquery-ui.min.css}">
+<link rel="stylesheet" type="text/css"
+	href="/webjars/datatables/1.10.19/css/jquery.dataTables.min.css"
+	th:href="@{/webjars/datatables/1.10.19/css/jquery.dataTables.min.css}">
+
+
+<script src="/webjars/bootstrap/4.3.1/js/bootstrap.min.js"
+	th:src="@{/webjars/bootstrap/4.3.1/js/bootstrap.min.js}"></script>
+<script src="/webjars/popper.js/1.14.7/umd/popper.min.js"
+	th:src="@{/webjars/popper.js/1.14.7/umd/popper.min.js}"></script>
+<script src="/webjars/jquery/3.4.1/jquery.min.js"
+	th:src="@{/webjars/jquery/3.4.1/jquery.min.js}"></script>
+<script src="/webjars/jquery-ui/1.12.1/jquery-ui.min.js"
+	th:src="@{/webjars/jquery-ui/1.12.1/jquery-ui.min.js}"></script>
+<script src="/webjars/datatables/1.10.19/js/jquery.dataTables.min.js"
+	th:src="@{/webjars/datatables/1.10.19/js/jquery.dataTables.min.js}"></script>
+<script
+	src="/webjars/datatables/1.10.19/js/dataTables.bootstrap4.min.js"
+	th:src="@{/webjars/datatables/1.10.19/js/dataTables.bootstrap4.min.js}"></script>
+	<script
+	src="/webjars/datatables/1.10.19/js/dataTables..min.js"
+	th:src="@{/webjars/datatables/1.10.19/js/dataTables.bootstrap.min.js}"></script>
+	
+	
+
+
+<link rel="stylesheet" type="text/css"
+	href="webjars/chartjs/2.8.0/Chart.min.css"
+	th:href="@{webjars/chartjs/2.8.0/Chart.min.css}">
+<script src="webjars/chartjs/2.8.0/Chart.min.js"
+	th:src="@{webjars/chartjs/2.8.0/Chart.min.js}"></script>
+
+<link rel="shortcut icon" th:href="@{/favicon.ico}" type="image/x-icon">
+<link rel="icon" th:href="@{/favicon.ico}" type="image/x-icon">
+
+
+
+<script src="./js/bootstrap411.js"></script>
+<style>
+body {
+	background-color: lightgrey;
+}
+
+.h2, h2 {
+	font-size: 2rem;
+	background-color: #555;
+	color: white;
+}
+.card-box{
+background-color: #d9dbdc;
+    background-clip: border-box;
+ 
+    padding: 1.1rem;
+    margin-bottom: 24px;
+    border-radius: .25rem;} 
+button {
+	background-color: #616c77;
+	color: white;
+	padding: 16px 20px;
+	border: none;
+	cursor: pointer;
+	opacity: 0.8;
+	bottom: 23px;
+	right: 28px;
+	width: 150px;
+}
+
+.pagebut {
+	margin-top: 1%;
+	/*  width: 58%;  */
+	padding: 1% 1%;
+	background-color:#2e455d;
+	color: white;
+}
+
+select {
+	width: 150px;
+	margin: 10px;
+}
+td{
+background-color:#f8f7ff;
+
+}
+
+select:focus {
+	min-width: 150px;
+	width: auto;
+}
+#hidden_div {
+	display: none;
+}
+table th{color: white;
+background-color:#2e455deb;}
+.container-manager{
+	width: 83.5%;
+    padding-right: 15px;
+    padding-left: 15px;
+    margin-right: auto;
+    margin-left: 17.3%;
+    
+    margin-top: 80px;
+}
+</style>
+</head>
+<script th:inline="javascript">
+	/*<![CDATA[*/
+	
+/*<![CDATA[*/
+</script>
+
+<script th:inline="javascript">
+	/*<![CDATA[*/
+
+	$(function() {
+		var completed = /*[[${completed}]]*/0;
+		var uncompleted = /*[[${uncompleted}]]*/0;
+
+		var ctxL = document.getElementById("pieChart").getContext('2d');
+		var myLineChart = new Chart(ctxL, {
+			type : 'pie',
+			data : {
+				labels : [ "Completed", "Un Completed" ],
+				datasets : [ {
+					label : "My First dataset",
+					data : [ completed, uncompleted ],
+					backgroundColor : [ 'rgba(102,153,51,1)',
+							'rgba(105, 0, 132, .2)' ],
+					borderColor : [ 'rgba(102,153,51,1)',
+							'rgba(200, 99, 132, .7)' ],
+					borderWidth : 2
+				} ]
+			},
+			options : {
+				responsive : true
+			}
+		});
+
+	});
+
+	$(document).ready(
+			function() {
+				
+				var piesuccess =/*[[${session.trancount}]]*/0 ;
+				var piefailed = /*[[${session.trancount}]]*/0;
+
+				var o, e = function() {
+					$("#sparkline1").sparkline(
+							[ 0, 23, 43, 35, 44, 45, 56, 37, 40 ], {
+								type : "line",
+								width : "100%",
+								height : 210,
+								chartRangeMax : 50,
+								lineColor : "#3bafda",
+								fillColor : "rgba(59,175,218,0.3)",
+								highlightLineColor : "rgba(0,0,0,.1)",
+								highlightSpotColor : "rgba(0,0,0,.2)",
+								maxSpotColor : !1,
+								minSpotColor : !1,
+								spotColor : !1,
+								lineWidth : 1
+							}), $("#sparkline1").sparkline(
+							[ 25, 23, 26, 24, 25, 32, 30, 24, 19 ], {
+								type : "line",
+								width : "100%",
+								height : "210",
+								chartRangeMax : 40,
+								lineColor : "#1abc9c",
+								fillColor : "rgba(26, 188, 156, 0.3)",
+								composite : !0,
+								highlightLineColor : "rgba(0,0,0,.1)",
+								highlightSpotColor : "rgba(0,0,0,.2)",
+								maxSpotColor : !1,
+								minSpotColor : !1,
+								spotColor : !1,
+								lineWidth : 1
+							}), $("#sparkline2").sparkline(
+							[ [ piesuccess, piesuccess ], [ 90, 50 ], [ 100, 150 ], [ 140, 80 ],
+									[ 50, 90 ], [ 80, 120 ], [ 130, 80 ],
+									[ 90, 70 ], [ 80, 50 ], [ 120, 130 ],
+									[ 120, 100 ], [ 140, 110 ] ],
+							{
+								type : "bar",
+								height : "210",
+								barWidth : "15",
+								barSpacing : "3",
+								stackedBarColor : [ "#3bafda",
+										"rgba(188, 196, 201, 0.2)" ]
+							}), $("#sparkline3").sparkline([ piesuccess, piefailed, 30 ], {
+						type : "pie",
+						width : "210",
+						height : "210",
+						sliceColors : [ "#e3eaef", "#3bafda", "#00b19d" ]
+					})
+				};
+				e(), $(window).resize(function(i) {
+					clearTimeout(o), o = setTimeout(function() {
+						e()
+					}, 300)
+				})
+			});
+	/*]]>*/
+</script>
+
+
+<body>
+	<div th:insert="BHDSMenu :: header"></div>
+
+<div class="container-manager">
+
+
+	<!-- ============================================================== -->
+	<!-- Start Page Content here -->
+	<!-- ============================================================== -->
+
+	<div class="content-page">
+		<div class="content">
+
+			<!-- Start Content-->
+			<div class="container-fluid">
+
+			
+				<!-- end page title -->
+
+				
+				<div style="width: 100%;">
+    <img style="width: 100%;" th:src="@{/images/Brain.jpg}" 
+         src="../images/Brain.jpg" class="img-responsive" alt="Responsive image"  >
+</div>
+
+	</div>
+	<!-- content -->
+
+	
+
+	<!-- ============================================================== -->
+	<!-- End Page content -->
+	<!-- ============================================================== -->
+
+
+
+</body>
+</html>

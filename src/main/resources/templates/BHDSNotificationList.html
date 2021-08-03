@@ -1,0 +1,965 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<!--
+PROJECT NAME: AML
+FILE NAME   : BHDSNotificationList
+CREATED BY	: RAMPRASATH
+CREATED ON	: 02-APRIL-2020
+MODIFY ON   :
+PURPOSE		: 
+ -->
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" type="text/css"
+	href="/webjars/bootstrap/4.3.1/css/bootstrap.min.css"
+	th:href="@{/webjars/bootstrap/4.3.1/css/bootstrap.min.css}">
+<link rel="stylesheet" type="text/css"
+	href="/webjars/font-awesome/5.9.0/css/all.min.css"
+	th:href="@{/webjars/font-awesome/5.9.0/css/all.min.css}">
+<link rel="stylesheet" type="text/css"
+	href="/webjars/jquery-ui/1.12.1/jquery-ui.min.css"
+	th:href="@{/webjars/jquery-ui/1.12.1/jquery-ui.min.css}">
+<link rel="stylesheet" type="text/css"
+	href="/webjars/datatables/1.10.19/css/jquery.dataTables.min.css"
+	th:href="@{/webjars/datatables/1.10.19/css/jquery.dataTables.min.css}">
+<link rel="shortcut icon" th:href="@{/favicon.ico}" type="image/x-icon">
+<link rel="icon" th:href="@{/favicon.ico}" type="image/x-icon">
+
+
+<script src="/webjars/popper.js/1.14.7/umd/popper.min.js"
+	th:src="@{/webjars/popper.js/1.14.7/umd/popper.min.js}"></script>
+<script src="/webjars/jquery/3.4.1/jquery.min.js"
+	th:src="@{/webjars/jquery/3.4.1/jquery.min.js}"></script>
+<script src="/webjars/jquery-ui/1.12.1/jquery-ui.min.js"
+	th:src="@{/webjars/jquery-ui/1.12.1/jquery-ui.min.js}"></script>
+
+<script src="/webjars/jquery-form/4.2.2/jquery.form.min.js"
+	th:src="@{/webjars/jquery-form/4.2.2/jquery.form.min.js}"></script>
+
+<script src="/webjars/jquery-validation/1.19.0/jquery.validate.min.js"
+	th:src="@{/webjars/jquery-validation/1.19.0/jquery.validate.min.js}"></script>
+
+<script src="js/bootstrap411.js"></script>
+
+<style type="text/css">
+.btn {
+	line-height: 0.5rem;
+}
+
+.container-manager {
+	width: 83.5%;
+	padding-right: 15px;
+	padding-left: 15px;
+	margin-right: auto;
+	margin-left: 17.3%;
+	margin-top: 80px;
+}
+
+.table-bordered td, .table-bordered th {
+	font-size: smaller;
+}
+
+.card-header {
+	background-color: #386276;
+}
+
+.card-footer {
+	background-color: rgb(56, 98, 118);
+}
+</style>
+<script th:inline="javascript">
+	/*<![CDATA[*/
+
+	$(function() {
+
+		var formmode = /*[[${formmode}]]*/null;
+		if (formmode != null) {
+			if (formmode == 'view') {
+				$('#AlertParameter').datetimepicker({
+					Readonly : true
+				});
+			}
+		}
+
+		$("#alert_date").datepicker({
+			changeMonth : true,
+			changeYear : true,
+			maxDate : new Date(),
+			dateFormat : "dd-mm-yy"
+		});
+
+		var today = new Date();
+		var dd = today.getDate();
+		var mm = today.getMonth() + 1; //January is 0!
+
+		var yyyy = today.getFullYear();
+		if (dd < 10) {
+			dd = '0' + dd;
+		}
+		if (mm < 10) {
+			mm = '0' + mm;
+		}
+		var today = dd + '-' + mm + '-' + yyyy;
+		document.getElementById('alert_date').value = today;
+
+		$("#suspend_date").datepicker({
+			changeMonth : true,
+			changeYear : true,
+			minDate : 0,
+			maxDate : 0,
+			dateFormat : "mm-dd-yy"
+		});
+		$("#activate_date").datepicker({
+			changeMonth : true,
+			changeYear : true,
+			minDate : 0,
+			dateFormat : "mm-dd-yy"
+		});
+		$("#start_date").datepicker({
+			maxDate : 0,
+			dateFormat : "dd-mm-yy",
+			onSelect : function(selected) {
+				var dt = $(this).datepicker('getDate');
+				dt.setDate(dt.getDate());
+				$("#end_date").datepicker("option", "minDate", dt);
+
+			}
+		});
+		$("#end_date").datepicker({
+			minDate : 0,
+			dateFormat : "dd-mm-yy",
+			onSelect : function(selected) {
+				var dt = new Date(selected);
+				dt.setDate(dt.getDate() - 1);
+				//$("#start_date").datepicker("option", "maxDate", dt);
+			}
+		});
+	});
+	var deleteval;
+
+	function home() {
+		location.href = 'Dashboard'
+	}
+
+	function back() {
+		window.history.back();
+	}
+
+	function alert_add(a) {
+
+		var formmode = a.getAttribute("frmode");
+
+		location.href = "./BHDSNotificationList?formmode=" + formmode;
+
+	}
+	function list() {
+		location.href = './BHDSNotificationList?formmode=list';
+	}
+
+	function submiteditform(a) {
+
+		if ($("#AlertParameter").valid()) {
+			var formmode = a.getAttribute("data-formmode");
+			var url = "./createAlert?formmode=" + formmode;
+
+			$("#AlertParameter").attr('action', url);
+
+			var options = {
+				success : showResponse
+			// post-submit callback 
+			};
+
+			$("#AlertParameter").ajaxSubmit(options);
+
+			function showResponse(responseText, statusText, xhr, $form) {
+
+				$("#alertmsg").text(responseText);
+
+				$('#alert').modal("toggle");
+
+			}
+			;
+		}
+	};
+
+	function submitaddform(a) {
+
+		if ($("#AlertParameter").valid()) {
+			var formmode = a.getAttribute("data-formmode");
+			var url = "./createAlert?formmode=" + formmode;
+
+			$("#AlertParameter").attr('action', url);
+
+			var options = {
+				success : showResponse
+			// post-submit callback 
+			};
+
+			$("#AlertParameter").ajaxSubmit(options);
+
+			function showResponse(responseText, statusText, xhr, $form) {
+
+				$("#alertmsg").text(responseText);
+
+				$('#alert').modal("toggle");
+
+			}
+			;
+		}
+	};
+
+	function edit_btn_submit(a) {
+
+		var srlno = a.getAttribute("data-srl_no");
+		location.href = 'BHDSNotificationList?formmode=edit&srlno=' + srlno;
+	}
+
+	function delete_btn_submit(a) {
+
+		var srlno = a.getAttribute("data-srl_no");
+		deleteval = srlno;
+		$("#datadelete").modal("toggle");
+
+	}
+	function submitformdelete(a) {
+
+		var srlno = a.getAttribute("data-srl_no");
+
+		location.href = 'BHDSNotificationList?formmode=delete&srlno=' + srlno;
+		$("#datadelete").modal("toggle");
+
+
+	};
+	function view_btn_submit(a) {
+		var srlno = a.getAttribute("data-srl_no");
+
+		location.href = 'BHDSNotificationList?formmode=view&srlno=' + srlno;
+
+	}
+	/*]]>*/
+</script>
+
+<script>
+	$(function() {
+
+		$('input[type=radio]').click(function() {
+			if ($(this).prop('id') == "emailno") {
+				$("#email_1").prop("readonly", true);
+				$("#email_user_1").prop("readonly", true);
+				$("#email_1").prop("required", false);
+				$("#email_user_1").prop("required", false);
+				$("#email_1-error").hide();
+				$("#email_user_1-error").hide();
+				$("#email_2").prop("readonly", true);
+				$("#email_user_2").prop("readonly", true);
+				$("#email_3").prop("readonly", true);
+				$("#email_user_3").prop("readonly", true);
+
+			} else if ($(this).prop('id') == "emailyes") {
+				$("#email_1").prop("readonly", false);
+				$("#email_user_1").prop("readonly", false);
+				$("#email_1").prop("required", true);
+				$("#email_user_1").prop("required", true);
+				$("#email_1-error").show();
+				$("#email_user_1-error").show();
+				$("#email_2").prop("readonly", false);
+				$("#email_user_2").prop("readonly", false);
+				$("#email_3").prop("readonly", false);
+				$("#email_user_3").prop("readonly", false);
+
+			} else if ($(this).prop('id') == "smsno") {
+				$("#mobile_1").prop("readonly", true);
+				$("#mobile_user_1").prop("readonly", true);
+				$("#mobile_1").prop("required", false);
+				$("#mobile_user_1").prop("required", false);
+				$("#mobile_1-error").hide();
+				$("#mobile_user_1-error").hide();
+				$("#mobile_2").prop("readonly", true);
+				$("#mobile_user_2").prop("readonly", true);
+				$("#mobile_3").prop("readonly", true);
+				$("#mobile_user_3").prop("readonly", true);
+			} else if ($(this).prop('id') == "smsyes") {
+				$("#mobile_1").prop("readonly", false);
+				$("#mobile_user_1").prop("readonly", false);
+				$("#mobile_1").prop("required", true);
+				$("#mobile_user_1").prop("required", true);
+				$("#mobile_1-error").show();
+				$("#mobile_user_1-error").show();
+				$("#mobile_2").prop("readonly", false);
+				$("#mobile_user_2").prop("readonly", false);
+				$("#mobile_3").prop("readonly", false);
+				$("#mobile_user_3").prop("readonly", false);
+			} else if ($(this).prop('id') == "alertno") {
+				$("#alert_userid_1").prop("readonly", true);
+				$("#alert_user_1").prop("readonly", true);
+				$("#alert_userid_1").prop("required", false);
+				$("#alert_user_1").prop("required", false);
+				$("#alert_user_1-error").hide();
+				$("#alert_userid_1-error").hide();
+				$("#alert_userid_2").prop("readonly", true);
+				$("#alert_user_2").prop("readonly", true);
+				$("#alert_userid_3").prop("readonly", true);
+				$("#alert_user_3").prop("readonly", true);
+			} else if ($(this).prop('id') == "alertyes") {
+				$("#alert_userid_1").prop("readonly", false);
+				$("#alert_user_1").prop("readonly", false);
+				$("#alert_userid_1").prop("required", true);
+				$("#alert_user_1").prop("required", true);
+				$("#alert_user_1-error").show();
+				$("#alert_userid_1-error").show();
+				$("#alert_userid_2").prop("readonly", false);
+				$("#alert_user_2").prop("readonly", false);
+				$("#alert_userid_3").prop("readonly", false);
+				$("#alert_user_3").prop("readonly", false);
+
+			}
+
+		});
+	});
+</script>
+</head>
+
+<body>
+	<div th:insert="BHDSMenu :: header"></div>
+
+
+	<!-- Start Content-->
+	<div class="container-manager">
+
+
+
+		<div th:if="${formmode}=='list'">
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="card">
+						<div class="card-header " id="modheadtitle" style="height: 57px;">
+							<b th:text="${menuname}"></b>
+
+							<div class="btn-group nav-buttons float-right">
+								<button type="button" class="btn btn-xs btn-primary btns"
+									onclick='alert_add(this)' th:attr="frmode=add">Add
+									Notifications</button>
+								<button type="button" class="btn btn-xs btn-primary btns active"
+									id="btnInq" onclick="list()" style="border-color: #66dbe0;">List</button>
+							</div>
+						</div>
+						<table class="table  table-bordered  table-hover table-sm"
+							style="margin-bottom: 0px" id="usertable">
+							<thead class="thead-light">
+								<tr>
+									<!-- <th></th> -->
+								<tr>
+								<tr>
+									<!-- <th></th> -->
+									<th rowspan="2">SRL No</th>
+									<th colspan="5">SPOC 1</th>
+									<th colspan="4">SPOC 2</th>
+									<th colspan="4">SPOC 3</th>
+									<th rowspan="2">Select</th>
+
+								</tr>
+								<tr>
+									<!-- skip 1st column because it merges vertically -->
+									<th>Client</th>
+									<th>Name</th>
+									<th>Designation</th>
+									<th>Email Id</th>
+									<th>Mobile Number</th>
+
+									<th>Name</th>
+									<th>Designation</th>
+									<th>Email Id</th>
+									<th>Mobile No</th>
+
+
+									<th>Name</th>
+									<th>Designation</th>
+									<th>Email Id</th>
+									<th>Mobile No</th>
+								</tr>
+
+
+
+
+							</thead>
+							<tbody>
+
+								<tr th:each="alert: ${AlertParameterList}">
+
+									<td th:text="${alert.srlno}"></td>
+									<td th:text="${alert.client_name}"></td>
+									<td th:text="${alert.spoc1_name}"></td>
+									<td th:text="${alert.s1_designation}"></td>
+									<td th:text="${alert.s1_email_id}"></td>
+									<td th:text="${alert.s1_mobile_number}"></td>
+									<td th:text="${alert.spoc2_name}"></td>
+									<td th:text="${alert.s2_designation}"></td>
+									<td th:text="${alert.s2_email_id}"></td>
+									<td th:text="${alert.s2_mobile_number}"></td>
+									<td th:text="${alert.spoc3_name}"></td>
+									<td th:text="${alert.s3_designation}"></td>
+									<td th:text="${alert.s3_email_id}"></td>
+									<td th:text="${alert.s3_mobile_number}"></td>
+
+									<td>
+										<div class="dropdown">
+											<button class="btn btn-secondary dropdown-toggle"
+												type="button" id="dropdownMenuButton" title="Action"
+												style="line-height: 0.7; font-size: 11px; color: #3a4550; background: #e3e3e4;"
+												data-toggle="dropdown" aria-haspopup="true"
+												aria-expanded="false">Action</button>
+											<div class="dropdown-menu"
+												aria-labelledby="dropdownMenuButton"
+												style="background-color: #e3e3e4; color: #3a4550;">
+												<a th:attr="data-srl_no=${alert.srlno}"
+													class="dropdown-item" title=" Modify"
+													style="cursor: pointer; height: 20px; color: #3a4550; background: #e3e3e4; height: 16px; border-radius: .20rem; padding: 2px 10px; top: 10px;"
+													id="edit_value" onclick="edit_btn_submit(this)">Modify</a>
+												<div class="dropdown-divider"></div>
+
+												<div class="dropdown-divider"></div>
+												<a th:attr="data-srl_no=${alert.srlno}"
+													class="dropdown-item" title="View"
+													style="cursor: pointer; height: 20px; color: #3a4550; background: #e3e3e4; height: 16px; border-radius: .20rem; padding: 2px 10px; top: 10px;"
+													onclick="view_btn_submit(this)" id="view_btn">View </a>
+											</div>
+										</div>
+									</td>
+									<!-- <td th:text="${#numbers.formatDecimal(account.clr_bal_amt,1,'COMMA',2,'POINT')}"  align="right" >CHENNAI</td> -->
+
+								</tr>
+							</tbody>
+						</table>
+						<div class="text-center"
+							style="background-color: #386276; padding: 5px;">
+
+							<div class="btn-group nav-buttons " style="align: center;">
+								<button type="button" class="btn btn-xs btn-primary"
+									id="btnHome" onclick="home();" style="margin-right: 5px;">Home</button>
+								<button type="button" class="btn btn-xs btn-primary"
+									id="btnBack" onclick="back();">Back</button>
+							</div>
+						</div>
+
+					</div>
+					<!------------------------------ Report Details pagination - shown if paginated -------------------------------------------------->
+					<div class="float-right" th:if="${RuleList.totalPages} gt 1">
+						<a href="#"><i class="fas fa-caret-left fa-2x"
+							th:onclick="|getUserlist('prevpage',${RuleList.number},${RuleList.totalPages});|"></i></a>
+						<input type="text" id="pageno" style="width: 30px"
+							th:value="${RuleList.number+1}"
+							th:onchange="|getUserlist('givenpage',${RuleList.number},${RuleList.totalPages});|"></input>
+						of <font th:text="${RuleList.totalPages}"></font> <a href="#"><i
+							class="fas fa-caret-right fa-2x"
+							th:onclick="|getUserlist('nextpage',${RuleList.number},${RuleList.totalPages});|"></i></a>
+					</div>
+
+				</div>
+			</div>
+		</div>
+
+
+
+
+		<!-- -------------------ADD,EDIT,DELETE,INQUIRY -->
+		<div
+			th:if="${formmode}=='edit' OR ${formmode}=='add' OR ${formmode}=='view'"
+			class="container content">
+			<div class="row">
+				<div class="col-sm-12 ">
+
+					<form action="#" th:object="${AlertParameter}" method="POST"
+						autocomplete="off" id="AlertParameter">
+						<div class="card">
+							<div class="card-header">
+								<div class="float-left">
+									<b th:text="${menuname1}"></b>
+								</div>
+								<div class="btn-group nav-buttons float-right">
+									<!-- <button type="button"
+															class="btn btn-xs btn-primary btns  active"
+															onclick='alert_add(this)' th:attr="frmode=add">Add
+															Notification</button> -->
+									<button type="button" class="btn btn-xs btn-primary btns"
+										id="btnInq" onclick="list()" style="border-color: #66dbe0;">List</button>
+								</div>
+
+							</div>
+							<div class="card-body">
+
+								<input autocomplete="false" name="hidden" type="text"
+									style="display: none;">
+								<div class="form-group">
+									<div class="row formline">
+										<div class="col-sm-2">
+											<label for="srl_no"> Srl No</label>
+										</div>
+
+										<div class="col-sm-3"
+											th:if="${formmode}=='edit' OR ${formmode}=='view'">
+											<input type="text" th:value="${AlertParameter?.srlno}"
+												id="srl_no" class="form-control form-control-sm"
+												name="srlno" autocomplete="off"
+												th:readonly="${formmode}=='view'" required>
+										</div>
+
+										<div class="col-sm-3" th:if=" ${formmode}=='add'">
+											<input type="text" th:value="${AlertSrlNo}" id="srl_no"
+												class="form-control form-control-sm" name="srlno"
+												autocomplete="off" readonly>
+										</div>
+										<div class="col-sm-1"></div>
+										<label for="userName" class="col-sm-2">Client Name</label>
+
+
+										<div class="col-sm-3">
+											<input type="text" th:value="${AlertParameter?.client_name}"
+												id="client_name" class="form-control form-control-sm"
+												name="client_name" autocomplete="off"
+												th:readonly="${formmode}=='view'" required>
+										</div>
+
+									</div>
+
+									<div class="row formline">
+										<label style="height: 2px;"></label>
+
+									</div>
+									<div class="row formline">
+
+										<label class="col-sm-2">Application Code</label>
+										<div class="col-sm-3">
+											<input type="text"
+												th:value="${AlertParameter?.application_code}"
+												id="application_code" name="application_code" value=""
+												class="form-control form-control-sm" autocomplete="false"
+												th:readonly="${formmode}=='view'" required />
+										</div>
+
+										<div class="col-sm-1"></div>
+
+
+										<label class="col-sm-2">Application Name</label>
+										<div class="col-sm-3">
+											<input type="text"
+												th:value="${AlertParameter?.application_name}"
+												id="application_name" name="application_name" value=""
+												class="form-control form-control-sm txtalign"
+												autocomplete="false" th:readonly="${formmode}=='view'"
+												required />
+										</div>
+										<div class="col-sm-1"></div>
+									</div>
+
+
+									<div class="row formline">
+										<label style="height: 2px;"></label>
+
+									</div>
+									<div class="row formline">
+
+										<label class="col-sm-2">Location</label>
+										<div class="col-sm-3">
+											<input type="text" th:value="${AlertParameter?.location}"
+												id="location" name="location" value=""
+												class="form-control form-control-sm" autocomplete="off"
+												th:readonly="${formmode}=='view'" required />
+										</div>
+										<div class="col-sm-1"></div>
+
+
+										<label class="col-sm-2">Country</label>
+										<div class="col-sm-3">
+											<input type="text" th:value="${AlertParameter?.country}"
+												id="country" name="country" value=""
+												class="form-control form-control-sm" autocomplete="off"
+												th:readonly="${formmode}=='view'" required />
+										</div>
+										<div class="col-sm-1"></div>
+									</div>
+									<div class="row formline">
+										<label style="height: 2px;"></label>
+
+									</div>
+
+
+									<div class="row formline">
+										<label style="height: 2px;"></label>
+
+									</div>
+
+
+
+
+									<div class="row formline">
+										<label style="padding: 12px; margin-right: 32px;">SPOC
+											1</label><label class="col-sm-1"></label>
+
+										<div class="form-check-inline  ">
+											<label class="form-check-label" for="radio1"> <input
+												type="radio" class="form-check-input " id="emailyes"
+												name="email_flg" value="Y" checked>Yes
+											</label>
+										</div>
+										<div class="form-check-inline -3">
+											<label class="form-check-label " for="radio2"> <input
+												type="radio" class="form-check-input" id="emailno"
+												name="email_flg" value="N">No
+											</label>
+										</div>
+									</div>
+
+
+
+
+
+
+									<div class="row formline">
+
+
+										<label class="col-sm-2">SPOC Name</label>
+										<div class="col-sm-3">
+										
+										<input th:if="${formmode}=='add'" type="text" 
+												id="email_1" value="" name="spoc1_name"
+												class="form-control form-control-sm" autocomplete="off"
+												th:readonly="${formmode}=='view'" required />
+											<input th:if="${formmode}=='edit' OR ${formmode}=='view'" type="text" th:value="${AlertParameter?.spoc1_name}"
+												id="email_1_1" value="" name="spoc1_name"
+												class="form-control form-control-sm" autocomplete="off"
+												th:readonly="${formmode}=='view'" required />
+										</div>
+
+										<div class="col-sm-1"></div>
+
+										<label class="col-sm-2">Designation</label>
+										<div class="col-sm-3">
+											<input th:if="${formmode}=='add'" type="text"
+												id="email_user_1" value="" name="s1_designation"
+												class="form-control form-control-sm" autocomplete="off"
+												 required />
+										
+											<input th:if="${formmode}=='edit' OR ${formmode}=='view'" type="text"
+												th:value="${AlertParameter?.s1_designation}"
+												id="email_user_1" value="" name="s1_designation"
+												class="form-control form-control-sm" autocomplete="off"
+												th:readonly="${formmode}=='view'" required />
+										</div>
+										<div class="col-sm-1"></div>
+									</div>
+									<div class="row formline">
+										<label style="height: 2px;"></label>
+
+									</div>
+									<div class="row formline">
+
+
+										<label class="col-sm-2">Email Id</label>
+										<div class="col-sm-3">
+										<input th:if="${formmode}=='add'" type="email" th:value="${AlertParameter?.s1_email_id}"
+												id="email_2" value="" name="s1_email_id"
+												class="form-control form-control-sm" autocomplete="off"
+												th:readonly="${formmode}=='view'" />
+											<input  th:if="${formmode}=='edit' OR ${formmode}=='view'" type="email" th:value="${AlertParameter?.s1_email_id}"
+												id="email_2" value="" name="s1_email_id"
+												class="form-control form-control-sm" autocomplete="off"
+												th:readonly="${formmode}=='view'" />
+										</div>
+
+										<div class="col-sm-1"></div>
+
+										<label class="col-sm-2">Mobile No</label>
+										<div class="col-sm-3">
+										<input th:if="${formmode}=='add'" type="number"
+												th:value="${AlertParameter?.s1_mobile_number}"
+												id="email_user_2" value="" name="s1_mobile_number"
+												class="form-control form-control-sm" autocomplete="off"
+												th:readonly="${formmode}=='view'" />
+											<input th:if="${formmode}=='edit' OR ${formmode}=='view'" type="number"
+												th:value="${AlertParameter?.s1_mobile_number}"
+												id="email_user_2" value="" name="s1_mobile_number"
+												class="form-control form-control-sm" autocomplete="off"
+												th:readonly="${formmode}=='view'" />
+										</div>
+										<div class="col-sm-1"></div>
+									</div>
+									<div class="row formline">
+										<label style="height: 2px;"></label>
+
+									</div>
+
+
+									<div class="row formline">
+										<label style="padding: 12px; margin-right: 32px;">SPOC
+											2</label><label class="col-sm-1"></label>
+
+										<div class="form-check-inline  ">
+											<label class="form-check-label" for="radio1"> <input
+												type="radio" class="form-check-input " id="smsyes"
+												name="sms_flg" value="Y" checked>Yes
+											</label>
+										</div>
+										<div class="form-check-inline -3">
+											<label class="form-check-label " for="radio2"> <input
+												type="radio" class="form-check-input" id="smsno"
+												name="sms_flg" value="N">No
+											</label>
+										</div>
+									</div>
+
+
+
+									<div class="row formline">
+
+
+										<label class="col-sm-2">SPOC Name</label>
+										<div class="col-sm-3">
+										<input th:if="${formmode}=='add'"  type="text" th:value="${AlertParameter?.spoc2_name}"
+												id="mobile_1" value="" name="spoc2_name"
+												class="form-control form-control-sm" autocomplete="off"
+												th:readonly="${formmode}=='view'" required />
+											<input  th:if="${formmode}=='edit' OR ${formmode}=='view'" type="text" th:value="${AlertParameter?.spoc2_name}"
+												id="mobile_1" value="" name="spoc2_name"
+												class="form-control form-control-sm" autocomplete="off"
+												th:readonly="${formmode}=='view'" required />
+										</div>
+
+										<div class="col-sm-1"></div>
+
+										<label class="col-sm-2">Designation</label>
+										<div class="col-sm-3">
+										<input th:if="${formmode}=='add'" type="text"
+												th:value="${AlertParameter?.s2_designation}"
+												id="mobile_user_1" value="" name="s2_designation"
+												class="form-control form-control-sm" autocomplete="off"
+												th:readonly="${formmode}=='view'" required />
+											<input  th:if="${formmode}=='edit' OR ${formmode}=='view'" type="text"
+												th:value="${AlertParameter?.s2_designation}"
+												id="mobile_user_1" value="" name="s2_designation"
+												class="form-control form-control-sm" autocomplete="off"
+												th:readonly="${formmode}=='view'" required />
+										</div>
+										<div class="col-sm-1"></div>
+									</div>
+									<div class="row formline">
+										<label style="height: 2px;"></label>
+
+									</div>
+									<div class="row formline">
+
+
+										<label class="col-sm-2">Email Id</label>
+										<div class="col-sm-3">
+										<input  th:if="${formmode}=='add'" type="email" th:value="${AlertParameter?.s2_email_id}"
+												id="mobile_2" value="" name="s2_email_id"
+												class="form-control form-control-sm" autocomplete="off"
+												th:readonly="${formmode}=='view'" />
+											<input th:if="${formmode}=='edit' OR ${formmode}=='view'" type="email" th:value="${AlertParameter?.s2_email_id}"
+												id="mobile_2" value="" name="s2_email_id"
+												class="form-control form-control-sm" autocomplete="off"
+												th:readonly="${formmode}=='view'" />
+										</div>
+
+										<div class="col-sm-1"></div>
+
+										<label class="col-sm-2">Mobile No</label>
+										<div class="col-sm-3">
+										<input  th:if="${formmode}=='add'" type="number"
+												th:value="${AlertParameter?.s2_mobile_number}"
+												id="mobile_user_2" value="" name="s2_mobile_number"
+												class="form-control form-control-sm" autocomplete="off"
+												th:readonly="${formmode}=='view'" />
+											<input  th:if="${formmode}=='edit' OR ${formmode}=='view'" type="number"
+												th:value="${AlertParameter?.s2_mobile_number}"
+												id="mobile_user_2" value="" name="s2_mobile_number"
+												class="form-control form-control-sm" autocomplete="off"
+												th:readonly="${formmode}=='view'" />
+										</div>
+										<div class="col-sm-1"></div>
+									</div>
+									<div class="row formline">
+										<label style="height: 2px;"></label>
+
+									</div>
+
+
+									<div class="row formline">
+										<label style="padding: 12px; margin-right: 32px;">SPOC
+											3</label><label class="col-sm-1"></label>
+
+										<div class="form-check-inline  ">
+											<label class="form-check-label" for="radio1"> <input
+												type="radio" class="form-check-input " id="alertyes"
+												name="alert_flg" value="Y" checked>Yes
+											</label>
+										</div>
+										<div class="form-check-inline -3">
+											<label class="form-check-label " for="radio2"> <input
+												type="radio" class="form-check-input" id="alertno"
+												name="alert_flg" value="N">No
+											</label>
+										</div>
+									</div>
+
+
+
+									<div class="row formline">
+
+
+										<label class="col-sm-2">SPOC Name</label>
+										<div class="col-sm-3">
+										<input   th:if="${formmode}=='add'"type="text" th:value="${AlertParameter?.spoc3_name}"
+												id="alert_userid_1" value="" name="spoc3_name"
+												class="form-control form-control-sm" autocomplete="off"
+												th:readonly="${formmode}=='view'" required />
+											<input  th:if="${formmode}=='edit' OR ${formmode}=='view'" type="text" th:value="${AlertParameter?.spoc3_name}"
+												id="alert_userid_1" value="" name="spoc3_name"
+												class="form-control form-control-sm" autocomplete="off"
+												th:readonly="${formmode}=='view'" required />
+										</div>
+
+										<div class="col-sm-1"></div>
+
+										<label class="col-sm-2">Designation</label>
+										<div class="col-sm-3">
+										<input  th:if="${formmode}=='add'" type="text"
+												th:value="${AlertParameter?.s3_designation}"
+												id="alert_user_1" value="" name="s3_designation"
+												class="form-control form-control-sm" autocomplete="off"
+												th:readonly="${formmode}=='view'" required />
+											<input  th:if="${formmode}=='edit' OR ${formmode}=='view'" type="text"
+												th:value="${AlertParameter?.s3_designation}"
+												id="alert_user_1" value="" name="s3_designation"
+												class="form-control form-control-sm" autocomplete="off"
+												th:readonly="${formmode}=='view'" required />
+										</div>
+										<div class="col-sm-1"></div>
+									</div>
+									<div class="row formline">
+										<label style="height: 2px;"></label>
+
+									</div>
+									<div class="row formline">
+
+
+										<label class="col-sm-2">Email Id</label>
+										<div class="col-sm-3">
+										<input th:if="${formmode}=='add'" type="email"
+												th:value="${AlertParameter?.s3_email_id}"
+												id="alert_userid_2" value="" name="s3_email_id"
+												class="form-control form-control-sm" autocomplete="off"
+												th:readonly="${formmode}=='view'" />
+											<input  th:if="${formmode}=='edit' OR ${formmode}=='view'" type="email"
+												th:value="${AlertParameter?.s3_email_id}"
+												id="alert_userid_2" value="" name="s3_email_id"
+												class="form-control form-control-sm" autocomplete="off"
+												th:readonly="${formmode}=='view'" />
+										</div>
+
+										<div class="col-sm-1"></div>
+
+										<label class="col-sm-2">Mobile No</label>
+										<div class="col-sm-3">
+										<input th:if="${formmode}=='add'" type="number"
+												th:value="${AlertParameter?.s3_mobile_number}"
+												id="alert_user_2" value="" name="s3_mobile_number"
+												class="form-control form-control-sm" autocomplete="off"
+												th:readonly="${formmode}=='view'" />
+											<input th:if="${formmode}=='edit' OR ${formmode}=='view'"type="number"
+												th:value="${AlertParameter?.s3_mobile_number}"
+												id="alert_user_2" value="" name="s3_mobile_number"
+												class="form-control form-control-sm" autocomplete="off"
+												th:readonly="${formmode}=='view'" />
+										</div>
+										<div class="col-sm-1"></div>
+									</div>
+									<div class="row formline">
+										<label style="height: 2px;"></label>
+
+									</div>
+
+									<div class="row formline">
+										<label style="height: 2px;"></label>
+
+									</div>
+
+
+
+
+
+
+								</div>
+
+
+
+								<div class="card-footer text-center" style="height: 38px;">
+
+
+									<button th:if="${formmode}=='add'" type="button"
+										class="btn btn-xs btn-primary" onclick="submitaddform(this);"
+										style="margin-top: -12px;" form="AlertParameter" th:attr="data-formmode=${formmode}"
+										id="btnSubmit">Submit</button>
+									<button th:if="${formmode}=='edit'" type="button"
+										class="btn btn-xs btn-primary" onclick="submiteditform(this);"
+										style="margin-top: -12px;" form="AlertParameter"
+										id="btnSubmit" th:attr="data-formmode=${formmode}">Submit</button>
+									<button type="button" style="margin-top: -12px;"
+										class="btn btn-xs btn-primary" id="btnHome" onclick="home();">Home</button>
+									<button type="button" class="btn btn-xs btn-primary"
+										id="btnBack" style="margin-top: -12px;" onclick="back();">Back</button>
+
+								</div>
+							</div>
+						</div>
+					</form>
+
+				</div>
+			</div>
+		</div>
+	</div>
+	<!------------------------Pop window - Domain  list Ends--------------------------------->
+
+	<!-------------------------------------Details delete modal dialog----------------------------------------------------->
+	<div class="modal fade" id="datadelete">
+		<div
+			class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+			<div class="modal-content">
+				<div class="modal-body"
+					style="margin-top: 8px; text-align: center; color: aliceblue;">
+					<button type="button" class="close" data-dismiss="modal">×</button>
+					Are you Sure want to delete?
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-primary"
+						onclick="submitformdelete(this);" th:attr="data-formmode=delete">Submit</button>
+					<button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	</div>
+	</div>
+	</div>
+	</div>
+	</div>
+	<!-------------------------------------Details delete modal dialog----------------------------------------------------->
+	<!--------------------------------------------------------------- Modal for alert messages-------------------------------->
+	<div class="modal fade" id="alert">
+		<div
+			class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+			<div class="modal-content">
+				<div class="modal-body" style="text-align: center">
+					<p id="alertmsg"></p>
+					<button type="button" class="btn btn-primary" data-dismiss="modal"
+						onclick="back();">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!--  -->
+	<!--------------------------------------------------------------- Modal for alert messages-------------------------------->
+</body>
+</html>

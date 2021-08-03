@@ -1,0 +1,778 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<!--
+PROJECT NAME: AML
+FILE NAME   : THIRDPARTYTRANSACTION
+CREATED BY	: RAMPRASATH
+CREATED ON	: 25-JUN-2020
+MODIFY ON   :
+PURPOSE		: 
+ -->
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" type="text/css"
+	href="/webjars/bootstrap/4.3.1/css/bootstrap.min.css"
+	th:href="@{/webjars/bootstrap/4.3.1/css/bootstrap.min.css}">
+<link rel="stylesheet" type="text/css"
+	href="/webjars/font-awesome/5.9.0/css/all.min.css"
+	th:href="@{/webjars/font-awesome/5.9.0/css/all.min.css}">
+<link rel="stylesheet" type="text/css"
+	href="/webjars/jquery-ui/1.12.1/jquery-ui.min.css"
+	th:href="@{/webjars/jquery-ui/1.12.1/jquery-ui.min.css}">
+<link rel="stylesheet" type="text/css"
+	href="/webjars/datatables/1.10.19/css/jquery.dataTables.min.css"
+	th:href="@{/webjars/datatables/1.10.19/css/jquery.dataTables.min.css}">
+<link rel="shortcut icon" th:href="@{/favicon.ico}" type="image/x-icon">
+<link rel="icon" th:href="@{/favicon.ico}" type="image/x-icon">
+
+<script src="/webjars/bootstrap/4.3.1/js/bootstrap.min.js"
+	th:src="@{/webjars/bootstrap/4.3.1/js/bootstrap.min.js}"></script>
+<script src="/webjars/popper.js/1.14.7/umd/popper.min.js"
+	th:src="@{/webjars/popper.js/1.14.7/umd/popper.min.js}"></script>
+<script src="/webjars/jquery/3.4.1/jquery.min.js"
+	th:src="@{/webjars/jquery/3.4.1/jquery.min.js}"></script>
+<script src="/webjars/jquery-ui/1.12.1/jquery-ui.min.js"
+	th:src="@{/webjars/jquery-ui/1.12.1/jquery-ui.min.js}"></script>
+
+<script src="/webjars/jquery-form/4.2.2/jquery.form.min.js"
+	th:src="@{/webjars/jquery-form/4.2.2/jquery.form.min.js}"></script>
+
+<script src="/webjars/jquery-validation/1.19.0/jquery.validate.min.js"
+	th:src="@{/webjars/jquery-validation/1.19.0/jquery.validate.min.js}"></script>
+
+<script src="/webjars/datatables/1.10.19/js/jquery.dataTables.min.js"
+	th:src="@{/webjars/datatables/1.10.19/js/jquery.dataTables.min.js}"></script>
+<script
+	src="/webjars/datatables/1.10.19/js/dataTables.bootstrap4.min.js"
+	th:src="@{/webjars/datatables/1.10.19/js/dataTables.bootstrap4.min.js}"></script>
+
+
+<link rel="stylesheet" type="text/css"
+	href="/webjars/bootstrap/4.3.1/css/bootstrap.min.css"
+	th:href="@{/webjars/bootstrap/4.3.1/css/bootstrap.min.css}">
+
+<!-- 	 <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+ -->
+<script src="js/bootstrap411.js"></script>
+<style type="text/css">
+.btn {
+	line-height: 0.5rem;
+}
+
+.underline {
+	text-decoration: underline;
+	color: #08a6f1;
+	cursor: pointer;
+}
+
+.container-manager {
+	width: 76.5%;
+	padding-right: 15px;
+	padding-left: 15px;
+	margin-right: auto;
+	margin-left: 19.3%;
+	margin-top: 80px;
+}
+
+.table-bordered td, .table-bordered th {
+	font-size: smaller;
+}
+
+.card-header {
+	background-color: #386276;
+}
+
+.card-footer {
+	background-color: rgb(56, 98, 118);
+}
+</style>
+
+<script type="text/javascript">
+	function home() {
+		location.href = 'Dashboard'
+	}
+
+	function back() {
+		window.history.back();
+	}
+
+	function alert_add(a) {
+
+		//var formmode = a.getAttribute("formmode");
+
+		location.href = "./Troubleshooting?formmode=add";
+
+	}
+	
+
+	/* function submitform1(a) {
+
+		alert("2");
+		if ($("#Troubleshooting").valid()) {
+
+			var srl_no = $("#srl_no123").val();
+			alert(here);
+			var formmode = a.getAttribute("data-formmode");
+			alert(formmode);
+			var url = "./CreateTroubleShootingMaster?formmode=" + formmode;
+			alert(url);
+
+			$("#Troubleshooting").attr('action', url);
+
+			var options = {
+				success : showResponse
+			// post-submit callback 
+			};
+
+			$("#Troubleshooting").ajaxSubmit(options);
+			function showResponse(responseText, statusText, xhr, $form) {
+
+				$("#alertmsg").text(responseText);
+
+				$('#alert').modal("toggle");
+
+			}
+			;
+
+		} else {
+			alert("wrong");
+		}
+		/* } */
+	 
+</script>
+<script>
+
+function submitform(a) {
+	//alert("1");
+			if ($("#ThirdParty").valid()) {
+
+				var formmode = a.getAttribute("data-formmode");
+
+				//alert(paymode);
+				//alert(nid);
+				//alert(paydate);
+				var url = "./CreateTroubleShootingMaster?formmode=" + formmode;
+				//alert(url);
+
+				$("#ThirdParty").attr('action', url);
+
+				var options = {
+					success : showResponse
+				// post-submit callback 
+				};
+
+				$("#ThirdParty").ajaxSubmit(options);
+				function showResponse(responseText, statusText, xhr, $form) {
+					//alert(responseText);
+					$("#alertmsg").text(responseText);
+
+					$('#alert').modal("toggle");
+				}
+				;
+
+			}
+			/* } */
+		};
+</script>
+</head>
+<title>BHDS</title>
+
+<body>
+	<div th:insert="BHDSMenu :: header"></div>
+
+
+	<!-- Start Content-->
+	<div class="container-manager">
+
+
+		<div th:if="${formmode}=='list'">
+
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="card">
+						<div class="card-header " id="modheadtitle" style="height: 57px;">
+							<!-- 						<b th:text="${menuname}"></b>
+ -->
+							<div class="float-left">
+								<h6 style="font-size: 1.5rem; color: white;">Trouble
+									Shooting Register</h6>
+							</div>
+							<div class="btn-group nav-buttons float-right">
+								<button type="button" class="btn btn-xs btn-primary btns"
+									onclick='alert_add(this)'>Add</button>
+								<button type="button" class="btn btn-xs btn-primary btns active"
+									id="btnInq" onclick="list()" style="border-color: #66dbe0;">List</button>
+							</div>
+						</div>
+						<table class="table  table-bordered  table-hover table-sm"
+							style="margin-bottom: 0px" id="usertable">
+							<thead class="thead-light">
+
+								<tr>
+									<th>Srl No</th>
+									<th>Date</th>
+									<th>Lodged By</th>
+									<th>Module</th>
+									<th>Issue Details</th>
+									<th>Priority</th>
+									<th>Bornfire Observations</th>
+									<th>Resolution</th>
+									<th>Fixes</th>
+									<th>Date of fix</th>
+									<th>Status</th>
+
+								</tr>
+
+
+
+							</thead>
+							<tbody>
+
+								<tr th:each="alert: ${IssueMaster}">
+
+									<td th:text="${alert.srl_no}"></td>
+									<td th:text="${alert.dte}"></td>
+
+									<td th:text="${alert.lodged_by}"></td>
+									<td th:text="${alert.module}"></td>
+									<td th:text="${alert.issue_details}"></td>
+									<td th:text="${alert.priority}"></td>
+									<td th:text="${alert.observations}"></td>
+									<td th:text="${alert.resolution}"></td>
+									<td th:text="${alert.fixes}"></td>
+									<td th:text="${alert.date_of_fix}"></td>
+									<td th:text="${alert.status}"></td>
+
+									<!-- <td>
+										<div class="dropdown">
+											<button class="btn btn-secondary dropdown-toggle"
+												type="button" id="dropdownMenuButton" title="Action"
+												style="line-height: 0.7; font-size: 11px; color: #3a4550; background: #e3e3e4;"
+												data-toggle="dropdown" aria-haspopup="true"
+												aria-expanded="false">Select</button>
+											<div class="dropdown-menu"
+												aria-labelledby="dropdownMenuButton"
+												style="background-color: #e3e3e4; color: #3a4550;">
+												<a th:attr="data-srl_no=${alert.issue_srl_no}"
+													class="dropdown-item" title=" Modify"
+													style="cursor: pointer; height: 20px; color: #3a4550; background: #e3e3e4; height: 16px; border-radius: .20rem; padding: 2px 10px; top: 10px;"
+													id="edit_value" onclick="edit_btn_submit(this)">Modify</a>
+												<div class="dropdown-divider"></div>
+
+												<div class="dropdown-divider"></div>
+												<a th:attr="data-srl_no=${alert.issue_srl_no}"
+													class="dropdown-item" title="View"
+													style="cursor: pointer; height: 20px; color: #3a4550; background: #e3e3e4; height: 16px; border-radius: .20rem; padding: 2px 10px; top: 10px;"
+													onclick="view_btn_submit(this)" id="view_btn">View </a>
+											</div>
+										</div>
+									</td> -->
+
+
+								</tr>
+							</tbody>
+						</table>
+
+						<div class="card-footer text-center" style="height: 38px;">
+
+
+
+
+							<button type="button" style="margin-top: -12px;"
+								class="btn btn-xs btn-primary" id="btnHome" onclick="home();">Home</button>
+							<button type="button" class="btn btn-xs btn-primary" id="btnBack"
+								style="margin-top: -12px;" onclick="back();">Back</button>
+
+						</div>
+
+
+					</div>
+				</div>
+			</div>
+		</div>
+		<div th:if="${formmode}=='add'">
+			<div class="card">
+				<div class="content">
+					<div class="card-header" id="modheadtitle" style="height: 47px;">
+						<b th:text="${menuname}"></b> <a href="#"><i
+							class="fas fa-search searchico"
+							style="margin-left: 19px; font-weight: bolder; font-size: 15px;"
+							data-toggle="modal" data-target="#acctaudit" id="iconacc"></i></a>
+
+
+
+					</div>
+					<form action="#" th:object="${ThirdParty}" method="post"
+						autocomplete="off" id="ThirdParty">
+						<div class="card-body">
+							<div class="row formline">
+
+								<!-- <div class="col-sm-1"></div>
+										<div class="col-sm-1"></div>
+
+										<div class="col-sm-1">
+											<label for="CUSTID">From Date</label>
+										</div>
+
+										<div class="col-sm-2">
+											<input type="text" id="Fromdate" th:value="${Fromdate}"
+												class="form-control form-control-sm" name="cust_id"
+												autocomplete="off" />
+										</div> -->
+								<div class="col-sm-0"></div>
+
+								<div class="col-sm-2">
+									<label for="custName">Srl No</label>
+								</div>
+
+								<div class="col-sm-3">
+									<input type="text" id="srl_no" name="srl_no"
+										class="form-control form-control-sm" autocomplete="false" />
+								</div>
+								<div class="col-sm-1"></div>
+								<div class="col-sm-3">
+									<label for="cust_id">Date</label>
+								</div>
+
+
+								<div class="col-sm-3">
+									<input type="text" id="dte" name="dte"
+										class="form-control form-control-sm" autocomplete="false" />
+								</div>
+
+
+
+							</div>
+
+							<div class="row formline">
+								<div class="col-sm-2">
+									<label for="cust_id">Lodged By</label>
+								</div>
+								<div class="col-sm-3">
+									<input type="text" id="lodged_by" name="lodged_by"
+										class="form-control form-control-sm" autocomplete="off"
+										>
+								</div>
+								<div class="col-sm-1"></div>
+
+
+								<div class="col-sm-3">
+									<label for="cust_id">Module</label>
+								</div>
+								<div class="col-sm-3">
+									<input type="text" id="module" name="module"
+										class="form-control form-control-sm" autocomplete="off">
+								</div>
+
+
+
+
+
+
+
+
+							</div>
+							<div class="row formline">
+								<div class="col-sm-2">
+									<label for="cust_id">Issue Details</label>
+								</div>
+								<div class="col-sm-3">
+									<input type="text" id="issue_details" name="issue_details"
+										class="form-control form-control-sm" autocomplete="off"
+										>
+								</div>
+								<div class="col-sm-1"></div>
+								<div class="col-sm-3">
+									<label for="cust_id">Priority</label>
+								</div>
+								<div class="col-sm-3">
+									<input type="text" id="priority" name="priority"
+										class="form-control form-control-sm" autocomplete="off">
+								</div>
+
+							</div>
+							<div class="row formline">
+								<div class="col-sm-2">
+									<label for="cust_id">Bornfire Observations</label>
+								</div>
+								<div class="col-sm-3">
+									<input type="text" id="observations" name="observations"
+										class="form-control form-control-sm" autocomplete="off">
+								</div>
+								<div class="col-sm-1"></div>
+								<div class="col-sm-3">
+									<label for="cust_id">Resolution</label>
+								</div>
+								<div class="col-sm-3">
+									<input type="text" id="resolution" name="resolution"
+										class="form-control form-control-sm" autocomplete="off">
+								</div>
+
+							</div>
+							<div class="row formline">
+								<div class="col-sm-2">
+									<label for="cust_id">Fixes</label>
+								</div>
+								<div class="col-sm-3">
+									<input type="text" id="fixes" name="fixes"
+										class="form-control form-control-sm" autocomplete="off">
+								</div>
+								<div class="col-sm-1"></div>
+								<div class="col-sm-3">
+									<label for="cust_id">Date of fixes</label>
+								</div>
+								<div class="col-sm-3">
+									<input type="text" id="date_of_fix" name="date_of_fix"
+										class="form-control form-control-sm" autocomplete="off">
+								</div>
+
+							</div>
+							<div class="row formline">
+								<div class="col-sm-2">
+									<label for="cust_id">Status</label>
+								</div>
+								<div class="col-sm-3">
+									<input type="text" id="status" name="status"
+										class="form-control form-control-sm" autocomplete="off">
+								</div>
+								<div class="col-sm-1"></div>
+								<div class="col-sm-3">
+									<label for="cust_id">Remarks</label>
+								</div>
+								<div class="col-sm-3">
+									<input type="text" id="tp_pob"
+										class="form-control form-control-sm" autocomplete="off">
+								</div>
+
+							</div>
+
+							<label></label>
+						</div>
+						<div class="card-footer text-center"
+							style="display: flow-root !important;">
+							<button type="button" class="btn btn-primary"
+								th:if="${formmode}=='add'" onclick="submitform(this);"
+								form="ThirdParty" th:attr="data-formmode=${formmode}">Submit</button>
+
+							<button type="button" class="btn btn-primary" onclick="back()">Back</button>
+						</div>
+
+						<div th:if=" ${formmode}=='add'" class="container content"
+							style="padding: 15px;">
+
+							<div class="row formline">
+
+								<label class="col-sm-2">Entry User</label>
+								<div class="col-sm-2">
+									<input type="text" th:if=" ${formmode}=='add'"
+										th:value="${session.USERID}" id="entry_user" name="entry_user"
+										class="form-control form-control-sm" autocomplete="off"
+										readonly />
+
+								</div>
+								<label class="col-sm-2">Modify User</label>
+								<div class="col-sm-2">
+									<input type="text" th:if="${formmode}=='add' "
+										th:value="${session.USERID}" id="modify_user"
+										name="modify_user" class="form-control form-control-sm"
+										autocomplete="off" readonly />
+								</div>
+								<label class="col-sm-2">Verify User</label>
+								<div class="col-sm-2">
+									<input type="text" th:if="${formmode}=='add'    "
+										id="verify_user" name="verify_user"
+										th:value="${thirdParty?.verify_user}"
+										class="form-control form-control-sm" autocomplete="off"
+										readonly />
+								</div>
+							</div>
+
+							<div class="row formline">
+
+								<label class="col-sm-2">Entry Time</label>
+								<div class="col-sm-2">
+									<input type="text"
+										th:if="${formmode}=='edit' OR ${formmode}=='add' OR ${formmode}=='delete'"
+										id="entry_date" name="entry_time"
+										class="form-control form-control-sm" autocomplete="off"
+										readonly />
+								</div>
+
+								<label class="col-sm-2">Modify Time</label>
+								<div class="col-sm-2">
+									<input type="text" th:if="${formmode}=='verify' "
+										th:value="${#dates.format(thirdParty?.modify_time,'dd/MM/yyyy')}"
+										id="modify_time" name="modify_time"
+										class="form-control form-control-sm" autocomplete="off"
+										readonly /> <input type="text"
+										th:if="${formmode}=='edit' OR ${formmode}=='add' OR ${formmode}=='delete'"
+										id="verify_date" name="entry_time"
+										class="form-control form-control-sm" autocomplete="off"
+										readonly />
+
+								</div>
+
+
+
+								<label class="col-sm-2">Verify Time</label>
+								<div class="col-sm-2">
+									<input type="text" th:if="${formmode}=='add'"
+										th:value="${#dates.format(thirdParty?.verify_time,'dd/MM/yyyy')}"
+										id="verify_time" name="verify_time"
+										class="form-control form-control-sm" autocomplete="off"
+										readonly />
+
+								</div>
+
+								<div class="row formline">
+									<label style="height: 2px;"></label>
+
+								</div>
+
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+
+
+		<!--------------------------------------------------------------- Modal for alert messages-------------------------------->
+	</div>
+	</div>
+	</div>
+	<div class="modal fade" id="alert" data-backdrop="static"
+		data-keyboard="false">
+		<div
+			class="modal-dialog modal-dialog-centered modal-dialog-scrollable"
+			data-backdrop="static" data-keyboard="false">
+			<div class="modal-content">
+				<div class="modal-body" style="text-align: center">
+					<p id="alertmsg"></p>
+					<button type="button" class="btn btn-primary" onclick="back();">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<script>
+		$(function() {
+
+			$("#alert_date").datepicker({
+
+				changeMonth : true,
+
+				changeYear : true,
+
+				maxDate : new Date(),
+
+				dateFormat : "dd-mm-yy"
+
+			});
+
+			var today = new Date();
+
+			var dd = today.getDate();
+
+			var mm = today.getMonth() + 1; //January is 0!
+
+			var yyyy = today.getFullYear();
+
+			if (dd < 10) {
+
+				dd = '0' + dd;
+
+			}
+
+			if (mm < 10) {
+
+				mm = '0' + mm;
+
+			}
+
+			var today = dd + '/' + mm + '/' + yyyy;
+
+			document.getElementById('alert_date').value = today;
+
+		});
+
+		$(function() {
+
+			$("#entry_date,verify_date,modify_date").datepicker({
+
+				changeMonth : true,
+				changeYear : true,
+				maxDate : new Date(),
+				dateFormat : "dd-mm-yy"
+
+			});
+
+			var today = new Date();
+			var dd = today.getDate();
+			var mm = today.getMonth() + 1; //January is 0!
+			var yyyy = today.getFullYear();
+
+			if (dd < 10) {
+
+				dd = '0' + dd;
+
+			}
+
+			if (mm < 10) {
+
+				mm = '0' + mm;
+
+			}
+
+			var today = dd + '/' + mm + '/' + yyyy;
+
+			document.getElementById('entry_date').value = today;
+			document.getElementById('verify_date').value = today;
+			document.getElementById('modify_date').value = today;
+
+		});
+
+		$(function() {
+
+			$("#pay_date").datepicker({
+
+				changeMonth : true,
+				changeYear : true,
+				maxDate : new Date(),
+				dateFormat : "dd/mm/yy"
+
+			});
+
+			var today = new Date();
+
+			var dd = today.getDate();
+
+			var mm = today.getMonth() + 1; //January is 0!
+
+			var yyyy = today.getFullYear();
+
+			if (dd < 10) {
+
+				dd = '0' + dd;
+
+			}
+
+			if (mm < 10) {
+
+				mm = '0' + mm;
+
+			}
+
+			var today = dd + '/' + mm + '/' + yyyy;
+
+			document.getElementById('pay_date').value = today;
+
+		});
+
+		$(function() {
+
+			$("#transaction_date").datepicker({
+
+				changeMonth : true,
+
+				changeYear : true,
+
+				maxDate : new Date(),
+
+				dateFormat : "dd/mm/yy"
+
+			});
+
+			var today = new Date();
+
+			var dd = today.getDate();
+
+			var mm = today.getMonth() + 1; //January is 0!
+
+			var yyyy = today.getFullYear();
+
+			if (dd < 10) {
+
+				dd = '0' + dd;
+
+			}
+
+			if (mm < 10) {
+
+				mm = '0' + mm;
+
+			}
+
+			var today = dd + '/' + mm + '/' + yyyy;
+
+			document.getElementById('transaction_date').value = today;
+
+		});
+		$(function() {
+
+			$("#entry_date1,verify_date1,modify_date1").datepicker({
+
+				changeMonth : true,
+
+				changeYear : true,
+
+				maxDate : new Date(),
+
+				dateFormat : "dd-mm-yy"
+
+			});
+
+			var today = new Date();
+
+			var dd = today.getDate();
+
+			var mm = today.getMonth() + 1; //January is 0!
+
+			var yyyy = today.getFullYear();
+
+			if (dd < 10) {
+
+				dd = '0' + dd;
+
+			}
+
+			if (mm < 10) {
+
+				mm = '0' + mm;
+
+			}
+
+			var today = dd + '/' + mm + '/' + yyyy;
+
+			document.getElementById('entry_date1').value = today;
+
+			document.getElementById('verify_date1').value = today;
+
+			document.getElementById('modify_date1').value = today;
+
+		});
+	</script>
+
+	<script>
+		function SearchGo(a) {
+			if ($("#search").valid()) {
+				var cust_id = document.getElementById("id_cust").value;
+				var tran_date = document.getElementById("date_tran").value;
+
+				$('#acctaudit').modal("hide");
+				var chidWin = window.open("thirdPartySearch?cust_id=" + cust_id
+						+ '&tran_date=' + tran_date);
+
+			} else {
+				//$("#warning").modal("toggle");
+			}
+		}
+	</script>
+	
+
+
+	
+	
+</body>
+</html>
