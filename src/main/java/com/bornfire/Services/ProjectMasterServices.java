@@ -37,6 +37,13 @@ public class ProjectMasterServices {
 			hs.saveOrUpdate(up);
 
 			msg = "Added Successfully";
+		}else if(formmode.equals("edit")) {
+			BHDS_Project_Master_Log up = projectMaster;
+		    up.setDelete_flag("N");
+		    up.setEntity_flag("Y");
+		    
+					hs.saveOrUpdate(up);
+					msg = "Edited Successfully";
 		}
 		return msg;
 	}

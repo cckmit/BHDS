@@ -253,7 +253,8 @@ PURPOSE		:
 	function edit_btn_submit(a) {
 
 		var srlno = a.getAttribute("data-srl_no");
-		location.href = 'Projectmaster?formmode=edit&srlno=' + srlno;
+		alert(srlno);
+		location.href = 'Projectmaster?formmode=edit&srl_no=' + srlno;
 	}
 
 	function submitform1(a) {
@@ -317,14 +318,14 @@ PURPOSE		:
 		
 		var srlno = a.getAttribute("data-srl_no");
 
-		location.href = 'BHDSClientIssueLog?formmode=delete&srlno=' + srlno;
+		location.href = 'BHDSClientIssueLog?formmode=delete&srl_no=' + srlno;
 		$("#datadelete").modal("toggle");
 
 	};
 	function view_btn_submit(a) {
 		var srlno = a.getAttribute("data-srl_no");
-
-		location.href = 'Projectmaster?formmode=view&srlno=' + srlno;
+		alert(srlno);
+		location.href = 'Projectmaster?formmode=view&srl_no=' + srlno;
 
 	}
 	/*]]>*/
@@ -451,8 +452,8 @@ PURPOSE		:
 									<th>Start Date</th>
 									<th>End Date</th>
 									<th>Status</th>
-<!-- 									<th>Select</th>
- -->								</tr>
+									<th>Select</th>
+ 								</tr>
 
 
 
@@ -473,7 +474,7 @@ PURPOSE		:
 									<td th:text="${alert.end_date}"></td>
 									<td th:text="${alert.amc_status}"></td>
 
-									<!-- <td>
+									 <td>
 										<div class="dropdown">
 											<button class="btn btn-secondary dropdown-toggle"
 												type="button" id="dropdownMenuButton" title="Action"
@@ -487,7 +488,7 @@ PURPOSE		:
 													class="dropdown-item" title=" Modify"
 													style="cursor: pointer; height: 20px; color: #3a4550; background: #e3e3e4; height: 16px; border-radius: .20rem; padding: 2px 10px; top: 10px;"
 													id="edit_value" onclick="edit_btn_submit(this)">Modify</a>
-												<div class="dropdown-divider"></div>
+												
 
 												<div class="dropdown-divider"></div>
 												<a th:attr="data-srl_no=${alert.srl_no}"
@@ -496,7 +497,7 @@ PURPOSE		:
 													onclick="view_btn_submit(this)" id="view_btn">View </a>
 											</div>
 										</div>
-									</td> -->
+									</td> 
 
 
 								</tr>
@@ -546,12 +547,15 @@ PURPOSE		:
 			th:if="${formmode}=='edit' OR ${formmode}=='add' OR ${formmode}=='view'">
 			<div class="row">
 				<div class="col-sm-12 ">
-					<form action="#" th:object="${projectMaster}" method="POST"
+					<form action="#" th:object="${projectmaster}" method="POST"
 						autocomplete="off" id="projectMaster">
 						<div class="card">
 							<div class="card-header">
+							<div class="float-left">
+									<b style="color: white;" th:text="${menuname}"></b>
+								</div>
 								<div class="float-left">
-									<b>General Details</b>
+									<b style="color: white;" > General Details</b>
 								</div>
 								<div class="btn-group nav-buttons float-right">
 									<!-- <button type="button"
@@ -622,7 +626,7 @@ PURPOSE		:
 												class="form-control form-control-sm" autocomplete="false"
 												th:readonly="${formmode}=='view'"  /> <input
 												th:if="${formmode}=='edit' OR ${formmode}=='view'"
-												th:field="*{emailid}" th:value="${emailid}" id="proj_id"
+												 th:value="${emailid}" id="proj_id"
 												name="proj_id" value="hgfhf"
 												class="form-control form-control-sm" autocomplete="false"
 												th:readonly="${formmode}=='view'"  />
@@ -642,7 +646,7 @@ PURPOSE		:
 												autocomplete="false" th:readonly="${formmode}=='view'"
 												 /> <input type="text"
 												th:if="${formmode}=='edit' OR ${formmode}=='view'"
-												th:field="*{application}" th:value="${proj_name}"
+												th:value="${proj_name}"
 												id="proj_name" name="proj_name" value=""
 												class="form-control form-control-sm txtalign"
 												autocomplete="false" th:readonly="${formmode}=='view'"
@@ -664,7 +668,7 @@ PURPOSE		:
 												autocomplete="false" th:readonly="${formmode}=='view'"
 												 /> <input type="text"
 												th:if="${formmode}=='edit' OR ${formmode}=='view'"
-												th:field="*{application}" th:value="${proj_name}"
+												 th:value="${proj_name}"
 												id="proj_type" name="proj_type" value=""
 												class="form-control form-control-sm txtalign"
 												autocomplete="false" th:readonly="${formmode}=='view'"
@@ -837,9 +841,9 @@ PURPOSE		:
 											<input type="text" th:if="${formmode}=='add'"
 												 id="warranty_period" name="warranty_period" value=""
 												class="form-control form-control-sm" autocomplete="off"
-												 /> <input type="date"
+												 /> <input type="text"
 												th:if="${formmode}=='edit' OR ${formmode}=='view'"
-												th:field="*{warranty}" th:value="${warranty}" id="warranty_period"
+												th:field="*{warranty_period}" th:value="${warranty_period}" id="warranty_period"
 												name="warranty_period" value="" class="form-control form-control-sm"
 												autocomplete="off" th:readonly="${formmode}=='view'"
 												 />
@@ -877,7 +881,7 @@ PURPOSE		:
 						<div class="card">
 							<div class="card-header">
 								<div class="float-left">
-									<b>Client Details</b>
+									<b style="color: white;">Client Details</b>
 								</div>
 								<div class="btn-group nav-buttons float-right">
 									<!-- <button type="button"
@@ -906,7 +910,7 @@ PURPOSE		:
 												class="form-control form-control-sm" autocomplete="false"
 												 /> <input
 												th:if="${formmode}=='edit' OR ${formmode}=='view'"
-												type="text" th:field="*{client}" th:value="${client}"
+												type="text" th:field="*{client_id}" th:value="${client_id}"
 												id="client_id" name ="client_id" class="form-control form-control-sm"
 												autocomplete="false"  />
 
@@ -947,7 +951,7 @@ PURPOSE		:
 												class="form-control form-control-sm" autocomplete="false"
 												th:readonly="${formmode}=='view'"  /> <input type="text"
 												th:if="${formmode}=='edit' OR ${formmode}=='view'"
-												th:field="*{emailid}" th:value="${emailid}" id="client_type"
+												th:field="*{client_type}" th:value="${client_type}" id="client_type"
 												name="client_type" value="hgfhf"
 												class="form-control form-control-sm" autocomplete="false"
 												th:readonly="${formmode}=='view'"  />
@@ -962,13 +966,13 @@ PURPOSE		:
 										<div class="col-sm-3">
 
 											<input type="text" th:if="${formmode}=='add'"
-												id="project_ref" name="project_ref"
+												id="proj_ref" name="proj_ref"
 												value="" class="form-control form-control-sm txtalign"
 												autocomplete="false" th:readonly="${formmode}=='view'"
 												 /> <input type="text"
 												th:if="${formmode}=='edit' OR ${formmode}=='view'"
-												th:field="*{application}" th:value="${application}"
-												id="project_ref" name="project_ref" value=""
+												th:field="*{proj_ref}" th:value="${proj_ref}"
+												id="proj_ref" name="proj_ref" 
 												class="form-control form-control-sm txtalign"
 												autocomplete="false" th:readonly="${formmode}=='view'"
 												 />
@@ -990,7 +994,7 @@ PURPOSE		:
 												class="form-control form-control-sm" autocomplete="false"
 												th:readonly="${formmode}=='view'"  /> <input type="text"
 												th:if="${formmode}=='edit' OR ${formmode}=='view'"
-												th:field="*{emailid}" th:value="${emailid}" id="sow_det"
+												th:field="*{sow_det}" th:value="${sow_det}" id="sow_det"
 												name="sow_det" value="hgfhf"
 												class="form-control form-control-sm" autocomplete="false"
 												th:readonly="${formmode}=='view'"  />
@@ -1024,7 +1028,7 @@ PURPOSE		:
 												placeholder="Please enter your remarks here..." rows="5"></textarea>
 
 											<textarea th:if="${formmode}=='edit' OR ${formmode}=='view'"
-												th:field="*{description}" th:value="${description}"
+												th:field="*{client_remarks}" th:value="${client_remarks}"
 												class="form-control" id="client_remarks" name="client_remarks"
 												placeholder="Please enter your remarks here..." rows="5"
 												th:readonly="${formmode}=='view'"></textarea>
@@ -1050,7 +1054,7 @@ PURPOSE		:
 												class="form-control form-control-sm" autocomplete="off"
 												 /> <input type="text"
 												th:if="${formmode}=='edit' OR ${formmode}=='view'"
-												th:field="*{subject}" th:value="${subject}" id="address"
+												th:field="*{address}" th:value="${address}" id="address"
 												name="address" value="" class="form-control form-control-sm"
 												autocomplete="off" th:readonly="${formmode}=='view'"
 												 />
@@ -1067,7 +1071,7 @@ PURPOSE		:
 												class="form-control form-control-sm" autocomplete="off"
 												 /> <input type="text"
 												th:if="${formmode}=='edit' OR ${formmode}=='view'"
-												th:field="*{subject}" th:value="${subject}" id="country"
+												th:field="*{country}" th:value="${country}" id="country"
 												name="country" value="" class="form-control form-control-sm"
 												autocomplete="off" th:readonly="${formmode}=='view'"
 												 />
@@ -1089,7 +1093,7 @@ PURPOSE		:
 												class="form-control form-control-sm" autocomplete="off"
 												 /> <input type="text"
 												th:if="${formmode}=='edit' OR ${formmode}=='view'"
-												th:field="*{subject}" th:value="${subject}" id="spoc1_name"
+												th:field="*{spoc1_name}" th:value="${spoc1_name}" id="spoc1_name"
 												name="spoc1_name" value="" class="form-control form-control-sm"
 												autocomplete="off" th:readonly="${formmode}=='view'"
 												 />
@@ -1106,7 +1110,7 @@ PURPOSE		:
 												class="form-control form-control-sm" autocomplete="off"
 												 /> <input type="text"
 												th:if="${formmode}=='edit' OR ${formmode}=='view'"
-												th:field="*{subject}" th:value="${subject}" id="spoc1_design"
+												th:field="*{spoc1_design}" th:value="${spoc1_design}" id="spoc1_design"
 												name="spoc1_design" value="" class="form-control form-control-sm"
 												autocomplete="off" th:readonly="${formmode}=='view'"
 												 />
@@ -1128,7 +1132,7 @@ PURPOSE		:
 												class="form-control form-control-sm" autocomplete="off"
 												 /> <input type="text"
 												th:if="${formmode}=='edit' OR ${formmode}=='view'"
-												th:field="*{subject}" th:value="${subject}" id="spoc1_mobile"
+												th:field="*{spoc1_mobile}" th:value="${spoc1_mobile}" id="spoc1_mobile"
 												name="spoc1_mobile" value="" class="form-control form-control-sm"
 												autocomplete="off" th:readonly="${formmode}=='view'"
 												 />
@@ -1145,7 +1149,7 @@ PURPOSE		:
 												class="form-control form-control-sm" autocomplete="off"
 												 /> <input type="text"
 												th:if="${formmode}=='edit' OR ${formmode}=='view'"
-												th:field="*{subject}" th:value="${subject}" id="spoc1_email"
+												th:field="*{spoc1_email}" th:value="${spoc1_email}" id="spoc1_email"
 												name="spoc1_email" value="" class="form-control form-control-sm"
 												autocomplete="off" th:readonly="${formmode}=='view'"
 												 />
@@ -1167,7 +1171,7 @@ PURPOSE		:
 												class="form-control form-control-sm" autocomplete="off"
 												 /> <input type="text"
 												th:if="${formmode}=='edit' OR ${formmode}=='view'"
-												th:field="*{subject}" th:value="${subject}" id="spoc2_name"
+												th:field="*{spoc2_name}" th:value="${spoc2_name}" id="spoc2_name"
 												name="spoc2_name" value="" class="form-control form-control-sm"
 												autocomplete="off" th:readonly="${formmode}=='view'"
 												 />
@@ -1184,7 +1188,7 @@ PURPOSE		:
 												class="form-control form-control-sm" autocomplete="off"
 												 /> <input type="text"
 												th:if="${formmode}=='edit' OR ${formmode}=='view'"
-												th:field="*{subject}" th:value="${subject}" id="spoc2_design"
+												th:field="*{spoc2_design}" th:value="${spoc2_design}" id="spoc2_design"
 												name="spoc2_design" value="" class="form-control form-control-sm"
 												autocomplete="off" th:readonly="${formmode}=='view'"
 												 />
@@ -1206,7 +1210,7 @@ PURPOSE		:
 												class="form-control form-control-sm" autocomplete="off"
 												 /> <input type="text"
 												th:if="${formmode}=='edit' OR ${formmode}=='view'"
-												th:field="*{subject}" th:value="${subject}" id="spoc2_mobile"
+												th:field="*{spoc2_mobile}" th:value="${spoc2_mobile}" id="spoc2_mobile"
 												name="spoc2_mobile" value="" class="form-control form-control-sm"
 												autocomplete="off" th:readonly="${formmode}=='view'"
 												 />
@@ -1223,7 +1227,7 @@ PURPOSE		:
 												class="form-control form-control-sm" autocomplete="off"
 												 /> <input type="text"
 												th:if="${formmode}=='edit' OR ${formmode}=='view'"
-												th:field="*{subject}" th:value="${subject}" id="spoc2_email"
+												th:field="*{spoc2_email}" th:value="${spoc2_email}" id="spoc2_email"
 												name="spoc2_email" value="" class="form-control form-control-sm"
 												autocomplete="off" th:readonly="${formmode}=='view'"
 												 />
@@ -1254,7 +1258,7 @@ PURPOSE		:
 					th:attr="data-formmode='add'">Submit</button>
 
 				<button th:if="${formmode}=='edit'" type="button"
-					class="btn btn-xs btn-primary" onclick="modifyform1(this);"
+					class="btn btn-xs btn-primary" onclick="submitform1(this);"
 					style="margin-top: -12px;" form="IssueMaster" id="btnSubmit"
 					th:attr="data-formmode='edit'">Submit</button>
 

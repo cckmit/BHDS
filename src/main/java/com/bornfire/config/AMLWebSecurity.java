@@ -107,7 +107,7 @@ public class AMLWebSecurity extends WebSecurityConfigurerAdapter {
 						//System.out.println("isLoginAllowed---->"+usr.isLoginAllowed());
 					
 						
-						/*if (!usr.isAccountNonExpired()) {
+						if (!usr.isAccountNonExpired()) {
 
 							throw new AccountExpiredException("Account Expired");
 
@@ -115,7 +115,7 @@ public class AMLWebSecurity extends WebSecurityConfigurerAdapter {
 
 							throw new CredentialsExpiredException("Credentials Expired");
 
-						}/* else if (!usr.isAccountNonLocked()) {
+						} else if (!usr.isAccountNonLocked()) {
 
 							throw new LockedException("Account Locked");
 
@@ -123,11 +123,11 @@ public class AMLWebSecurity extends WebSecurityConfigurerAdapter {
 
 							throw new DisabledException("Account Disabled");
 
-						} else if (!usr.isLoginAllowed()) {
+						} /*else if (!usr.isLoginAllowed()) {
 
 							throw new LockedException("Login Not Allowed");
 
-						} */if (!PasswordEncryption.validatePassword(password, usr.getPassword())) {
+						}*/ if (!PasswordEncryption.validatePassword(password, usr.getPassword())) {
 
 							logger.info("Passing Userid :" + userid);
 

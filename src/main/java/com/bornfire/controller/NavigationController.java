@@ -220,7 +220,17 @@ public class NavigationController {
 		return msg;
 
 	}
+	@RequestMapping(value = "deleteuser", method = RequestMethod.POST)
+	@ResponseBody
+	public String deleteuser(@ModelAttribute UserProfile userprofile, Model md, HttpServletRequest rq) {
+		String userid = (String) rq.getSession().getAttribute("USERID");
+		String msg = userProfileDao.DeleteUser(userprofile, userid);
+		
+		md.addAttribute("menu", "UserProfile"); // To highlight the menu
 
+		return msg;
+
+	}
 	/*************************************
 	 * ClientLogIsssue Starts
 	 ****************************************/
@@ -669,7 +679,7 @@ public class NavigationController {
 	}
 	@RequestMapping(value = "Projectmaster", method = { RequestMethod.GET, RequestMethod.POST })
 	public String projectmaster(@RequestParam(required = false) String formmode,
-			@RequestParam(required = false) String userid,String srl_no,
+			@RequestParam(required = false) String userid,@RequestParam(required = false) String srl_no,
 			@RequestParam(value = "page", required = false) Optional<Integer> page,
 			@RequestParam(value = "size", required = false) Optional<Integer> size, Model md, HttpServletRequest req) {
 
@@ -689,23 +699,28 @@ public class NavigationController {
 		} else if (formmode.equals("edit")) {
 
 			md.addAttribute("formmode", formmode);
-			md.addAttribute("formmode", "add"); // to set which form - valid values are "edit" , "add" & "list"
-			md.addAttribute("menu", "BHDSMenu");
+		//	md.addAttribute("formmode", "add"); // to set which form - valid values are "edit" , "add" & "list"
+			md.addAttribute("menuname", "Project Master Edit : ");
+			md.addAttribute("AlertSrlNo", srl_no);
+			md.addAttribute("projectmaster", projectMasterrep.findBySrl(srl_no));
 			// md.addAttribute("domains", userProfileDao.getDomainList());
 			//md.addAttribute("projectmaster", userProfileDao.getUser(userid));
 
 		}else if (formmode.equals("view")) {
 
 			md.addAttribute("formmode", formmode);
-			md.addAttribute("menu", "BHDSMenu");
-			md.addAttribute("CLIENTSRL", bhdsIssueRegServices.getSrlNoValue());
-			md.addAttribute("IssueMaster", projectMasterrep.findBySrl(srl_no));
+			md.addAttribute("menuname", "Project Master View : ");
+			md.addAttribute("AlertSrlNo", srl_no);
+		//	md.addAttribute("CLIENTSRL", bhdsIssueRegServices.getSrlNoValue());
+			System.out.println("srl_no :"+srl_no);
+			md.addAttribute("projectmaster", projectMasterrep.findBySrl(srl_no));
 		} 
 		else if (formmode.equals("add")) {
 
 			md.addAttribute("formmode", formmode);
+			md.addAttribute("menuname", "Project Master Add : ");
 			md.addAttribute("AlertSrlNo", projectMasterServices.getSrlNoValue());
-
+			md.addAttribute("projectmaster", new BHDS_Project_Master_Log());
 			// md.addAttribute("domains", userProfileDao.getDomainList());
 			//md.addAttribute("projectmaster", userProfileDao.getUser(userid));
 

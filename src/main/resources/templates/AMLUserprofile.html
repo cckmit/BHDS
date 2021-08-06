@@ -176,6 +176,27 @@ a:not ([href] ):not ([tabindex] ):focus, a:not ([href] ):not ([tabindex]
 		}
 		;
 	};
+	function Delete() {
+
+		var url = './deleteuser';
+		$("#userProfile").attr('action', url);
+
+		var options = {
+			success : showResponse
+		// post-submit callback 
+		};
+
+		$('#userProfile').ajaxSubmit(options);
+
+		function showResponse(responseText, statusText, xhr, $form) {
+
+			$("#alertmsg").text(responseText);
+
+			$('#alert').modal("toggle");
+
+		}
+		;
+	};
 	function finuser(a) {
 
 		$
@@ -821,10 +842,10 @@ a:not ([href] ):not ([tabindex] ):focus, a:not ([href] ):not ([tabindex]
 											class="btn btn-xs btn-primary"
 											th:attr="data-userid=${userProfile.userid},data-entry_user=${userProfile.entry_user},data-modify_user=${userProfile.modify_user}"
 											onclick="verify(this);" id="btnModify">Verify</button>
-										<!-- <button
+										 <button
 											th:if="${formmode}=='edit' AND ${userProfile.entity_flg}=='Y'"
 											type="button" class="btn btn-xs btn-primary" id="btnpassrst"
-											onclick="passwordReset();">PasswordReset</button> -->
+											onclick="passwordReset();">PasswordReset</button>
 										<button
 											th:if="${userProfile.entity_flg}!='N' OR ${userProfile.entity_flg}==null"
 											type="button" class="btn btn-xs btn-primary"
@@ -835,7 +856,10 @@ a:not ([href] ):not ([tabindex] ):focus, a:not ([href] ):not ([tabindex]
 											id="btnHome" onclick="home();">Home</button>
 										<button type="button" class="btn btn-xs btn-primary"
 											id="btnBack" onclick="back();">Back</button>
-
+ <button
+											th:if="${formmode}=='edit' AND ${userProfile.entity_flg}=='Y'"
+											type="button" class="btn btn-xs btn-primary" id="btnpassrst"
+											onclick="Delete();">Delete</button>
 
 									</div>
 								</div>

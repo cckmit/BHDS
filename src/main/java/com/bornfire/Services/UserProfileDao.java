@@ -93,7 +93,7 @@ public class UserProfileDao {
 		Root<UserProfile> root = cr.from(UserProfile.class);
 
 		List<UserProfile> cnt1 = (List<UserProfile>) sessionFactory.getCurrentSession()
-				.createQuery("from UserProfile where userid=?1").setParameter(1, userid).getResultList();
+				.createQuery("from UserProfile where userid=?1 and del_flg <>'Y'").setParameter(1, userid).getResultList();
 
 		if (cnt1.size() > 0) {
 			return new UserProfileResponse("success", cnt1.get(0));
@@ -150,7 +150,7 @@ public class UserProfileDao {
 	public Object getUsersList() {
 		
 		List<UserProfile> cnt1 = (List<UserProfile>) sessionFactory.getCurrentSession()
-				.createQuery("from UserProfile").getResultList();
+				.createQuery("from UserProfile where del_flg <> 'Y'").getResultList();
 	
 		return cnt1;
 	}
@@ -218,7 +218,7 @@ public class UserProfileDao {
 		  else if (formmode.equals("edit")) {
 				UserProfile up = userform;
 				Session hs = sessionFactory.getCurrentSession();
-			/*
+				Optional<UserProfile> up1 = userProfileRep.findById(userform.getUserid());			/*
 			 * Optional<RuleEngineEntity> up
 			 * =RuleEngineEntity.findById(RuleEngineEntity.getSrl_no());
 			 */
@@ -239,7 +239,7 @@ public class UserProfileDao {
 		  userProfile.setNo_of_attmp(0); userProfile.setEntity_flg("N");
 		  userProfile.setModify_user(inputUser); userProfile.setModify_time(new
 		  Date());*/
-		  
+				up.setPassword(up1.get().getPassword());
 				up.setDel_flg("N");
 				up.setEntity_flg("N");
 				hs.saveOrUpdate(up);
@@ -286,6 +286,7 @@ public class UserProfileDao {
 				userProfile.setNo_of_attmp(0);
 				userProfile.setEntity_flg("Y");
 				userProfile.setLogin_flg("N");
+				userProfile.setDel_flg("N");
 				userProfile.setAuth_user(inputUser);
 				userProfile.setAuth_time(new Date());
 
@@ -434,4 +435,56 @@ for (int j = 0; j <= For_split_email.length - 1; j++)
 	return status;
      	
 }
+public String DeleteUser(UserProfile userProfile, String inputUser) {
+	String msg = "";
+
+	Session hs = sessionFactory.getCurrentSession();
+
+	/*
+	 * Optional<UserProfile> up = userProfileRep.findById(userProfile.getUserid());
+	 */
+	UserProfile up = userProfile;
+	try {
+		String encryptedPassword = PasswordEncryption.getEncryptedPassword(this.password);
+
+		if (up.getLogin_status().equals("Active")) {
+			up.setUser_locked_flg("N");
+		} else {
+			up.setUser_locked_flg("Y");
+		}
+
+		if (up.getUser_status().equals("Active")) {
+			up.setDisable_flg("N");
+		} else {
+			up.setDisable_flg("Y");
+		}
+
+		up.setEntity_flg("N");
+		up.setDel_flg("Y");
+		up.setModify_time(new Date());
+		up.setModify_user(inputUser);
+		
+		up.setLogin_flg("N");//To prompt the user for changing the password at first login
+		up.setNo_of_attmp(0);
+		up.setPassword(encryptedPassword);
+		
+
+		//UserProfile user = new UserProfile(up);
+		//System.out.println("=-=-=-=-=-"+user.toString());
+		
+		Session session = sessionFactory.getCurrentSession();
+		
+		session.saveOrUpdate(up);
+		//session.remove(up);
+		msg = "User Deleted Successfully";
+
+	} catch (Exception e) {
+		e.printStackTrace();
+	}
+
+	
+	
+	return msg;
+}
+
 }
