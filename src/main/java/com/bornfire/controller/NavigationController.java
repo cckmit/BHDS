@@ -815,7 +815,15 @@ public class NavigationController {
 		return msg;
 
 	}
+	@RequestMapping(value = "TESTING", method = { RequestMethod.GET, RequestMethod.POST })
+	public String TESTING(@RequestParam(required = false) String formmode,
+			@RequestParam(required = false) String userid, @RequestParam(required = false) Optional<Integer> page,
+			@RequestParam(value = "size", required = false) Optional<Integer> size, Model md, HttpServletRequest req) {
+		//md.addAttribute("IssueMaster", issueMasterRep.findAllCustom());
 
+		md.addAttribute("menu", "BHDSMenu");
+		return "TESTING";
+	}
 
 
 }
